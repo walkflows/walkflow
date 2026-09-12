@@ -9,7 +9,7 @@ export const hero = {
   heading: "Make it easier for customers to choose you.",
   body: "Your website should make your value clear. What happens next should feel just as simple. WALKFLOW brings web design and practical automation together to help you capture enquiries, follow up and move work forward.",
   primaryCta: { label: "Request a Call", href: "/contact" },
-  secondaryCta: { label: "Explore Industry Solutions", href: "/industries" },
+  secondaryCta: { label: "Explore Our Solutions", href: "#solutions" },
   note: "Start with the problem you want to solve. We’ll help you work out the next step.",
 };
 
@@ -20,23 +20,33 @@ export const problem = {
     "We help you improve those moments, so customers know what to do and your team knows what needs attention.",
 };
 
-export const whatWeBuild = {
-  heading: "A better website. A simpler way to handle what comes next.",
-  cards: [
+/** Section 3: two equally-weighted service showcases. */
+export const serviceShowcase = {
+  id: "solutions",
+  eyebrow: "What we build",
+  heading: "Two services. Built to work together.",
+  body: "A website with no follow-through leaves enquiries stuck in an inbox. Automation with no clear front door never gets used. WALKFLOW builds both, so they work as one system.",
+  services: [
     {
-      title: "Websites that make your offer clear",
+      id: "web-design",
+      title: "Web Design",
       body: "Help visitors understand your services, trust your business and enquire or buy with confidence. Build a new website or improve the one you already have.",
+      tags: ["Business websites", "E-commerce", "Landing pages", "Web apps"],
       cta: { label: "Explore Web Design", href: "/web-design" },
     },
     {
-      title: "Automation built around your daily work",
+      id: "ai-automation",
+      title: "AI Automation",
       body: "Organise enquiry details, support follow-ups and reduce repeated admin. Start with one task that slows you down, then connect the steps around it.",
+      tags: ["Enquiry handling", "Follow-up", "Appointment admin", "Internal handoffs"],
       cta: { label: "Explore AI Automation", href: "/ai-automation" },
     },
   ],
 };
 
+/** Section 5: equally-weighted industry cards. Add entries here to extend the grid. */
 export const industries = {
+  eyebrow: "Industry solutions",
   heading: "Start with the problem your business knows too well.",
   cards: [
     {
@@ -63,53 +73,93 @@ export const industries = {
   cta: { label: "Explore Industry Solutions", href: "/industries" },
 };
 
-export const demonstration = {
-  heading: "See how the experience could work for your business.",
-  body: "Explore a property website concept built around browsing listings and taking the next step. See the intended customer journey before discussing your own version.",
-  cta: { label: "Explore the Real Estate Demo", href: "/demos/real-estate" },
-  note: "Concept demonstration with sample listings. Simulated steps are labelled.",
-};
-
-export const journeyPreview = {
-  tabs: [
-    { id: "attract", label: "Attract" },
-    { id: "capture", label: "Capture" },
-    { id: "convert", label: "Convert" },
-    { id: "follow-up", label: "Follow-up" },
+/**
+ * Section 4: interactive Attract → Capture → Follow-up → Serve journey.
+ * Each stage illustrates a different industry so the section doesn't read
+ * as real-estate-only. Concept illustrations, not live product screens.
+ */
+export const journey = {
+  eyebrow: "How it works",
+  heading: "One journey. Every industry runs it differently.",
+  body: "The shape is the same everywhere: attract the right visitor, capture what they need, follow up without being chased, then keep the record straight as work moves forward.",
+  stages: [
+    {
+      id: "attract",
+      label: "Attract",
+      industry: "Home Services",
+      title: "A website that gets found and understood",
+      body: "Clear service pages and an obvious way to get in touch, so visitors don’t have to work out what you do.",
+    },
+    {
+      id: "capture",
+      label: "Capture",
+      industry: "Clinics",
+      title: "Every enquiry captured in one place",
+      body: "A short guided form collects what reception actually needs, instead of a one-line message that raises five more questions.",
+    },
+    {
+      id: "follow-up",
+      label: "Follow-up",
+      industry: "Consulting Firms",
+      title: "Follow-up that happens without being chased",
+      body: "Agreed messages go out on a schedule your team controls, and stop the moment someone replies.",
+    },
+    {
+      id: "serve",
+      label: "Serve",
+      industry: "Real Estate",
+      title: "A record that stays true as work moves forward",
+      body: "Stages, notes and requests update as things progress, so anyone on your team can see what’s happening.",
+    },
   ],
-  panels: {
-    attract: {
-      title: "A property website buyers actually browse",
-      body: "Clear listings, obvious filters and one obvious way to enquire.",
-      rows: [
-        { label: "Ashcombe Garden House", detail: "$465,000 · Available" },
-        { label: "Riverside Loft", detail: "$289,000 · Available" },
-      ],
-    },
-    capture: {
-      title: "Requirements captured in one guided form",
-      body: "Buyers share location, budget, bedrooms and property type instead of a vague message.",
-      rows: [
-        { label: "Looking to", detail: "Buy" },
-        { label: "Budget", detail: "Up to $500,000" },
-        { label: "Bedrooms", detail: "3+" },
-      ],
-    },
-    convert: {
-      title: "Matches lead to a viewing request",
-      body: "Buyers see listings that fit, then request a viewing for a time that suits them.",
-      rows: [{ label: "Viewing requested", detail: "Ashcombe Garden House · Sat 10:30" }],
-    },
-    "follow-up": {
-      title: "Agents see it the moment it happens",
-      body: "Each enquiry and viewing request appears in an agent pipeline, ready for follow-up.",
-      rows: [
-        { label: "Jordan Ellis", detail: "Viewing Requested" },
-        { label: "Priya N.", detail: "Matched" },
-      ],
-    },
-  },
 } as const;
+
+export type JourneyStageId = (typeof journey.stages)[number]["id"];
+
+/** Section 6: compact demo showcase. Real estate is the only working demo so far. */
+export const demoShowcase = {
+  eyebrow: "Demos",
+  heading: "See a concept in action",
+  body: "Real Estate is our first working concept demo — sample listings, requirements matching and an agent view. The others are in development.",
+  items: [
+    {
+      id: "real-estate",
+      label: "Real Estate",
+      body: "Browse sample listings, share requirements and request a viewing.",
+      status: "simulated" as const,
+      statusLabel: "Concept demonstration",
+      href: "/demos/real-estate",
+      cta: "Explore the Real Estate Demo",
+    },
+    {
+      id: "home-services",
+      label: "Home Services",
+      body: "Job enquiry, assessment request and estimate follow-up.",
+      status: "planned" as const,
+      statusLabel: "Coming soon",
+      href: "/industries/home-services",
+      cta: "Explore Home Services",
+    },
+    {
+      id: "clinics",
+      label: "Clinics",
+      body: "Administrative enquiry, reception review and reminders.",
+      status: "planned" as const,
+      statusLabel: "Coming soon",
+      href: "/industries/clinics",
+      cta: "Explore Clinics",
+    },
+    {
+      id: "consulting",
+      label: "Consulting Firms",
+      body: "Project brief, discovery and organised onboarding.",
+      status: "planned" as const,
+      statusLabel: "Coming soon",
+      href: "/industries/consulting",
+      cta: "Explore Consulting",
+    },
+  ],
+};
 
 export const why = {
   heading: "Start with what matters. Build from there.",

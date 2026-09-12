@@ -43,12 +43,4 @@ export const media: Record<string, MediaAsset> = {
     recommended: "PNG/WebP composite, 1600x1200, device mockups, <400KB",
     usedIn: "Homepage hero",
   },
-  realEstateDemoPreview: {
-    id: "realEstateDemoPreview",
-    alt: "Preview of the real estate demo property website",
-    demoUrl: "https://walkflow-estate-showcase.lovable.app",
-    status: "simulated",
-    recommended: "PNG/WebP screenshot, 1600x1000",
-    usedIn: "Homepage demonstration section, /demos/real-estate",
-  },
 };

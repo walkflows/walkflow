@@ -5,7 +5,6 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconArrowUpRight, IconBriefcase, IconHome, IconPulse, IconWrench } from "@/components/ui/icons";
 
-const spans = ["lg:col-span-2 lg:row-span-2", "lg:col-span-2", "lg:col-span-1", "lg:col-span-1"];
 const marks = [IconHome, IconWrench, IconPulse, IconBriefcase];
 
 export function Industries() {
@@ -14,37 +13,31 @@ export function Industries() {
       <Container>
         <Reveal>
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-            <h2 className="max-w-xl text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-navy">
-              {industries.heading}
-            </h2>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-orange-dark">{industries.eyebrow}</p>
+              <h2 className="mt-3 max-w-xl text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-navy">
+                {industries.heading}
+              </h2>
+            </div>
             <Button href={industries.cta.href} variant="secondary" className="flex-none">
               {industries.cta.label}
             </Button>
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-4 lg:grid-rows-2">
+          {/* Uniform, equal-weight grid — add entries to src/content/home.ts to extend it. */}
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {industries.cards.map((card, i) => {
-              const Mark = marks[i];
+              const Mark = marks[i % marks.length];
               return (
                 <Link
                   key={card.href}
                   href={card.href}
-                  className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-navy/8 bg-white p-8 shadow-[0_1px_2px_rgba(19,35,60,0.05)] transition-shadow hover:shadow-[var(--shadow-card)] ${spans[i]}`}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-navy/8 bg-white p-7 shadow-[0_1px_2px_rgba(19,35,60,0.05)] transition-shadow hover:shadow-[var(--shadow-card)]"
                 >
-                  <Mark
-                    className={
-                      i === 0
-                        ? "pointer-events-none absolute -bottom-8 -right-8 h-48 w-48 text-navy/[0.05] transition-transform duration-500 group-hover:scale-105"
-                        : "pointer-events-none absolute -bottom-4 -right-4 h-24 w-24 text-navy/[0.06] transition-transform duration-500 group-hover:scale-105"
-                    }
-                  />
+                  <Mark className="pointer-events-none absolute -bottom-4 -right-4 h-24 w-24 text-navy/[0.06] transition-transform duration-500 group-hover:scale-105" />
                   <div className="relative">
-                    <h3 className={i === 0 ? "text-3xl font-bold text-navy" : "text-xl font-bold text-navy"}>
-                      {card.title}
-                    </h3>
-                    <p className={`mt-3 leading-relaxed text-muted ${i === 0 ? "max-w-xs text-base" : "text-sm"}`}>
-                      {card.body}
-                    </p>
+                    <h3 className="text-xl font-bold text-navy">{card.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-muted">{card.body}</p>
                   </div>
                   <span className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-navy">
                     Explore {card.title}

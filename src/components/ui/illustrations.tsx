@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cx } from "@/lib/utils";
 
 export function WebsiteIllustration({ className }: { className?: string }) {
   return (
@@ -110,7 +111,15 @@ export function PropertyThumb({ propertyType, className }: { propertyType: strin
   );
 }
 
-export function BrowserFrame({ className, children }: { className?: string; children?: ReactNode }) {
+export function BrowserFrame({
+  className,
+  contentClassName,
+  children,
+}: {
+  className?: string;
+  contentClassName?: string;
+  children?: ReactNode;
+}) {
   return (
     <div className={className}>
       <div className="flex items-center gap-2 rounded-t-xl border border-b-0 border-white/10 bg-white/[0.06] px-4 py-3">
@@ -119,7 +128,7 @@ export function BrowserFrame({ className, children }: { className?: string; chil
         <span className="h-2.5 w-2.5 rounded-full bg-white/25" />
         <span className="ml-3 h-5 flex-1 max-w-52 rounded-full bg-white/8" />
       </div>
-      <div className="rounded-b-xl border border-white/10 bg-navy-800">{children}</div>
+      <div className={cx("rounded-b-xl border border-white/10 bg-navy-800", contentClassName)}>{children}</div>
     </div>
   );
 }

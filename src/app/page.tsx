@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Demonstration } from "@/components/sections/home/Demonstration";
+import { DemoShowcase } from "@/components/sections/home/DemoShowcase";
 import { FAQ } from "@/components/sections/home/FAQ";
 import { FinalCta } from "@/components/sections/home/FinalCta";
 import { Hero } from "@/components/sections/home/Hero";
 import { Industries } from "@/components/sections/home/Industries";
+import { Journey } from "@/components/sections/home/Journey";
 import { Problem } from "@/components/sections/home/Problem";
-import { WhatWeBuild } from "@/components/sections/home/WhatWeBuild";
+import { ServiceShowcase } from "@/components/sections/home/ServiceShowcase";
 import { WhyAndProcess } from "@/components/sections/home/WhyAndProcess";
 import { homeSeo } from "@/content/home";
 
@@ -19,9 +20,10 @@ export default function HomePage() {
     <>
       <Hero />
       <Problem />
-      <WhatWeBuild />
+      <ServiceShowcase />
+      <Journey />
       <Industries />
-      <Demonstration />
+      <DemoShowcase />
       <WhyAndProcess />
       <FAQ />
       <FinalCta />

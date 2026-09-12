@@ -4,8 +4,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { hero } from "@/content/home";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { FloatingCard } from "./FloatingCard";
-import { IconAutomation, IconEnquiry, IconSchedule, IconWebsite } from "@/components/ui/icons";
+import { HeroServicePanel } from "./HeroServicePanel";
+import { AutomationIllustration, WebsiteIllustration } from "@/components/ui/illustrations";
 
 const sequence = [0, 0.08, 0.16, 0.24];
 
@@ -66,48 +66,29 @@ export function Hero() {
         </motion.div>
         <p className="mt-6 text-sm text-white/55">{hero.note}</p>
 
-        <div className="relative mt-14 h-24 w-full max-w-3xl sm:mt-24 sm:h-72" aria-hidden="true">
-          <div className="absolute left-1/2 top-1/2 h-40 w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-orange/25 blur-[70px]" />
-          <div className="absolute left-1/2 top-1/2 h-24 w-2/3 -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-orange/25" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.7, delay: d(3) + (reduceMotion ? 0 : 0.15) }}
+          className="relative mt-14 h-72 w-full max-w-3xl sm:mt-20 sm:h-80"
+          aria-hidden="true"
+        >
+          <div className="absolute left-1/2 top-1/2 h-48 w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-orange/20 blur-[80px]" />
+          <div className="absolute left-1/2 top-1/2 h-32 w-2/3 -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-orange/20" />
 
-          <div className="hidden sm:contents">
-            <FloatingCard
-              icon={<IconWebsite className="h-4.5 w-4.5" />}
-              label="Your website"
-              detail="Mobile-ready"
-              tilt={-7}
-              duration={7.5}
-              className="left-0 top-4"
-            />
-            <FloatingCard
-              icon={<IconEnquiry className="h-4.5 w-4.5" />}
-              label="New enquiry"
-              detail="Details captured"
-              tilt={5}
-              duration={8.5}
-              delay={0.6}
-              className="right-0 top-0"
-            />
-            <FloatingCard
-              icon={<IconSchedule className="h-4.5 w-4.5" />}
-              label="Call scheduled"
-              detail="Sent by email"
-              tilt={6}
-              duration={8}
-              delay={1.1}
-              className="bottom-2 left-6"
-            />
-            <FloatingCard
-              icon={<IconAutomation className="h-4.5 w-4.5" />}
-              label="Follow-up sent"
-              detail="Runs on its own"
-              tilt={-5}
-              duration={9}
-              delay={0.3}
-              className="bottom-0 right-6"
-            />
-          </div>
-        </div>
+          <HeroServicePanel label="Web Design" tilt={-4} duration={9} className="left-[2%] top-0 sm:left-[10%]">
+            <WebsiteIllustration className="h-full w-full" />
+          </HeroServicePanel>
+          <HeroServicePanel
+            label="AI Automation"
+            tilt={4}
+            duration={10}
+            delay={0.5}
+            className="bottom-0 right-[2%] sm:right-[10%]"
+          >
+            <AutomationIllustration className="h-full w-full" />
+          </HeroServicePanel>
+        </motion.div>
       </Container>
     </section>
   );
