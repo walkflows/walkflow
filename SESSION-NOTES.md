@@ -27,7 +27,7 @@ npm run dev
 
 Then open **http://localhost:3000**.
 
-**Latest commit:** `e45cfc5` (plus a same-day housekeeping commit made when closing out — see "Git checkpoints" for the exact hash once available). Nothing pushed anywhere; all work is local-only.
+**Latest commit:** `12ee3ec`. Nothing pushed anywhere; all work is local-only.
 
 ## How to restart the local preview
 
@@ -45,7 +45,7 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 3. `67f3d42` — the Session 3 homepage restructure and redesign.
 4. `962862c` — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix. See "Session 4" below.
 5. `e45cfc5` — fixed a stale commit-hash placeholder left in these notes.
-6. *(end-of-session housekeeping commit, made when closing out today — ignores review screenshots going forward and adds this stopping-point summary)*
+6. `12ee3ec` — end-of-session housekeeping: ignores review screenshots going forward, adds this stopping-point summary.
 
 ## Session 4 — Platforms and tools strip, FAQ sync, hydration bug fix
 
