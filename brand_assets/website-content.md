@@ -187,13 +187,17 @@ Room to grow: Start with a website or one useful automation. Add more when it ma
 
 Yes. Web design is a standalone service. Automation can be a separate project later.
 
-**Do I need to choose the tools?**
+**Can you improve my existing website?**
 
-No. Explain what you need to achieve. We’ll recommend suitable options and explain ongoing costs.
+Yes. We’ll review what you have and discuss whether focused improvements or a rebuild would better suit your goals.
 
-**How much will it cost?**
+**Do I need to know which tools to use?**
 
-That depends on the pages, features and connections involved. You’ll receive a scoped proposal before committing.
+No. Explain what you want to achieve. We’ll recommend suitable tools and outline any subscription costs before you commit.
+
+**How much will my project cost?**
+
+Your quote depends on the pages, features and integrations you need. We’ll agree on the scope and price before starting.
 
 ## SECTION - Final invitation
 

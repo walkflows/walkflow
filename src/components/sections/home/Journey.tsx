@@ -53,7 +53,7 @@ export function Journey() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${stage.id}-text`}
-                initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: reduceMotion ? 0 : 0.3, ease: "easeOut" }}
@@ -67,7 +67,7 @@ export function Journey() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${stage.id}-illustration`}
-                initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.97 }}
+                initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: reduceMotion ? 0 : 0.3, ease: "easeOut" }}

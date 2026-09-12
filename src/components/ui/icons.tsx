@@ -123,3 +123,20 @@ export function IconArrowUpRight({ className }: IconProps) {
     </svg>
   );
 }
+
+export function IconPause({ className }: IconProps) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className={className}>
+      <rect x="2.5" y="2" width="3" height="10" rx="1" fill="currentColor" />
+      <rect x="8.5" y="2" width="3" height="10" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function IconPlay({ className }: IconProps) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className={className}>
+      <path d="M3.5 2.3v9.4a.7.7 0 0 0 1.07.6l7.5-4.7a.7.7 0 0 0 0-1.2l-7.5-4.7a.7.7 0 0 0-1.07.6Z" fill="currentColor" />
+    </svg>
+  );
+}

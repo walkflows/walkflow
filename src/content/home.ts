@@ -44,6 +44,14 @@ export const serviceShowcase = {
   ],
 };
 
+/** Platforms and tools strip. Logos are shown for reference only — not clients, partners or endorsements. */
+export const platformsAndTools = {
+  heading: "Platforms and tools",
+  body: "Examples of the platforms and AI tools a WALKFLOW project might use or connect to, depending on scope — shown for reference, not as clients or partners.",
+  pause: "Pause moving logos",
+  resume: "Resume moving logos",
+};
+
 /** Section 5: equally-weighted industry cards. Add entries here to extend the grid. */
 export const industries = {
   eyebrow: "Industry solutions",
@@ -209,12 +217,19 @@ export const faq = {
       answer: "Yes. Web design is a standalone service. Automation can be a separate project later.",
     },
     {
-      question: "Do I need to choose the tools?",
-      answer: "No. Explain what you need to achieve. We’ll recommend suitable options and explain ongoing costs.",
+      question: "Can you improve my existing website?",
+      answer:
+        "Yes. We’ll review what you have and discuss whether focused improvements or a rebuild would better suit your goals.",
     },
     {
-      question: "How much will it cost?",
-      answer: "That depends on the pages, features and connections involved. You’ll receive a scoped proposal before committing.",
+      question: "Do I need to know which tools to use?",
+      answer:
+        "No. Explain what you want to achieve. We’ll recommend suitable tools and outline any subscription costs before you commit.",
+    },
+    {
+      question: "How much will my project cost?",
+      answer:
+        "Your quote depends on the pages, features and integrations you need. We’ll agree on the scope and price before starting.",
     },
   ],
 };

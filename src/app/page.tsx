@@ -5,6 +5,7 @@ import { FinalCta } from "@/components/sections/home/FinalCta";
 import { Hero } from "@/components/sections/home/Hero";
 import { Industries } from "@/components/sections/home/Industries";
 import { Journey } from "@/components/sections/home/Journey";
+import { PlatformsAndTools } from "@/components/sections/home/PlatformsAndTools";
 import { Problem } from "@/components/sections/home/Problem";
 import { ServiceShowcase } from "@/components/sections/home/ServiceShowcase";
 import { WhyAndProcess } from "@/components/sections/home/WhyAndProcess";
@@ -21,6 +22,7 @@ export default function HomePage() {
       <Hero />
       <Problem />
       <ServiceShowcase />
+      <PlatformsAndTools />
       <Journey />
       <Industries />
       <DemoShowcase />

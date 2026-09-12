@@ -15,8 +15,47 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 ## Git checkpoints (local only, nothing pushed)
 
 1. `e6594e6` — initial Next.js scaffold + first homepage build.
-2. `cb017b5` — interactive real estate demo (`/demos/real-estate`) + homepage journey preview. Made at the start of this session, before the redesign below, so the prior homepage can be recovered with `git show cb017b5:src/app/page.tsx` (etc.) if needed.
-3. `67f3d42` — the homepage restructure and redesign described below (latest).
+2. `cb017b5` — interactive real estate demo (`/demos/real-estate`) + homepage journey preview. Made at the start of the previous session, before the Session 3 redesign, so that prior homepage can be recovered with `git show cb017b5:src/app/page.tsx` (etc.) if needed.
+3. `67f3d42` — the Session 3 homepage restructure and redesign.
+4. *(this session's commit — see hash in `git log`)* — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix. See "Session 4" below.
+
+## Session 4 — Platforms and tools strip, FAQ sync, hydration bug fix
+
+### Platforms and tools
+
+Added a new homepage section between Service Showcase and the Journey tabs, using the nine logo images you dropped into `tools_logos/` (ChatGPT, Claude, Framer, GoHighLevel, Make, n8n, Shopify, Squarespace, Wix):
+
+- Inspected every image directly (all are 2000×2000 square PNGs) before building anything. **Two are worth a second look on your end**: `gohighlevel.png` is a generic three-arrow icon rather than GoHighLevel's usual mark, and `wix.png` shows a cartoon character face, not Wix's actual wordmark/logo. I used them as supplied since inspecting (not verifying against official brand kits) was the instruction — flagging in case they were sourced/labelled incorrectly.
+- Copied the images into `public/tools/` (next/image requires a public path) and kept your originals in `tools_logos/` untouched. Both are now committed, same convention as `brand_assets/walkflow-logo/` + `public/brand/`.
+- Section is headed exactly **"Platforms and tools"**, with body copy stating outright these are examples of tools a project might use, "not as clients or partners" — no partnership language anywhere.
+- Motion: two duplicated rows of logo cards scroll horizontally forever (seamless loop, `object-contain` throughout so nothing is stretched or cropped), with generous spacing and soft shadows per the Agnos description in `CLAUDE.md`.
+- **Pause control**: a real toggle button ("Pause moving logos" / "Resume moving logos", `aria-pressed`) that stops and restarts the CSS animation — verified by comparing frozen frames before/after clicking it.
+- **Static reduced-motion version**: under `prefers-reduced-motion: reduce`, the strip becomes a plain wrapped grid of the nine real logos with no animation, no duplicate set, and no pause button (there's nothing left to pause) — done with Tailwind's `motion-reduce:` variant, not a JS/React conditional (see the hydration bug below for why that distinction mattered).
+
+### FAQ synchronised to your four approved questions
+
+Both `brand_assets/website-content.md` (the homepage "Quick answers" section) and `src/content/home.ts` (`faq.items`) now show exactly:
+
+1. Can I start with just a website?
+2. Can you improve my existing website?
+3. Do I need to know which tools to use?
+4. How much will my project cost?
+
+This replaces the three-question version flagged as a discrepancy at the end of Session 3. Verified in the browser: all four render, and the new second question expands to the correct approved answer.
+
+### Real bug found and fixed: hydration mismatch under reduced motion
+
+This session's Playwright setup gained `page.emulateMedia({ reducedMotion: 'reduce' })` access (not available in Session 3, where reduced-motion handling could only be checked by code review). Turning it on for real immediately surfaced a genuine hydration error in **`Journey.tsx`** — not in the new Platforms section.
+
+The bug: `initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}` (and the equivalent `scale` line) branched the *animation values themselves* on `useReducedMotion()`. Since the server never knows the visitor's OS motion preference, it always renders the `false` branch; if the real client has reduced motion on, the client's first render disagrees with the server-rendered HTML, and React throws a hydration mismatch. This is exactly the pitfall `Reveal.tsx`'s own code comment already warns about (and that Session 1 had fixed once before) — Journey.tsx just reintroduced it. Fixed by keeping `initial`/`animate`/`exit` values constant and only branching `transition.duration`, matching `Reveal.tsx`'s existing pattern exactly. Re-verified with emulation on: zero hydration errors, and the Platforms strip's static grid renders correctly. Re-verified with emulation off: Journey tab-switching and the Platforms marquee still work exactly as before.
+
+**Takeaway for future work on this codebase**: never let `useReducedMotion()` change *what* gets rendered (JSX structure, or the `initial`/`animate`/`exit` values passed to `motion.*`) — only *how long* a transition takes. If a reduced-motion-only visual difference is needed, do it in CSS with Tailwind's `motion-reduce:` variant instead, as the Platforms section now does.
+
+### Testing performed
+
+`npm run typecheck`, `npm run lint`, `npm run build` all clean. No horizontal overflow at 390px. Pause/resume verified by comparing frozen animation frames. Reduced-motion now genuinely emulated (not just code-reviewed) via `page.emulateMedia` — zero hydration errors after the fix, in both motion states. Screenshots saved locally under `review-screenshots-homepage-redesign/` (not committed).
+
+One repeated oddity worth recording: several times this session, an idle page unexpectedly navigated itself to an internal link (`/about`, `/web-design/ecommerce`, etc., all 404 since those routes don't exist yet) after a `scroll-behavior: smooth` animation or a long-running dev session. Re-navigating to `/` always cleared it. Best guess is Next.js Fast Refresh interacting with a long-lived browser tab across many file edits this session, not a bug in the site's own code — but flagging it since it happened more than once.
 
 ## Session 3 — Homepage restructure and visual redesign
 
@@ -81,19 +120,23 @@ Built `/demos/real-estate`: 10 fictional listings (fictional "Ashcombe" market, 
 
 ## Unfinished / needs your attention
 
-- **Six industries requested, four documented.** See "Industries" above — tell me the other two and I'll add them (the grid is already built to extend easily).
-- **FAQ count**: only three approved homepage FAQs exist in the content pack; you mentioned four. Let me know the fourth if it exists elsewhere.
+- **Six industries requested, four documented.** See "Industries" (Session 3) — tell me the other two and I'll add them (the grid is already built to extend easily).
+- **Check `gohighlevel.png` and `wix.png` in `tools_logos/`** — they don't look like those companies' actual logos (see Session 4 above). Used as supplied; replace them if they were sourced incorrectly.
 - **Logo file mismatch, still unresolved** (carried over from session 1): several files in `brand_assets/walkflow-logo/` have contents that don't match their filenames. `public/brand/` currently uses two manually-verified, correctly-named copies. The source folder itself hasn't been cleaned up.
 - **Logo wordmark reads "Walkflow Agcy."**, not "WALKFLOW", in every logo file — still needs your confirmation.
 - **Only `/` and `/demos/real-estate` exist.** All other nav links (Web Design, Industries, About, Contact, individual industry/service pages) still 404 — expected at this stage, not a bug, but now that the homepage links to `#solutions`, `/web-design`, `/ai-automation`, `/industries/*`, `/demos/*`, those routes are the natural next build targets.
-- No screen recording of the new motion was possible this session (see Testing above) — only static screenshots.
-- `prefers-reduced-motion` was verified by code review, not live emulation (see Testing above).
+- No screen recording of the new motion was possible this or the previous session — only static screenshots (no video/trace tool available in this Playwright setup).
 - Enquiry form, Supabase wiring, PostHog/consent banner, SEO/sitemap are all still to come, per the build sequence in `CLAUDE.md`.
 
-## Files touched this session (Session 3)
+## Files touched, Session 4 (this session)
+
+New: `src/components/sections/home/PlatformsAndTools.tsx`, `src/content/tools.ts`, `public/tools/*.png` (9 files), `tools_logos/*.png` (9 files, your originals, now committed).
+Edited: `src/content/home.ts` (`platformsAndTools` export, `faq.items` now four questions), `src/app/page.tsx` (wired in `PlatformsAndTools`), `src/app/globals.css` (`.animate-marquee` keyframe), `src/components/ui/icons.tsx` (`IconPause`, `IconPlay`), `src/components/sections/home/Journey.tsx` (hydration bug fix — see above), `brand_assets/website-content.md` (FAQ section synced).
+
+## Files touched, Session 3
 
 New: `src/components/sections/home/ServiceShowcase.tsx`, `Journey.tsx`, `JourneyIllustration.tsx`, `HeroServicePanel.tsx`, `DemoShowcase.tsx`, `src/components/ui/Tabs.tsx` (already existed from Session 2, reused here).
 Rewritten: `src/components/sections/home/Hero.tsx`, `Industries.tsx`, `FAQ.tsx`, `src/app/page.tsx`, `src/content/home.ts`.
 Edited: `src/components/layout/Header.tsx` (mobile menu motion + Escape), `src/components/ui/Button.tsx` (size prop), `src/components/ui/illustrations.tsx` (BrowserFrame contentClassName), `src/content/media.ts` (removed stale entry).
 Removed: `src/components/sections/home/FloatingCard.tsx`, `WhatWeBuild.tsx`, `Demonstration.tsx`, `JourneyPreview.tsx`.
-Untouched and re-verified working: everything under `src/components/demo/real-estate/`, `src/app/demos/real-estate/page.tsx`, `src/content/real-estate-demo.ts`, `src/content/real-estate-properties.ts`.
+Untouched and re-verified working (both sessions): everything under `src/components/demo/real-estate/`, `src/app/demos/real-estate/page.tsx`, `src/content/real-estate-demo.ts`, `src/content/real-estate-properties.ts`.

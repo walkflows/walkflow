@@ -97,6 +97,19 @@
     animation-delay: var(--float-delay, 0s);
   }
 
+  @keyframes marquee-x {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee-x var(--marquee-duration, 34s) linear infinite;
+  }
+
   .skip-link {
     position: absolute;
     left: 1rem;
