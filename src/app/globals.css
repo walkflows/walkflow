@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colours */
+  --color-orange: #e76e0c;
+  --color-orange-dark: #b4560a;
+  --color-orange-light: #ffb26b;
+  --color-navy-deep: #0b1526;
+  --color-navy: #13233c;
+  --color-navy-light: #1c3355;
+  --color-navy-800: #182c4a;
+  --color-cream: #fbf7f0;
+  --color-sand: #f2e8d8;
+  --color-surface: #f4eee3;
+  --color-border: #e6ddcd;
+  --color-ink: #13233c;
+  --color-muted: #55606e;
+  --color-white: #ffffff;
+
+  /* Typography */
+  --font-heading: var(--font-league-spartan), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+
+  /* Shadows */
+  --shadow-card: 0 20px 45px -24px rgba(19, 35, 60, 0.35);
+  --shadow-soft: 0 1px 2px rgba(19, 35, 60, 0.06);
+
+  /* Container */
+  --breakpoint-xs: 22.5rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  @keyframes float-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(var(--tilt, -6deg));
+    }
+    50% {
+      transform: translate3d(0, -14px, 0) rotate(var(--tilt, -6deg));
+    }
+  }
+
+  .animate-float {
+    animation: float-a var(--float-duration, 7s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 100;
+    background: var(--color-navy);
+    color: var(--color-white);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-sm);
+    transition: top 0.15s ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+}
