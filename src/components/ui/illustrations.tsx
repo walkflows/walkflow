@@ -67,6 +67,49 @@ export function AutomationIllustration({ className }: { className?: string }) {
   );
 }
 
+const buildingLike = new Set(["Apartment", "Studio", "Duplex", "Townhouse"]);
+
+/**
+ * Branded placeholder artwork for a property card — no stock or fabricated
+ * photography, since these listings are fictional. Aspect ratio is fixed by
+ * the wrapper (aspect-[4/3]) wherever this is used.
+ */
+export function PropertyThumb({ propertyType, className }: { propertyType: string; className?: string }) {
+  const isBuilding = buildingLike.has(propertyType);
+
+  return (
+    <svg viewBox="0 0 160 120" fill="none" aria-hidden className={className} preserveAspectRatio="xMidYMid slice">
+      <rect width="160" height="120" fill="#13233C" />
+      <rect width="160" height="120" fill="url(#thumb-fade)" />
+      {isBuilding ? (
+        <g>
+          <rect x="58" y="26" width="44" height="72" rx="3" fill="white" fillOpacity="0.1" stroke="white" strokeOpacity="0.18" />
+          {[0, 1, 2, 3].map((row) => (
+            <g key={row}>
+              <rect x="65" y={34 + row * 15} width="10" height="9" rx="1.5" fill="#E76E0C" fillOpacity={row === 3 ? 0.35 : 0.6} />
+              <rect x="85" y={34 + row * 15} width="10" height="9" rx="1.5" fill="white" fillOpacity="0.25" />
+            </g>
+          ))}
+        </g>
+      ) : (
+        <g>
+          <path d="M40 62 80 34l40 28" stroke="#E76E0C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="50" y="60" width="60" height="38" rx="2" fill="white" fillOpacity="0.1" stroke="white" strokeOpacity="0.18" />
+          <rect x="72" y="76" width="16" height="22" fill="#E76E0C" fillOpacity="0.55" />
+          <rect x="56" y="68" width="10" height="10" fill="white" fillOpacity="0.3" />
+          <rect x="94" y="68" width="10" height="10" fill="white" fillOpacity="0.3" />
+        </g>
+      )}
+      <defs>
+        <radialGradient id="thumb-fade" cx="0" cy="0" r="1" gradientTransform="translate(160 0) rotate(135) scale(210)">
+          <stop stopColor="#1c3355" />
+          <stop offset="1" stopColor="#0B1526" />
+        </radialGradient>
+      </defs>
+    </svg>
+  );
+}
+
 export function BrowserFrame({ className, children }: { className?: string; children?: ReactNode }) {
   return (
     <div className={className}>

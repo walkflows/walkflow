@@ -70,6 +70,47 @@ export const demonstration = {
   note: "Concept demonstration with sample listings. Simulated steps are labelled.",
 };
 
+export const journeyPreview = {
+  tabs: [
+    { id: "attract", label: "Attract" },
+    { id: "capture", label: "Capture" },
+    { id: "convert", label: "Convert" },
+    { id: "follow-up", label: "Follow-up" },
+  ],
+  panels: {
+    attract: {
+      title: "A property website buyers actually browse",
+      body: "Clear listings, obvious filters and one obvious way to enquire.",
+      rows: [
+        { label: "Ashcombe Garden House", detail: "$465,000 · Available" },
+        { label: "Riverside Loft", detail: "$289,000 · Available" },
+      ],
+    },
+    capture: {
+      title: "Requirements captured in one guided form",
+      body: "Buyers share location, budget, bedrooms and property type instead of a vague message.",
+      rows: [
+        { label: "Looking to", detail: "Buy" },
+        { label: "Budget", detail: "Up to $500,000" },
+        { label: "Bedrooms", detail: "3+" },
+      ],
+    },
+    convert: {
+      title: "Matches lead to a viewing request",
+      body: "Buyers see listings that fit, then request a viewing for a time that suits them.",
+      rows: [{ label: "Viewing requested", detail: "Ashcombe Garden House · Sat 10:30" }],
+    },
+    "follow-up": {
+      title: "Agents see it the moment it happens",
+      body: "Each enquiry and viewing request appears in an agent pipeline, ready for follow-up.",
+      rows: [
+        { label: "Jordan Ellis", detail: "Viewing Requested" },
+        { label: "Priya N.", detail: "Matched" },
+      ],
+    },
+  },
+} as const;
+
 export const why = {
   heading: "Start with what matters. Build from there.",
   points: [
