@@ -15,8 +15,8 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 ## Git checkpoints (local only, nothing pushed)
 
 1. `e6594e6` — initial Next.js scaffold + first homepage build.
-2. `cb017b5` — interactive real estate demo (`/demos/real-estate`) + homepage journey preview.
-3. *(latest, made at the start of this session, before the redesign below)* — checkpoint immediately preceding the homepage restructure, so the prior homepage can be recovered with `git log` / `git show` if needed.
+2. `cb017b5` — interactive real estate demo (`/demos/real-estate`) + homepage journey preview. Made at the start of this session, before the redesign below, so the prior homepage can be recovered with `git show cb017b5:src/app/page.tsx` (etc.) if needed.
+3. `67f3d42` — the homepage restructure and redesign described below (latest).
 
 ## Session 3 — Homepage restructure and visual redesign
 
