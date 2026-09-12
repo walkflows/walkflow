@@ -3,6 +3,32 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Stopping point — end of Session 4 (2026-09-12)
+
+Work paused here for the day. No new features are in progress; nothing is mid-edit.
+
+**What's finished and verified:**
+- The Agnos-style moving tool-logo cards ("Platforms and tools" section) — **done**. Real logos from `tools_logos/`, seamless horizontal scroll, working pause/resume control, genuine static reduced-motion grid (verified with real `prefers-reduced-motion` emulation, not just code review).
+- All **four** approved FAQs — **done**. Synced word-for-word in both `brand_assets/website-content.md` and `src/content/home.ts`, replacing the old three-question version.
+- A real hydration bug in `Journey.tsx` (pre-existing since Session 3, unrelated to the two items above) — found and fixed this session.
+
+**Still needs your input before it can be finished:**
+- **Two more industry names.** The industries grid still only shows the four documented in `website-content.md` (Real Estate, Home Services, Clinics, Consulting Firms). It's built to extend easily — just tell me the other two and I'll add them.
+- **Confirm or replace `gohighlevel.png` and `wix.png`** in `tools_logos/` — as supplied, neither looks like that company's real logo (see "Session 4" below for specifics).
+
+**Known issues (not blocking, just documented):** an occasional stray self-navigation to an internal 404 route during long idle periods in the dev browser tab — looks like a Fast-Refresh/long-lived-tab artifact, not a site bug. See Session 4 notes below.
+
+**Exact command to restart tomorrow:**
+
+```
+cd "C:\Users\USER\Downloads\WALKFLOW"
+npm run dev
+```
+
+Then open **http://localhost:3000**.
+
+**Latest commit:** `e45cfc5` (plus a same-day housekeeping commit made when closing out — see "Git checkpoints" for the exact hash once available). Nothing pushed anywhere; all work is local-only.
+
 ## How to restart the local preview
 
 ```
@@ -17,7 +43,9 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 1. `e6594e6` — initial Next.js scaffold + first homepage build.
 2. `cb017b5` — interactive real estate demo (`/demos/real-estate`) + homepage journey preview. Made at the start of the previous session, before the Session 3 redesign, so that prior homepage can be recovered with `git show cb017b5:src/app/page.tsx` (etc.) if needed.
 3. `67f3d42` — the Session 3 homepage restructure and redesign.
-4. `962862c` — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix (latest). See "Session 4" below.
+4. `962862c` — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix. See "Session 4" below.
+5. `e45cfc5` — fixed a stale commit-hash placeholder left in these notes.
+6. *(end-of-session housekeeping commit, made when closing out today — ignores review screenshots going forward and adds this stopping-point summary)*
 
 ## Session 4 — Platforms and tools strip, FAQ sync, hydration bug fix
 

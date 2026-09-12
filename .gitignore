@@ -29,3 +29,6 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 .playwright-mcp/
+
+# ad-hoc review screenshots (regenerate any time with Playwright)
+/review-screenshots*/
