@@ -17,7 +17,7 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 1. `e6594e6` — initial Next.js scaffold + first homepage build.
 2. `cb017b5` — interactive real estate demo (`/demos/real-estate`) + homepage journey preview. Made at the start of the previous session, before the Session 3 redesign, so that prior homepage can be recovered with `git show cb017b5:src/app/page.tsx` (etc.) if needed.
 3. `67f3d42` — the Session 3 homepage restructure and redesign.
-4. *(this session's commit — see hash in `git log`)* — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix. See "Session 4" below.
+4. `962862c` — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix (latest). See "Session 4" below.
 
 ## Session 4 — Platforms and tools strip, FAQ sync, hydration bug fix
 
