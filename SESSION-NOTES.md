@@ -5,23 +5,30 @@
 
 ## Stopping point — end of Session 5 (2026-09-16)
 
-Work paused here. No feature is mid-edit; the font migration below is complete and verified by build/lint/typecheck (browser visual pass still outstanding — see below).
+Work paused here. Font migration is complete AND now visually verified end to end.
 
-**What's finished and verified this session:**
-- **Heading font migrated League Spartan → Unbounded**, site-wide, via the central `src/lib/fonts.ts` + `--font-heading` theme variable — every heading in every component picked it up automatically (nothing hardcodes a font name outside that one file).
-- **Caveat added as an optional handwritten accent** (`--font-accent` / `font-accent` utility), wired into the design system but used in exactly one place so far — the footer tagline — per "sparingly, optional" instruction. Not applied to body copy or any control.
-- **Body font confirmed unchanged: Manrope** (this was already recorded in `CLAUDE.md` and `website-content.md`, so no change was needed there — see the direct Q&A below).
-- Removed the `tracking-tight` utility from **every heading site-wide** (~15 files) and reset the base h1–h4 letter-spacing from `-0.01em` to `0`. This wasn't asked for directly, but was necessary: that tight tracking was tuned for League Spartan's compact letterforms, and Unbounded is a noticeably wider, blockier geometric face — keeping it would risk cramped/overlapping glyphs at the large hero/section-heading sizes this site uses. Flagging this as a judgment call for your review.
-- `brand_assets/website-content.md` and `CLAUDE.md`'s Brand Identity section updated to record Unbounded/Caveat/Manrope as the current saved decision, replacing the old League Spartan reference, so this doesn't get re-litigated next session.
-- `npm run typecheck`, `npm run lint`, `npm run build` all clean after every change.
+**What's finished and verified:**
+- **Heading font migrated League Spartan → Unbounded**, site-wide, via the central `src/lib/fonts.ts` + `--font-heading` theme variable.
+- **Caveat added as an optional handwritten accent**, used in exactly one place (footer tagline).
+- **Body font confirmed unchanged: Manrope.**
+- `tracking-tight` removed from every heading site-wide; base h1–h4 letter-spacing reset to `0`.
+- `CLAUDE.md` and `website-content.md` updated to record the new font decision.
+- `npm run typecheck`, `npm run lint`, `npm run build` all clean.
+- **Real visual verification completed** at mobile (~496px — see note below), tablet (768px) and desktop (1440px), full homepage plus the real-estate demo hero. **No overflow, cramping, or wrapping problems found anywhere.** The `tracking-tight` removal and `letter-spacing:0` judgment call from earlier is now confirmed correct by actual rendering, not just reasoning — no further font-size or line-height changes were needed.
 
-**Not yet verified — needs a real browser pass:** the Playwright MCP tool failed to connect for this entire session (connection timeout, retried twice), so I could not take real screenshots or check for text-wrapping changes at 390/768/1440px. I confirmed via `curl` that the site still renders (200 OK) and that the new font-variable classes and utility classes are present in the actual HTML output, and I reviewed the component code for fixed-height/`truncate`/`line-clamp` traps that a wider font could break (found none — layouts are flow-based with `clamp()` sizing, not fixed boxes). But an actual visual check is still owed once Playwright reconnects or you look yourself at http://localhost:3000.
+**How the visual check was actually done:** the Playwright MCP tool would not connect all session (retried three times across two sessions). Rather than skip verification, I found that this machine's Microsoft Edge can run headless with `--screenshot`, and built a small reusable script (`review-screenshots-fonts/shot.ps1` + `crop.ps1`) around it. Worth recording two real gotchas I hit and want you to know about, since they'd trip up anyone reusing this script:
+1. Edge's headless mode on this machine enforces a **hard ~496px minimum CSS viewport width** — requesting anything narrower (e.g. true 390px) silently gets floored to 496px internally, while the saved PNG is still cropped to the requested pixel width. My first attempt at a "390px" screenshot was actually a 496px-wide render cropped to 390px — every heading and paragraph appeared to overflow off the right edge. That was **a screenshot-tooling artifact, not a real site bug** — I caught it by writing a tiny test page that prints `window.innerWidth`, confirmed the 496px floor, and re-shot everything at the true achievable width with no crop mismatch. Flagging this prominently because it would have been easy to "fix" the site based on a false alarm — no code was changed based on the bad reading.
+2. Framer Motion's mount animations (opacity/y fades) don't resolve in a one-shot headless screenshot by default — elements look faded/half-invisible. Fixed by combining `--force-prefers-reduced-motion` (skips animations to their end state) with `--virtual-time-budget=6000` and `--run-all-compositor-stages-before-draw`.
+- True 390px phone width still couldn't be directly tested because of the floor above — 496px was the narrowest real measurement achieved, which is still below Tailwind's `sm:` (640px) breakpoint and already the site's most cramped rendering condition, so it's a meaningful proxy, just not identical to a true small phone.
 
-**Still needs your input before it can be finished (carried over, unchanged):**
-- **Two more industry names** — grid still shows only the four documented (Real Estate, Home Services, Clinics, Consulting Firms).
-- **Confirm or replace `gohighlevel.png` and `wix.png`** in `tools_logos/` — neither matches that company's real logo as supplied.
+**Wrong logos, confirmed visually (not a blocker, no action taken per instruction):**
+- **GoHighLevel**: shows a generic three-colour up-arrows icon, not GoHighLevel's real mark.
+- **Wix**: shows a yellow cartoon bird/character face, not Wix's real wordmark.
+- Both render cleanly (correct proportions, no layout issues) — the only problem is the artwork itself is wrong. Replace `tools_logos/gohighlevel.png` and `tools_logos/wix.png` whenever you have the real files; everything downstream (the `public/tools/` copy, the `Tool` entry in `src/content/tools.ts`) will pick them up automatically once swapped.
 
-**New, not yet reviewed:** you added `reference_for_walkflow/` (a full-page screenshot, PDF and video of a third-party "digital marketing agency" template site) since last session. I looked at the screenshot to check whether it explained the font change — it didn't reference fonts directly, and its content (client-logo strip, invented stats like "$74M generated"/"150% traffic", testimonials with photos, pricing plans, a blog) conflicts with several `CLAUDE.md` rules (no fake testimonials/logos/stats/pricing/blog). I have **not** applied anything from it. Left it out of the Git checkpoint (see below) since it's a large third-party capture, not our content — tell me if you want it tracked anyway, or if you want me to pull specific layout/typography ideas from it (not the fake-content patterns).
+**Industries: intentionally left at four** per this session's explicit instruction not to invent two more. No change made.
+
+**Reference folder (`reference_for_walkflow/`) reviewed for layout/hierarchy ideas, not content:** the third-party template's usable, content-neutral ideas: a dense 2×2 offering-card grid (WALKFLOW's Service Showcase already does an equivalent, two-card version); a large closing headline that mixes white and orange text in one oversized display line ("Let's **Talk!**") — this is the one idea genuinely worth considering for WALKFLOW's own Final CTA heading, since it would put Unbounded's bold geometry to good use for extra impact. **Not applied** — flagging as a suggestion, not doing it without confirmation, since it wasn't explicitly requested. Everything else in the reference (client-logo strip, invented case-study percentages, testimonials with photos, pricing plans, a blog) conflicts with `CLAUDE.md` and was correctly not used for anything.
 
 **Exact command to restart:**
 
@@ -32,9 +39,9 @@ npm run dev
 
 Then open **http://localhost:3000**.
 
-**Exact next step for next session:** get a real Playwright (or manual) visual pass on the new Unbounded headings at 390/768/1440px — specifically check the Hero heading and the four-word section headings for wrapping/cramping now that tracking-tight is gone — before treating the font migration as fully signed off.
+**Exact next step for next session:** none required to consider the font migration done. Optional/open items: (1) swap in real GoHighLevel/Wix logo files whenever available, (2) decide whether to try the oversized two-tone Final CTA headline idea from the reference folder, (3) whenever you're ready, name the two additional industries.
 
-**Latest commit:** `1ddb34d`. Nothing pushed anywhere; all work is local-only.
+**Latest commit:** see "Git checkpoints" below for today's hash once created — no code changed this pass (verification only), so the checkpoint is this notes update.
 
 ## How to restart the local preview
 
@@ -82,6 +89,10 @@ You gave a new saved font decision: heading font changes to **Unbounded**, with 
 - Handwritten accent (optional, used once — footer tagline): **Caveat**
 
 **What's not yet verified**: the actual visual result (does Unbounded look and wrap the way you want at real screen sizes) — Playwright couldn't connect this session. That's the named next step above.
+
+### Addendum: visual verification (same day, follow-up pass)
+
+Playwright still wouldn't connect, so I used headless Microsoft Edge instead (scripts kept in `review-screenshots-fonts/shot.ps1` + `crop.ps1` for reuse). Full homepage screenshotted at ~496px/768px/1440px plus the real-estate demo hero at ~496px. Result: **no overflow, wrapping, or spacing problems anywhere** — every heading (including the longest, "One journey. Every industry runs it differently.") wraps cleanly, the Caveat footer tagline renders legibly, and `letter-spacing: 0` looks neither cramped nor loose at any size. The `tracking-tight` removal made last session is now visually confirmed correct, not just reasoned. Also visually re-confirmed the `gohighlevel.png`/`wix.png` logo mismatches at every breakpoint. Full detail in the "Stopping point" section at the top of this file, including two real gotchas hit while building the screenshot method (a hard ~496px viewport floor in this machine's headless Edge, and Framer Motion needing `--force-prefers-reduced-motion` + a virtual time budget to settle before capture) — worth reading before reusing the script.
 
 ## Session 4 — Platforms and tools strip, FAQ sync, hydration bug fix
 
