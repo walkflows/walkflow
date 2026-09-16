@@ -37,7 +37,7 @@ Then open **http://localhost:3000**.
 
 **Exact next step for next session:** wait for your review of the colour/font/header/hero changes. If you can identify the reference's real heading font, that's the one open item most worth resolving before building further pages against this new look.
 
-**Latest commit:** see "Git checkpoints" below for today's hash once created.
+**Latest commit:** `eca0209`. Nothing pushed anywhere; all work is local-only.
 
 ## How to restart the local preview
 
@@ -62,7 +62,7 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 10. `e74bdfc` — Session 5 visual verification pass recorded (no code changes; screenshots confirmed the font migration renders correctly at all breakpoints).
 11. `e891853` — fixed a commit-hash placeholder and checkpoint list entry.
 12. `2c051c2` — Session 6: header and hero redesign. See "Session 6" below.
-13. (Session 7 checkpoint — see "Session 7" below; hash recorded in a follow-up commit per this project's convention.)
+13. `eca0209` — Session 7: near-black/orange palette, Poppins heading font, hero copy/badge/background/compact-layout corrections (latest). See "Session 7" below.
 
 ## Session 7 — Colour, font and hero corrections
 
