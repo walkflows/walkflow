@@ -2,12 +2,40 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { hero } from "@/content/home";
+import { consultationCta } from "@/content/navigation";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { HeroServicePanel } from "./HeroServicePanel";
-import { AutomationIllustration, WebsiteIllustration } from "@/components/ui/illustrations";
+import { BrowserFrame, AutomationIllustration, WebsiteIllustration } from "@/components/ui/illustrations";
+import { cx } from "@/lib/utils";
 
 const sequence = [0, 0.08, 0.16, 0.24];
+
+function ServicePanel({
+  label,
+  caption,
+  children,
+  floatDelay,
+  offsetClassName,
+}: {
+  label: string;
+  caption: string;
+  children: React.ReactNode;
+  floatDelay: number;
+  offsetClassName?: string;
+}) {
+  return (
+    <div className={cx("transition-transform duration-300 ease-out hover:-translate-y-1.5", offsetClassName)}>
+      <p className="mb-3 text-center text-sm font-semibold text-white/70 sm:text-left">{label}</p>
+      <div
+        className="animate-float"
+        style={{ "--float-duration": "8s", "--float-delay": `${floatDelay}s`, "--tilt": "0deg" } as React.CSSProperties}
+      >
+        <BrowserFrame contentClassName="aspect-[4/3]">{children}</BrowserFrame>
+      </div>
+      <p className="mt-3 text-center text-xs text-white/35 sm:text-left">{caption}</p>
+    </div>
+  );
+}
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
@@ -39,9 +67,13 @@ export function Hero() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(1) }}
-          className="mt-7 max-w-4xl text-balance text-[clamp(2.6rem,7vw,5.25rem)] font-extrabold leading-[1.02] text-white"
+          className="mt-7 max-w-4xl text-[clamp(2.6rem,7vw,5.25rem)] font-extrabold leading-[1.05] text-white"
         >
-          {hero.heading}
+          Make it <span className="text-orange">easier</span>
+          <br />
+          for customers to
+          <br />
+          choose <span className="text-orange">you.</span>
         </motion.h1>
 
         <motion.p
@@ -59,7 +91,7 @@ export function Hero() {
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(3) }}
           className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
         >
-          <Button href={hero.primaryCta.href}>{hero.primaryCta.label}</Button>
+          <Button href={consultationCta.href}>{consultationCta.label}</Button>
           <Button href={hero.secondaryCta.href} variant="secondary-on-dark">
             {hero.secondaryCta.label}
           </Button>
@@ -67,27 +99,29 @@ export function Hero() {
         <p className="mt-6 text-sm text-white/55">{hero.note}</p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.7, delay: d(3) + (reduceMotion ? 0 : 0.15) }}
-          className="relative mt-14 h-72 w-full max-w-3xl sm:mt-20 sm:h-80"
-          aria-hidden="true"
+          className="relative mt-16 w-full max-w-4xl sm:mt-20"
         >
-          <div className="absolute left-1/2 top-1/2 h-48 w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-orange/20 blur-[80px]" />
-          <div className="absolute left-1/2 top-1/2 h-32 w-2/3 -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-orange/20" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-orange/15 blur-[100px]"
+          />
 
-          <HeroServicePanel label="Web Design" tilt={-4} duration={9} className="left-[2%] top-0 sm:left-[10%]">
-            <WebsiteIllustration className="h-full w-full" />
-          </HeroServicePanel>
-          <HeroServicePanel
-            label="AI Automation"
-            tilt={4}
-            duration={10}
-            delay={0.5}
-            className="bottom-0 right-[2%] sm:right-[10%]"
-          >
-            <AutomationIllustration className="h-full w-full" />
-          </HeroServicePanel>
+          <div className="relative grid gap-8 sm:grid-cols-2 sm:gap-6">
+            <ServicePanel label="Web Design" caption="Website concept — illustrative only." floatDelay={0}>
+              <WebsiteIllustration className="h-full w-full" />
+            </ServicePanel>
+            <ServicePanel
+              label="AI Automation"
+              caption="Automation concept — illustrative only."
+              floatDelay={0.4}
+              offsetClassName="sm:mt-10"
+            >
+              <AutomationIllustration className="h-full w-full" />
+            </ServicePanel>
+          </div>
         </motion.div>
       </Container>
     </section>

@@ -40,6 +40,13 @@ export const mainNav: NavItem[] = [
 
 export const requestCallCta = { label: "Request a Call", href: "/contact" };
 
+/**
+ * Header/hero-only CTA label, introduced for the header+hero redesign.
+ * Same real action (/contact) as requestCallCta — only the visible label
+ * differs. Not yet applied elsewhere on the site; see SESSION-NOTES.md.
+ */
+export const consultationCta = { label: "Book a Consultation", href: "/contact" };
+
 export const footerNav = {
   services: [
     { label: "Web Design", href: "/web-design" },

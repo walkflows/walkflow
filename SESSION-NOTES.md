@@ -3,32 +3,24 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
-## Stopping point — end of Session 5 (2026-09-16)
+## Stopping point — end of Session 6 (2026-09-16)
 
-Work paused here. Font migration is complete AND now visually verified end to end.
+Work paused here **for your review** — you asked me to stop after the header/hero redesign so you can look before we touch anything else. Nothing else on the homepage was changed.
 
-**What's finished and verified:**
-- **Heading font migrated League Spartan → Unbounded**, site-wide, via the central `src/lib/fonts.ts` + `--font-heading` theme variable.
-- **Caveat added as an optional handwritten accent**, used in exactly one place (footer tagline).
-- **Body font confirmed unchanged: Manrope.**
-- `tracking-tight` removed from every heading site-wide; base h1–h4 letter-spacing reset to `0`.
-- `CLAUDE.md` and `website-content.md` updated to record the new font decision.
+**What's finished and visually verified this session:**
+- **Header redesigned**: logo left, a centred rounded-pill nav (your existing nav labels/dropdowns, current page highlighted in orange), **"Book a Consultation"** button on the right, functional hamburger menu below `lg` (1024px). Confirmed on the shared demo page too (`/demos/real-estate`), since Header is a shared component.
+- **Hero redesigned**: large centred headline with manual, controlled line breaks and two orange-highlighted words ("**easier**" / "**you.**") in place of automatic text-balance wrapping; same approved body copy; a new large, equal-size two-panel visual area below the CTAs (Web Design + Automation mockups, staggered for depth, soft orange glow, restrained hover lift) replacing the old small floating corner panels.
+- Verified by real headless-browser screenshots (Edge, same method as last session) at ~496px, 768px and 1440px, plus the shared header on `/demos/real-estate`, plus that the Problem section below Hero still flows cleanly with no spacing regression. No overflow, cramping or wrapping problems found at any size.
 - `npm run typecheck`, `npm run lint`, `npm run build` all clean.
-- **Real visual verification completed** at mobile (~496px — see note below), tablet (768px) and desktop (1440px), full homepage plus the real-estate demo hero. **No overflow, cramping, or wrapping problems found anywhere.** The `tracking-tight` removal and `letter-spacing:0` judgment call from earlier is now confirmed correct by actual rendering, not just reasoning — no further font-size or line-height changes were needed.
 
-**How the visual check was actually done:** the Playwright MCP tool would not connect all session (retried three times across two sessions). Rather than skip verification, I found that this machine's Microsoft Edge can run headless with `--screenshot`, and built a small reusable script (`review-screenshots-fonts/shot.ps1` + `crop.ps1`) around it. Worth recording two real gotchas I hit and want you to know about, since they'd trip up anyone reusing this script:
-1. Edge's headless mode on this machine enforces a **hard ~496px minimum CSS viewport width** — requesting anything narrower (e.g. true 390px) silently gets floored to 496px internally, while the saved PNG is still cropped to the requested pixel width. My first attempt at a "390px" screenshot was actually a 496px-wide render cropped to 390px — every heading and paragraph appeared to overflow off the right edge. That was **a screenshot-tooling artifact, not a real site bug** — I caught it by writing a tiny test page that prints `window.innerWidth`, confirmed the 496px floor, and re-shot everything at the true achievable width with no crop mismatch. Flagging this prominently because it would have been easy to "fix" the site based on a false alarm — no code was changed based on the bad reading.
-2. Framer Motion's mount animations (opacity/y fades) don't resolve in a one-shot headless screenshot by default — elements look faded/half-invisible. Fixed by combining `--force-prefers-reduced-motion` (skips animations to their end state) with `--virtual-time-budget=6000` and `--run-all-compositor-stages-before-draw`.
-- True 390px phone width still couldn't be directly tested because of the floor above — 496px was the narrowest real measurement achieved, which is still below Tailwind's `sm:` (640px) breakpoint and already the site's most cramped rendering condition, so it's a meaningful proxy, just not identical to a true small phone.
+**Flagging one deliberate copy decision, not yet applied site-wide:** you asked for a "Book a Consultation" button in both the header and hero. `CLAUDE.md` and the rest of the site currently say **"Request a Call"** everywhere else (FinalCta, Footer, the real-estate demo's own CTA). I treated your new wording as an explicit, scoped decision — added it as a new `consultationCta` entry in `src/content/navigation.ts` (same `/contact` destination) and used it **only** in the Header and Hero, leaving `requestCallCta`/"Request a Call" untouched everywhere else. **This means the site currently has two different CTA labels for the identical action.** Tell me if you want "Book a Consultation" rolled out everywhere (and `CLAUDE.md` updated to match), or reverted back to "Request a Call" in the header/hero too.
 
-**Wrong logos, confirmed visually (not a blocker, no action taken per instruction):**
-- **GoHighLevel**: shows a generic three-colour up-arrows icon, not GoHighLevel's real mark.
-- **Wix**: shows a yellow cartoon bird/character face, not Wix's real wordmark.
-- Both render cleanly (correct proportions, no layout issues) — the only problem is the artwork itself is wrong. Replace `tools_logos/gohighlevel.png` and `tools_logos/wix.png` whenever you have the real files; everything downstream (the `public/tools/` copy, the `Tool` entry in `src/content/tools.ts`) will pick them up automatically once swapped.
+**Not verified this session (static-screenshot method can't test these):** click-driven interaction — the mobile menu actually opening, the Web Design/Industry Solutions dropdown opening, hover/focus states, keyboard tab order. The underlying code for all of these was not changed (only restyled) and worked in prior sessions' interactive Playwright testing, but I could not re-confirm interactively this session since Playwright's MCP still would not connect (retried again) and Edge's `--screenshot` flag only takes one static shot, it can't click anything. If you want this actually re-verified interactively, either wait for Playwright to reconnect in a future session, or send me a screenshot of the open mobile menu and the open "Web Design" dropdown from your own browser.
 
-**Industries: intentionally left at four** per this session's explicit instruction not to invent two more. No change made.
-
-**Reference folder (`reference_for_walkflow/`) reviewed for layout/hierarchy ideas, not content:** the third-party template's usable, content-neutral ideas: a dense 2×2 offering-card grid (WALKFLOW's Service Showcase already does an equivalent, two-card version); a large closing headline that mixes white and orange text in one oversized display line ("Let's **Talk!**") — this is the one idea genuinely worth considering for WALKFLOW's own Final CTA heading, since it would put Unbounded's bold geometry to good use for extra impact. **Not applied** — flagging as a suggestion, not doing it without confirmation, since it wasn't explicitly requested. Everything else in the reference (client-logo strip, invented case-study percentages, testimonials with photos, pricing plans, a blog) conflicts with `CLAUDE.md` and was correctly not used for anything.
+**Not touched this session, unchanged from before:**
+- GoHighLevel/Wix logo mismatch in `tools_logos/` — still wrong, still not blocking.
+- Industries still at four (not six) — unchanged, not part of this task's scope.
+- The oversized two-tone Final CTA idea from `reference_for_walkflow/` — still just a suggestion, not applied.
 
 **Exact command to restart:**
 
@@ -39,9 +31,9 @@ npm run dev
 
 Then open **http://localhost:3000**.
 
-**Exact next step for next session:** none required to consider the font migration done. Optional/open items: (1) swap in real GoHighLevel/Wix logo files whenever available, (2) decide whether to try the oversized two-tone Final CTA headline idea from the reference folder, (3) whenever you're ready, name the two additional industries.
+**Exact next step for next session:** wait for your review of the header/hero. Once approved, natural follow-ups are: (1) decide the "Book a Consultation" vs "Request a Call" question above, (2) interactively re-test the mobile menu/dropdowns once a browser tool is available, (3) move on to whichever section you want redesigned next.
 
-**Latest commit:** `e74bdfc`. No code changed this pass (verification only), so the checkpoint is this notes update. Nothing pushed anywhere; all work is local-only.
+**Latest commit:** see "Git checkpoints" below for today's hash once created.
 
 ## How to restart the local preview
 
@@ -64,6 +56,36 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 8. `1ddb34d` — Session 5: heading font migrated to Unbounded, Caveat added as an optional accent, `tracking-tight` removed site-wide. See "Session 5" below.
 9. `bad41d6` — recorded the Session 5 commit hash in these notes.
 10. `e74bdfc` — Session 5 visual verification pass recorded (no code changes; screenshots confirmed the font migration renders correctly at all breakpoints) (latest).
+
+## Session 6 — Header and hero redesign
+
+Scope was explicitly limited to the header and hero only, using two new references you added to `reference_for_walkflow/`: `reference pdf gofullpage.pdf` and `reference_video.mp4`, plus an image you attached directly showing the same reference hero.
+
+### References inspected
+
+- **PDF**: `pdftoppm`/poppler isn't installed on this machine, so the PDF itself couldn't be rendered page-by-page. It's the same capture as `reference gofullpage.png` (already reviewed in Session 5) — same header/hero at the top, so no information was lost; I worked from the PNG and your directly-attached image instead, which show the identical hero.
+- **Video** (`reference_video.mp4`): could not extract frames — no `ffmpeg`, no VLC, and Windows' Shell COM thumbnail API returned nothing for this file. I was not able to inspect the reference's motion/interaction timing directly. I proceeded using this codebase's own established, already-approved motion conventions (the staggered hero entrance sequence, `Reveal`'s hydration-safe reduced-motion pattern, the existing floating-panel hover/float treatment) rather than guessing at the video's specifics. If there's a particular interaction from that video you want copied, describe it and I'll build it — I don't want to claim I replicated something I couldn't see.
+
+### Header (`src/components/layout/Header.tsx`)
+
+- Switched from `flex justify-between` to a 3-column grid (`grid-cols-[auto_1fr_auto]`) so the nav pill is genuinely centred regardless of logo/CTA width, matching the reference's composition.
+- Nav is now a rounded pill (`rounded-full border border-white/10 bg-white/[0.04]`) wrapping your existing five nav items (Home, Web Design▾, Industry Solutions▾, About, Contact) — same labels, same dropdown behaviour as before, nothing invented.
+- Added a real "current page" highlight (orange text + pill background, `aria-current="page"` on the link) using `usePathname()`. Only `/` will ever show as active right now since it's the only real route — expected, not a bug.
+- CTA button relabelled **"Book a Consultation"** (see the flag in "Stopping point" above about this not matching `CLAUDE.md`'s "Request a Call" elsewhere).
+- Added a restrained fade/slide-down entrance on mount (`opacity 0→1`, `y:-12→0`), reduced-motion safe via the same `transition.duration` branching pattern already used everywhere else in this codebase (see `Reveal.tsx`'s comment on why only duration, never initial/animate values, may branch on `useReducedMotion()`).
+- Mobile menu logic (open/close state, Escape handler, body scroll lock, `aria-expanded`/`aria-controls`) was **not changed**, only restyled where it touches the CTA label.
+
+### Hero (`src/components/sections/home/Hero.tsx`)
+
+- Headline now uses manual `<br />`s for "carefully controlled" line breaks instead of relying on `text-balance`'s automatic wrapping, with "**easier**" and "**you.**" highlighted in brand orange (`text-orange`) — contrast-checked against the navy-deep background (≈5.8:1, comfortably over the 3:1 minimum for large text).
+- Body paragraph and note text are your existing approved copy, unchanged.
+- Primary CTA now reads "Book a Consultation" (via the new `consultationCta`); secondary CTA ("Explore Our Solutions") unchanged.
+- **Replaced** the two small floating corner panels (`HeroServicePanel`, now deleted — nothing else referenced it) with a new, much larger side-by-side visual area (`ServicePanel`, defined locally in `Hero.tsx`): two equal-size `BrowserFrame` mockups (`WebsiteIllustration` / `AutomationIllustration`, both pre-existing branded SVG placeholders — no new imagery invented), each labelled, each captioned "illustrative only", staggered vertically for depth on `sm:`+ screens, with a soft orange glow behind and a restrained hover lift (`hover:-translate-y-1.5`). This gives Web Design and AI Automation equal visual weight, as asked.
+- Background (navy-deep, subtle grid texture, radial orange glow) was already exactly what the brief asked for — left unchanged.
+
+### Testing performed
+
+`npm run typecheck`, `npm run lint`, `npm run build` all clean. Real headless-browser screenshots (Microsoft Edge, same method built last session — see Session 5's notes on the ~496px viewport floor and the reduced-motion/virtual-time-budget flags needed to get a settled render) at ~496px, 768px and 1440px: header and hero both render cleanly, no overflow or wrapping issues, nav pill and CTA never collide with the logo. Also screenshotted `/demos/real-estate` to confirm the shared Header component still works there, and the homepage below the hero (Problem section) to confirm no spacing regression from the larger hero visual area. **Not tested**: click interactions (mobile menu, dropdowns, hover/focus) — see the flag in "Stopping point" above; static screenshots can't simulate clicks, and Playwright's MCP would not connect this session either (retried).
 
 ## Session 5 — Font migration to Unbounded / Caveat
 
@@ -204,6 +226,16 @@ Built `/demos/real-estate`: 10 fictional listings (fictional "Ashcombe" market, 
 - **Only `/` and `/demos/real-estate` exist.** All other nav links (Web Design, Industries, About, Contact, individual industry/service pages) still 404 — expected at this stage, not a bug, but now that the homepage links to `#solutions`, `/web-design`, `/ai-automation`, `/industries/*`, `/demos/*`, those routes are the natural next build targets.
 - No screen recording of the new motion was possible this or the previous session — only static screenshots (no video/trace tool available in this Playwright setup).
 - Enquiry form, Supabase wiring, PostHog/consent banner, SEO/sitemap are all still to come, per the build sequence in `CLAUDE.md`.
+- **"Book a Consultation" (Header/Hero) vs "Request a Call" (everywhere else)** — a deliberate scoped decision this session, not yet reconciled. See Session 6 above.
+- **Mobile menu, nav dropdowns, hover/focus states not re-tested interactively** after the Session 6 header restyle (code unchanged, only markup/classes touched, but not re-confirmed by clicking) — needs a working browser tool or your own manual check.
+- **Video reference (`reference_video.mp4`) still unreviewed** — no frame-extraction tool available on this machine (no ffmpeg/VLC). If a specific interaction from it matters, describe it directly.
+
+## Files touched, Session 6
+
+New: none (all changes were edits; `HeroServicePanel.tsx` was deleted, not added).
+Edited: `src/components/layout/Header.tsx` (pill nav, active-page highlight, entrance animation, CTA relabel), `src/components/sections/home/Hero.tsx` (controlled headline breaks + orange highlights, new large two-panel visual area, CTA relabel), `src/content/navigation.ts` (new `consultationCta` export).
+Removed: `src/components/sections/home/HeroServicePanel.tsx` (superseded by the new inline `ServicePanel` in `Hero.tsx`; nothing else referenced it).
+Untouched: everything from `#solutions` down on the homepage, per this task's explicit scope.
 
 ## Files touched, Session 5
 

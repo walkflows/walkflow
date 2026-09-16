@@ -2,16 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { mainNav, requestCallCta } from "@/content/navigation";
+import { mainNav, consultationCta } from "@/content/navigation";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { cx } from "@/lib/utils";
 
-function NavDropdown({ label, href, items }: { label: string; href: string; items: { label: string; href: string }[] }) {
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function NavDropdown({
+  label,
+  href,
+  items,
+  active,
+}: {
+  label: string;
+  href: string;
+  items: { label: string; href: string }[];
+  active: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -36,7 +52,10 @@ function NavDropdown({ label, href, items }: { label: string; href: string; item
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 py-2 text-[0.95rem] font-medium text-white/80 hover:text-white"
+        className={cx(
+          "flex items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-[0.9rem] font-medium transition-colors",
+          active ? "bg-white/12 text-orange-light" : "text-white/75 hover:text-white",
+        )}
       >
         {label}
         <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true" className={cx("transition-transform", open && "rotate-180")}>
@@ -44,7 +63,7 @@ function NavDropdown({ label, href, items }: { label: string; href: string; item
         </svg>
       </button>
       {open && (
-        <div className="absolute left-1/2 top-full z-40 w-64 -translate-x-1/2 rounded-2xl border border-navy/10 bg-white p-2 shadow-[var(--shadow-card)]">
+        <div className="absolute left-1/2 top-full z-40 mt-2 w-64 -translate-x-1/2 rounded-2xl border border-navy/10 bg-white p-2 shadow-[var(--shadow-card)]">
           <Link
             href={href}
             className="block rounded-xl px-3 py-2 text-sm font-semibold text-navy hover:bg-surface"
@@ -72,6 +91,7 @@ function NavDropdown({ label, href, items }: { label: string; href: string; item
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const pathname = usePathname();
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -90,11 +110,16 @@ export function Header() {
   }, [mobileOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-deep/90 backdrop-blur">
+    <motion.header
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
+      className="sticky top-0 z-50 border-b border-white/10 bg-navy-deep/90 backdrop-blur"
+    >
       <a href="#main-content" className="skip-link">
         Skip to Main Content
       </a>
-      <Container className="flex h-20 items-center justify-between">
+      <Container className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-4">
         <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
           <Image
             src={media.logoOnDark.src!}
@@ -107,38 +132,57 @@ export function Header() {
           <span className="font-heading text-lg font-bold text-white">{site.name}</span>
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
+        <nav
+          aria-label="Main"
+          className="hidden items-center justify-center gap-1 justify-self-center rounded-full border border-white/10 bg-white/[0.04] p-1.5 lg:flex"
+        >
           {mainNav.map((item) =>
             item.children ? (
-              <NavDropdown key={item.href} label={item.label} href={item.href} items={item.children} />
+              <NavDropdown
+                key={item.href}
+                label={item.label}
+                href={item.href}
+                items={item.children}
+                active={isActivePath(pathname, item.href)}
+              />
             ) : (
-              <Link key={item.href} href={item.href} className="py-2 text-[0.95rem] font-medium text-white/80 hover:text-white">
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
+                className={cx(
+                  "whitespace-nowrap rounded-full px-4 py-2 text-[0.9rem] font-medium transition-colors",
+                  isActivePath(pathname, item.href) ? "bg-white/12 text-orange-light" : "text-white/75 hover:text-white",
+                )}
+              >
                 {item.label}
               </Link>
             ),
           )}
         </nav>
 
-        <div className="hidden lg:block">
-          <Button href={requestCallCta.href}>{requestCallCta.label}</Button>
-        </div>
+        <div className="flex items-center justify-end gap-3">
+          <div className="hidden lg:block">
+            <Button href={consultationCta.href}>{consultationCta.label}</Button>
+          </div>
 
-        <button
-          type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full text-white lg:hidden"
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMobileOpen((v) => !v)}
-        >
-          <span className="sr-only">{mobileOpen ? "Close Menu" : "Open Menu"}</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            {mobileOpen ? (
-              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            )}
-          </svg>
-        </button>
+          <button
+            type="button"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-white lg:hidden"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMobileOpen((v) => !v)}
+          >
+            <span className="sr-only">{mobileOpen ? "Close Menu" : "Open Menu"}</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              {mobileOpen ? (
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              ) : (
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              )}
+            </svg>
+          </button>
+        </div>
       </Container>
 
       <AnimatePresence initial={false}>
@@ -173,13 +217,13 @@ export function Header() {
                   )}
                 </div>
               ))}
-              <Button href={requestCallCta.href} className="mt-4 w-full">
-                {requestCallCta.label}
+              <Button href={consultationCta.href} className="mt-4 w-full">
+                {consultationCta.label}
               </Button>
             </Container>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }
