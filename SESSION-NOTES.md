@@ -33,7 +33,7 @@ Then open **http://localhost:3000**.
 
 **Exact next step for next session:** wait for your review of the header/hero. Once approved, natural follow-ups are: (1) decide the "Book a Consultation" vs "Request a Call" question above, (2) interactively re-test the mobile menu/dropdowns once a browser tool is available, (3) move on to whichever section you want redesigned next.
 
-**Latest commit:** see "Git checkpoints" below for today's hash once created.
+**Latest commit:** `2c051c2`. Nothing pushed anywhere; all work is local-only.
 
 ## How to restart the local preview
 
@@ -55,7 +55,9 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 7. `e310f6b` — fixed a stale commit-hash placeholder in the stopping-point notes.
 8. `1ddb34d` — Session 5: heading font migrated to Unbounded, Caveat added as an optional accent, `tracking-tight` removed site-wide. See "Session 5" below.
 9. `bad41d6` — recorded the Session 5 commit hash in these notes.
-10. `e74bdfc` — Session 5 visual verification pass recorded (no code changes; screenshots confirmed the font migration renders correctly at all breakpoints) (latest).
+10. `e74bdfc` — Session 5 visual verification pass recorded (no code changes; screenshots confirmed the font migration renders correctly at all breakpoints).
+11. `e891853` — fixed a commit-hash placeholder and checkpoint list entry.
+12. `2c051c2` — Session 6: header and hero redesign (latest). See "Session 6" below.
 
 ## Session 6 — Header and hero redesign
 
