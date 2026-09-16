@@ -16,7 +16,7 @@ export function ServiceShowcase() {
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wide text-orange-dark">{serviceShowcase.eyebrow}</p>
-            <h2 className="mt-3 text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-navy">
+            <h2 className="mt-3 text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] text-navy">
               {serviceShowcase.heading}
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted">{serviceShowcase.body}</p>

@@ -39,7 +39,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(1) }}
-          className="mt-7 max-w-4xl text-balance text-[clamp(2.6rem,7vw,5.25rem)] font-extrabold leading-[1.02] tracking-tight text-white"
+          className="mt-7 max-w-4xl text-balance text-[clamp(2.6rem,7vw,5.25rem)] font-extrabold leading-[1.02] text-white"
         >
           {hero.heading}
         </motion.h1>

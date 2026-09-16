@@ -17,7 +17,7 @@ export function FinalCta() {
             className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-orange/10 blur-[90px]"
           />
           <Container className="relative max-w-2xl px-0">
-            <h2 className="text-[clamp(2rem,4.8vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-white">
+            <h2 className="text-[clamp(2rem,4.8vw,3rem)] font-extrabold leading-[1.05] text-white">
               {finalCta.heading}
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-lg leading-relaxed text-white/65">{finalCta.body}</p>

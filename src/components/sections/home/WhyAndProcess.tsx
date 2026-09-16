@@ -9,7 +9,7 @@ export function WhyAndProcess() {
         <Reveal>
           <div className="grid gap-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
             <div>
-              <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold leading-[1.08] tracking-tight text-navy">
+              <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold leading-[1.08] text-navy">
                 {why.heading}
               </h2>
               <dl className="mt-10 divide-y divide-navy/10 border-t border-navy/10">
@@ -23,7 +23,7 @@ export function WhyAndProcess() {
             </div>
 
             <div>
-              <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold leading-[1.08] tracking-tight text-navy">
+              <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold leading-[1.08] text-navy">
                 {process.heading}
               </h2>
               <ol className="mt-10">

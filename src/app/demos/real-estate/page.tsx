@@ -21,7 +21,7 @@ export default function RealEstateDemoPage() {
       <section className="bg-sand py-20 sm:py-28">
         <Container>
           <Reveal>
-            <h2 className="text-[clamp(1.9rem,3.8vw,2.75rem)] font-extrabold tracking-tight text-navy">
+            <h2 className="text-[clamp(1.9rem,3.8vw,2.75rem)] font-extrabold text-navy">
               Try the interactive demo
             </h2>
             <p className="mt-3 max-w-2xl leading-relaxed text-muted">

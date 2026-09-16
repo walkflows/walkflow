@@ -6,7 +6,7 @@ Prepared 10 September 2026 | Review edition
 
 Purpose: help businesses turn customer interest into a clear next step, with thoughtful websites and practical automation.
 
-Brand: Orange #E76E0C · Navy #13233C. League Spartan for headings; Manrope for body text, navigation and buttons.
+Brand: Orange #E76E0C · Navy #13233C. Unbounded for headings; Manrope for body text, navigation and buttons; Caveat as an optional handwritten accent, used sparingly.
 
 Tagline: Take the steps. Build the flow.
 
@@ -1672,7 +1672,7 @@ Keep bracketed fields out of the live site until completed. The founder introduc
 
 ## SECTION - Copy and proof rules
 
-Use the current orange/navy palette and League Spartan/Manrope, overriding the older uploaded brand kit. Use the tagline once or twice per page rather than repeating the mission in every section.
+Use the current orange/navy palette and Unbounded/Manrope (Caveat for sparing handwritten accents only), overriding the older uploaded brand kit. Use the tagline once or twice per page rather than repeating the mission in every section.
 
 No invented testimonials, case studies, partner badges, client logos, conversion statistics or guarantees. Publish real client work only with permission. Do not label a screenshot or mockup as a working automation.
 

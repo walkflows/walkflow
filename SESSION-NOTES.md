@@ -3,22 +3,27 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
-## Stopping point — end of Session 4 (2026-09-12)
+## Stopping point — end of Session 5 (2026-09-16)
 
-Work paused here for the day. No new features are in progress; nothing is mid-edit.
+Work paused here. No feature is mid-edit; the font migration below is complete and verified by build/lint/typecheck (browser visual pass still outstanding — see below).
 
-**What's finished and verified:**
-- The Agnos-style moving tool-logo cards ("Platforms and tools" section) — **done**. Real logos from `tools_logos/`, seamless horizontal scroll, working pause/resume control, genuine static reduced-motion grid (verified with real `prefers-reduced-motion` emulation, not just code review).
-- All **four** approved FAQs — **done**. Synced word-for-word in both `brand_assets/website-content.md` and `src/content/home.ts`, replacing the old three-question version.
-- A real hydration bug in `Journey.tsx` (pre-existing since Session 3, unrelated to the two items above) — found and fixed this session.
+**What's finished and verified this session:**
+- **Heading font migrated League Spartan → Unbounded**, site-wide, via the central `src/lib/fonts.ts` + `--font-heading` theme variable — every heading in every component picked it up automatically (nothing hardcodes a font name outside that one file).
+- **Caveat added as an optional handwritten accent** (`--font-accent` / `font-accent` utility), wired into the design system but used in exactly one place so far — the footer tagline — per "sparingly, optional" instruction. Not applied to body copy or any control.
+- **Body font confirmed unchanged: Manrope** (this was already recorded in `CLAUDE.md` and `website-content.md`, so no change was needed there — see the direct Q&A below).
+- Removed the `tracking-tight` utility from **every heading site-wide** (~15 files) and reset the base h1–h4 letter-spacing from `-0.01em` to `0`. This wasn't asked for directly, but was necessary: that tight tracking was tuned for League Spartan's compact letterforms, and Unbounded is a noticeably wider, blockier geometric face — keeping it would risk cramped/overlapping glyphs at the large hero/section-heading sizes this site uses. Flagging this as a judgment call for your review.
+- `brand_assets/website-content.md` and `CLAUDE.md`'s Brand Identity section updated to record Unbounded/Caveat/Manrope as the current saved decision, replacing the old League Spartan reference, so this doesn't get re-litigated next session.
+- `npm run typecheck`, `npm run lint`, `npm run build` all clean after every change.
 
-**Still needs your input before it can be finished:**
-- **Two more industry names.** The industries grid still only shows the four documented in `website-content.md` (Real Estate, Home Services, Clinics, Consulting Firms). It's built to extend easily — just tell me the other two and I'll add them.
-- **Confirm or replace `gohighlevel.png` and `wix.png`** in `tools_logos/` — as supplied, neither looks like that company's real logo (see "Session 4" below for specifics).
+**Not yet verified — needs a real browser pass:** the Playwright MCP tool failed to connect for this entire session (connection timeout, retried twice), so I could not take real screenshots or check for text-wrapping changes at 390/768/1440px. I confirmed via `curl` that the site still renders (200 OK) and that the new font-variable classes and utility classes are present in the actual HTML output, and I reviewed the component code for fixed-height/`truncate`/`line-clamp` traps that a wider font could break (found none — layouts are flow-based with `clamp()` sizing, not fixed boxes). But an actual visual check is still owed once Playwright reconnects or you look yourself at http://localhost:3000.
 
-**Known issues (not blocking, just documented):** an occasional stray self-navigation to an internal 404 route during long idle periods in the dev browser tab — looks like a Fast-Refresh/long-lived-tab artifact, not a site bug. See Session 4 notes below.
+**Still needs your input before it can be finished (carried over, unchanged):**
+- **Two more industry names** — grid still shows only the four documented (Real Estate, Home Services, Clinics, Consulting Firms).
+- **Confirm or replace `gohighlevel.png` and `wix.png`** in `tools_logos/` — neither matches that company's real logo as supplied.
 
-**Exact command to restart tomorrow:**
+**New, not yet reviewed:** you added `reference_for_walkflow/` (a full-page screenshot, PDF and video of a third-party "digital marketing agency" template site) since last session. I looked at the screenshot to check whether it explained the font change — it didn't reference fonts directly, and its content (client-logo strip, invented stats like "$74M generated"/"150% traffic", testimonials with photos, pricing plans, a blog) conflicts with several `CLAUDE.md` rules (no fake testimonials/logos/stats/pricing/blog). I have **not** applied anything from it. Left it out of the Git checkpoint (see below) since it's a large third-party capture, not our content — tell me if you want it tracked anyway, or if you want me to pull specific layout/typography ideas from it (not the fake-content patterns).
+
+**Exact command to restart:**
 
 ```
 cd "C:\Users\USER\Downloads\WALKFLOW"
@@ -27,7 +32,9 @@ npm run dev
 
 Then open **http://localhost:3000**.
 
-**Latest commit:** `12ee3ec`. Nothing pushed anywhere; all work is local-only.
+**Exact next step for next session:** get a real Playwright (or manual) visual pass on the new Unbounded headings at 390/768/1440px — specifically check the Hero heading and the four-word section headings for wrapping/cramping now that tracking-tight is gone — before treating the font migration as fully signed off.
+
+**Latest commit:** see "Git checkpoints" below for today's hash once created.
 
 ## How to restart the local preview
 
@@ -46,6 +53,33 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 4. `962862c` — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix. See "Session 4" below.
 5. `e45cfc5` — fixed a stale commit-hash placeholder left in these notes.
 6. `12ee3ec` — end-of-session housekeeping: ignores review screenshots going forward, adds this stopping-point summary.
+
+## Session 5 — Font migration to Unbounded / Caveat
+
+You gave a new saved font decision: heading font changes to **Unbounded**, with **Caveat** as an optional handwritten accent; body font wasn't mentioned as changing, and it was already recorded as **Manrope** in both `CLAUDE.md` and `website-content.md`, so it stayed as-is.
+
+### What changed
+
+- `src/lib/fonts.ts` — swapped `League_Spartan` for `Unbounded` (weights 500/600/700/800, matching the weights the site actually uses), kept `Manrope` (400/500/600/700) unchanged, added `Caveat` (400/500/600) as a new export.
+- `src/app/layout.tsx` — imports `unbounded`/`manrope`/`caveat` (renamed from `leagueSpartan`) and applies all three `.variable` classes to `<html>`.
+- `src/app/globals.css` — `--font-heading` now points at `--font-unbounded`; added `--font-accent: var(--font-caveat), cursive` (Tailwind v4 auto-generates the `font-accent` utility from this, same mechanism as the existing `font-heading`/`font-body`).
+- `src/components/layout/Footer.tsx` — the tagline ("Take the steps. Build the flow.") now uses `font-accent text-2xl font-medium` instead of `font-heading text-sm font-semibold` — the one deliberate use of the new handwritten accent, chosen because it's a one-line brand moment, not body copy or a control.
+- **Removed `tracking-tight` from every heading across ~15 files** (Hero, Problem, ServiceShowcase, Journey, Industries, DemoShowcase, WhyAndProcess, PlatformsAndTools, FAQ, FinalCta, Header logo, Footer logo, and the real-estate demo's own Hero/Journey/Explainer/FinalCta/page headings) and changed the base `h1–h4` letter-spacing in `globals.css` from `-0.01em` to `0`. Reasoning: that negative tracking was tuned for League Spartan's tighter default letterforms; Unbounded is deliberately wide and geometric, and combining it with negative tracking at `extrabold` weight and the large `clamp()` sizes this site uses (up to ~5.25rem in the hero) risks visually cramped or touching glyphs. This is a judgment call made without a visual reference to confirm against — see "Not yet verified" above.
+- `CLAUDE.md` (Brand identity) and `brand_assets/website-content.md` (both the brand summary line and the "Copy and proof rules" section) updated to record Unbounded/Manrope/Caveat as the current decision, replacing the League Spartan references.
+
+### Direct answer: are the font changes applied consistently?
+
+**YES.** Verified in code and in the actual rendered HTML (not just the source):
+- Checked there is exactly **one** place in the codebase that names a font family (`src/lib/fonts.ts`) and **one** theme layer that maps it to usable classes (`globals.css`'s `--font-heading`/`--font-body`/`--font-accent`) — every component consumes `font-heading`/`font-body`/`font-accent` utility classes or the plain `h1`–`h4` base-layer rule, never a hardcoded font name. Grepped the whole `src/` tree for "League Spartan" and "leagueSpartan" after the change: zero remaining references in code (only historical mentions remain in `SESSION-NOTES.md`'s own session-4 log, which is a record of the past, not live instructions).
+- Fetched the running dev server's actual HTML: `<html>` carries all three font-loader classes (`unbounded_..._variable manrope_..._variable caveat_..._variable`), and `font-heading`/`font-accent` utility classes are present on the real rendered markup.
+- `npm run build` completed a full production build, which forces Next.js to actually fetch and subset the Unbounded and Caveat font files from Google Fonts — confirming both are real, resolvable font names, not typos.
+
+**Current fonts:**
+- Heading: **Unbounded**
+- Body / navigation / forms / buttons: **Manrope** (unchanged, already the recorded decision)
+- Handwritten accent (optional, used once — footer tagline): **Caveat**
+
+**What's not yet verified**: the actual visual result (does Unbounded look and wrap the way you want at real screen sizes) — Playwright couldn't connect this session. That's the named next step above.
 
 ## Session 4 — Platforms and tools strip, FAQ sync, hydration bug fix
 
@@ -155,6 +189,12 @@ Built `/demos/real-estate`: 10 fictional listings (fictional "Ashcombe" market, 
 - **Only `/` and `/demos/real-estate` exist.** All other nav links (Web Design, Industries, About, Contact, individual industry/service pages) still 404 — expected at this stage, not a bug, but now that the homepage links to `#solutions`, `/web-design`, `/ai-automation`, `/industries/*`, `/demos/*`, those routes are the natural next build targets.
 - No screen recording of the new motion was possible this or the previous session — only static screenshots (no video/trace tool available in this Playwright setup).
 - Enquiry form, Supabase wiring, PostHog/consent banner, SEO/sitemap are all still to come, per the build sequence in `CLAUDE.md`.
+
+## Files touched, Session 5
+
+Edited: `src/lib/fonts.ts` (Unbounded + Caveat replace League Spartan/add accent), `src/app/layout.tsx` (font variable wiring), `src/app/globals.css` (`--font-heading`/`--font-accent`, base heading letter-spacing), `src/components/layout/Footer.tsx` (tagline uses `font-accent`), `CLAUDE.md` and `brand_assets/website-content.md` (brand identity font references updated), `.gitignore` (excluded `reference_for_walkflow/`).
+Mechanically edited (removed `tracking-tight` only, no other changes): `src/components/sections/home/{Hero,Problem,ServiceShowcase,Journey,Industries,DemoShowcase,WhyAndProcess,PlatformsAndTools,FAQ,FinalCta}.tsx`, `src/components/layout/Header.tsx`, `src/components/sections/real-estate-demo/{Hero,Journey,Explainer,FinalCta}.tsx`, `src/app/demos/real-estate/page.tsx`.
+Not committed (see `.gitignore`): `reference_for_walkflow/` (new this session, large third-party reference capture, not our content).
 
 ## Files touched, Session 4 (this session)
 

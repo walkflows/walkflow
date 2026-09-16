@@ -40,7 +40,7 @@ export function Footer() {
             <span className="font-heading text-lg font-bold text-white">{site.name}</span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/75">{site.footerDescription}</p>
-          <p className="mt-4 font-heading text-sm font-semibold text-orange">{site.tagline}</p>
+          <p className="mt-4 font-accent text-2xl font-medium text-orange-light">{site.tagline}</p>
         </div>
 
         <FooterColumn title="Services" links={footerNav.services} />

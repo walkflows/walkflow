@@ -8,7 +8,7 @@ export function Problem() {
       <Container>
         <Reveal>
           <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
-            <h2 className="text-[clamp(2.25rem,5.5vw,4rem)] font-extrabold leading-[1.04] tracking-tight text-navy">
+            <h2 className="text-[clamp(2.25rem,5.5vw,4rem)] font-extrabold leading-[1.04] text-navy">
               {problem.heading}
             </h2>
             <div className="flex flex-col gap-5 lg:pt-3">

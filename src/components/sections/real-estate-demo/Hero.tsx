@@ -16,7 +16,7 @@ export function Hero() {
             <span className="h-1.5 w-1.5 rounded-full bg-orange" />
             {realEstateDemoHero.eyebrow}
           </span>
-          <h1 className="mt-6 text-balance text-[clamp(2.25rem,5.5vw,3.75rem)] font-extrabold leading-[1.05] tracking-tight text-white">
+          <h1 className="mt-6 text-balance text-[clamp(2.25rem,5.5vw,3.75rem)] font-extrabold leading-[1.05] text-white">
             {realEstateDemoHero.heading}
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/65">{realEstateDemoHero.body}</p>

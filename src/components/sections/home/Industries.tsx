@@ -15,7 +15,7 @@ export function Industries() {
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-orange-dark">{industries.eyebrow}</p>
-              <h2 className="mt-3 max-w-xl text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-navy">
+              <h2 className="mt-3 max-w-xl text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] text-navy">
                 {industries.heading}
               </h2>
             </div>

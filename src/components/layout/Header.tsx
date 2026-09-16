@@ -104,7 +104,7 @@ export function Header() {
             className="h-10 w-10 object-contain"
             priority
           />
-          <span className="font-heading text-lg font-bold tracking-tight text-white">{site.name}</span>
+          <span className="font-heading text-lg font-bold text-white">{site.name}</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">

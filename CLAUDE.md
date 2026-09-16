@@ -22,7 +22,7 @@
 ## Brand identity
 - Name: WALKFLOW.
 - Primary colours: orange `#E76E0C` and navy `#13233C`.
-- Headings: League Spartan. Body, navigation, forms and buttons: Manrope.
+- Headings: Unbounded. Body, navigation, forms and buttons: Manrope. Optional handwritten accent: Caveat, used sparingly (e.g. the footer tagline), never for body copy or UI controls.
 - Use the approved logo files without altering proportions, colours or lettering. Choose the supplied variant that suits the background.
 - If no logo file is available, use a temporary WALKFLOW text wordmark. Do not invent a replacement logo.
 - Supporting white, warm off-white and muted neutral surfaces are allowed. Define brand colours, typography, spacing, radii and shadows centrally.

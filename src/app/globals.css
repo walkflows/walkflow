@@ -18,8 +18,9 @@
   --color-white: #ffffff;
 
   /* Typography */
-  --font-heading: var(--font-league-spartan), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-caveat), cursive;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -56,7 +57,7 @@
   h4 {
     font-family: var(--font-heading);
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   :focus-visible {

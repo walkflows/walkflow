@@ -39,7 +39,7 @@ export function PlatformsAndTools() {
         <Reveal>
           <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
             <div className="max-w-2xl">
-              <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold tracking-tight text-navy">
+              <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold text-navy">
                 {platformsAndTools.heading}
               </h2>
               <p className="mt-4 leading-relaxed text-muted">{platformsAndTools.body}</p>

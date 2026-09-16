@@ -15,7 +15,7 @@ export function FAQ() {
     <section className="border-y border-navy/8 bg-white py-24 sm:py-32">
       <Container className="max-w-3xl">
         <Reveal>
-          <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold tracking-tight text-navy">{faq.heading}</h2>
+          <h2 className="text-[clamp(1.9rem,3.6vw,2.5rem)] font-extrabold text-navy">{faq.heading}</h2>
           <div className="mt-10 divide-y divide-navy/10 border-t border-navy/10">
             {faq.items.map((item, i) => {
               const open = openIndex === i;

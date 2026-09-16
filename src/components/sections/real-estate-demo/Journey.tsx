@@ -13,7 +13,7 @@ export function Journey() {
               <p className="mt-4 max-w-md text-lg leading-relaxed text-muted">{realEstateDemoProblem.body}</p>
             </div>
             <div>
-              <h2 className="text-[clamp(1.75rem,3.4vw,2.25rem)] font-extrabold tracking-tight text-navy">
+              <h2 className="text-[clamp(1.75rem,3.4vw,2.25rem)] font-extrabold text-navy">
                 {realEstateDemoJourney.heading}
               </h2>
               <ol className="mt-8">

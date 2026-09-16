@@ -32,3 +32,6 @@ next-env.d.ts
 
 # ad-hoc review screenshots (regenerate any time with Playwright)
 /review-screenshots*/
+
+# third-party design reference captures (inspiration only, not our content/copyright)
+/reference_for_walkflow/

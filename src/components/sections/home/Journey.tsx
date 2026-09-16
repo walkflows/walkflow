@@ -26,7 +26,7 @@ export function Journey() {
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wide text-orange-light">{journey.eyebrow}</p>
-            <h2 className="mt-3 text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] tracking-tight text-white">
+            <h2 className="mt-3 text-[clamp(2rem,4.5vw,3rem)] font-extrabold leading-[1.05] text-white">
               {journey.heading}
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-white/65">{journey.body}</p>
