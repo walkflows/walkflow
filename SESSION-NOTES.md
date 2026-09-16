@@ -34,7 +34,7 @@ Then open **http://localhost:3000**.
 
 **Exact next step for next session:** get a real Playwright (or manual) visual pass on the new Unbounded headings at 390/768/1440px — specifically check the Hero heading and the four-word section headings for wrapping/cramping now that tracking-tight is gone — before treating the font migration as fully signed off.
 
-**Latest commit:** see "Git checkpoints" below for today's hash once created.
+**Latest commit:** `1ddb34d`. Nothing pushed anywhere; all work is local-only.
 
 ## How to restart the local preview
 
@@ -53,6 +53,8 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 4. `962862c` — platforms-and-tools strip, FAQ sync to four questions, and a real hydration bug fix. See "Session 4" below.
 5. `e45cfc5` — fixed a stale commit-hash placeholder left in these notes.
 6. `12ee3ec` — end-of-session housekeeping: ignores review screenshots going forward, adds this stopping-point summary.
+7. `e310f6b` — fixed a stale commit-hash placeholder in the stopping-point notes.
+8. `1ddb34d` — Session 5: heading font migrated to Unbounded, Caveat added as an optional accent, `tracking-tight` removed site-wide (latest). See "Session 5" below.
 
 ## Session 5 — Font migration to Unbounded / Caveat
 
