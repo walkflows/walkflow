@@ -41,7 +41,7 @@ Then open **http://localhost:3000**.
 
 **Exact next step for next session:** none required to consider the font migration done. Optional/open items: (1) swap in real GoHighLevel/Wix logo files whenever available, (2) decide whether to try the oversized two-tone Final CTA headline idea from the reference folder, (3) whenever you're ready, name the two additional industries.
 
-**Latest commit:** see "Git checkpoints" below for today's hash once created — no code changed this pass (verification only), so the checkpoint is this notes update.
+**Latest commit:** `e74bdfc`. No code changed this pass (verification only), so the checkpoint is this notes update. Nothing pushed anywhere; all work is local-only.
 
 ## How to restart the local preview
 
@@ -61,7 +61,9 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 5. `e45cfc5` — fixed a stale commit-hash placeholder left in these notes.
 6. `12ee3ec` — end-of-session housekeeping: ignores review screenshots going forward, adds this stopping-point summary.
 7. `e310f6b` — fixed a stale commit-hash placeholder in the stopping-point notes.
-8. `1ddb34d` — Session 5: heading font migrated to Unbounded, Caveat added as an optional accent, `tracking-tight` removed site-wide (latest). See "Session 5" below.
+8. `1ddb34d` — Session 5: heading font migrated to Unbounded, Caveat added as an optional accent, `tracking-tight` removed site-wide. See "Session 5" below.
+9. `bad41d6` — recorded the Session 5 commit hash in these notes.
+10. `e74bdfc` — Session 5 visual verification pass recorded (no code changes; screenshots confirmed the font migration renders correctly at all breakpoints) (latest).
 
 ## Session 5 — Font migration to Unbounded / Caveat
 
