@@ -21,13 +21,13 @@
 
 ## Brand identity
 - Name: WALKFLOW.
-- Primary colours: orange `#E76E0C` and navy `#13233C`.
-- Headings: Unbounded. Body, navigation, forms and buttons: Manrope. Optional handwritten accent: Caveat, used sparingly (e.g. the footer tagline), never for body copy or UI controls.
-- Use the approved logo files without altering proportions, colours or lettering. Choose the supplied variant that suits the background.
+- Primary colours (Session 7): orange `#FF991C` and near-black `#0A0A0A`. Two supporting orange shades exist for contrast reasons, not interchangeably: `#A85700` (orange-dark, for orange text/accents on light backgrounds — plain `#FF991C` only reaches ~2.1:1 on white) and `#E8850F` (orange-hover, the primary button's hover background only). See `src/app/globals.css` for the full token set and the comment explaining the split.
+- Headings: **Poppins — an approximation, not a verified match** to the Session 6/7 reference (a rasterised screenshot/PDF/video with no embedded font metadata; the real typeface could not be identified). Chosen for its slimmer, normal-width geometric letterforms versus the previous Unbounded. Body, navigation, forms and buttons: Manrope. Optional handwritten accent: Caveat, used sparingly (e.g. the footer tagline), never for body copy or UI controls.
+- Use the approved logo files without altering proportions, colours or lettering. Choose the supplied variant that suits the background. Note: the logo artwork itself still shows the old navy/orange colourway (it's a static image, not re-themeable) — flagged as a known mismatch against the new near-black palette, not fixed by a code-only colour change.
 - If no logo file is available, use a temporary WALKFLOW text wordmark. Do not invent a replacement logo.
-- Supporting white, warm off-white and muted neutral surfaces are allowed. Define brand colours, typography, spacing, radii and shadows centrally.
-- Avoid the obsolete cyan `#06BDF4` and navy `#071A2F` palette.
-- Check contrast before using orange for small text or white text on orange. Use accessible text/background combinations.
+- Supporting white and neutral dark/light grey surfaces are allowed (no more warm cream/sand tones). Define brand colours, typography, spacing, radii and shadows centrally.
+- Avoid the obsolete cyan `#06BDF4` and navy `#071A2F` palette, and (as of Session 7) the earlier orange `#E76E0C` / navy `#13233C` palette this project shipped with initially.
+- Check contrast before using orange for small text or white text on orange. Use accessible text/background combinations — see the orange-dark/orange-hover split above.
 - Tagline: "Take the steps. Build the flow."
 
 ## Visual direction and references
@@ -82,8 +82,8 @@
 ## Copy and conversion rules
 - Lead with the customer problem, then the solution, practical benefits and one clear next action. Explain tools only where needed for a decision.
 - Preserve the approved homepage hero: "Make it easier for customers to choose you."
-- Preserve the hero service label: "Web Design & AI Automation".
-- Main CTA: "Request a Call". Secondary hero CTA: "Explore Our Solutions".
+- Hero eyebrow (Session 7, explicit instruction, supersedes the "Web Design & AI Automation" label previously documented here): "Your #1 Choice for Web Design & AI Automation", with "#1" as a small styled badge. Flagged for awareness, not blocked: "#1 Choice" is an unsubstantiated superlative of the kind the line below asks to avoid — implemented as instructed since it was explicit and specific, not silently softened.
+- Main CTA: "Request a Call" — still used site-wide except the header and hero, which say "Book a Consultation" (Session 6 decision, not yet reconciled; see SESSION-NOTES.md). Secondary hero CTA: "Explore Our Solutions".
 - Request a Call leads to `/contact` or the accessible enquiry form. It must not falsely imply a calendar booking has been confirmed.
 - Use concise, human wording. Avoid hype, unsupported promises, fake urgency, invented metrics, testimonials, certifications or client logos.
 - Explain industry offerings as scoped solutions that can be built, not existing live capabilities unless verified.

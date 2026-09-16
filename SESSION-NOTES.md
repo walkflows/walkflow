@@ -3,24 +3,28 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
-## Stopping point — end of Session 6 (2026-09-16)
+## Stopping point — end of Session 7 (2026-09-16)
 
-Work paused here **for your review** — you asked me to stop after the header/hero redesign so you can look before we touch anything else. Nothing else on the homepage was changed.
+Work paused here **for your review**, as asked. Colour, font, and header/hero corrections are implemented and visually verified.
 
-**What's finished and visually verified this session:**
-- **Header redesigned**: logo left, a centred rounded-pill nav (your existing nav labels/dropdowns, current page highlighted in orange), **"Book a Consultation"** button on the right, functional hamburger menu below `lg` (1024px). Confirmed on the shared demo page too (`/demos/real-estate`), since Header is a shared component.
-- **Hero redesigned**: large centred headline with manual, controlled line breaks and two orange-highlighted words ("**easier**" / "**you.**") in place of automatic text-balance wrapping; same approved body copy; a new large, equal-size two-panel visual area below the CTAs (Web Design + Automation mockups, staggered for depth, soft orange glow, restrained hover lift) replacing the old small floating corner panels.
-- Verified by real headless-browser screenshots (Edge, same method as last session) at ~496px, 768px and 1440px, plus the shared header on `/demos/real-estate`, plus that the Problem section below Hero still flows cleanly with no spacing regression. No overflow, cramping or wrapping problems found at any size.
-- `npm run typecheck`, `npm run lint`, `npm run build` all clean.
+**What's finished and visually verified:**
+- **Brand colours replaced site-wide**: orange is now `#FF991C`; every navy/sand/cream token now resolves to near-black/white/neutral-grey (`#0A0A0A` base, `#FAFAFA`/white light surfaces). Done centrally in `src/app/globals.css`'s theme tokens — component files didn't need touching for this, since everything already referenced `bg-navy`, `text-orange`, `bg-cream`, etc. Three hardcoded hex spots that bypassed the tokens (`illustrations.tsx`'s inline SVG fills, `icon.tsx`'s favicon) were updated by hand.
+- **Contrast-checked, not just swapped**: plain `#FF991C` only reaches ~2.1:1 on white, which fails WCAG AA — so I split the old single "orange-dark" token into two: `--color-orange-dark` (`#A85700`, ~5.2:1 on white, used for on-light text/eyebrow labels) and a new `--color-orange-hover` (`#E8850F`, ~6.8:1 with the button's dark text, used only for the primary button's hover background). See the comment block in `globals.css` for the full reasoning — this is a real fix, not cosmetic, since one shared token couldn't satisfy both contrast requirements at once.
+- **Header**: nav labels now uppercase; header content now spans a dedicated wider band (`max-w-[100rem]`) than the rest of the page's narrower content column, instead of reusing the shared `Container` — reduces the excessive side margins you flagged while keeping the padding scale comfortable. Mobile menu untouched functionally.
+- **Hero eyebrow** replaced with "Your **#1** Choice for Web Design & AI Automation", "#1" in its own small solid-orange, dark-text badge. **Flagging**: this supersedes `CLAUDE.md`'s previously-documented "Web Design & AI Automation" hero label, and "#1 Choice" is an unsubstantiated superlative that another line in the same file asks to avoid — implemented exactly as instructed since it was explicit and specific, not silently softened or blocked. Both `CLAUDE.md` and `website-content.md` updated to record this.
+- **Hero background**: near-black base carried through (was navy-blue); added a large, very low-opacity ("WALKFLOW", ~3% white) wordmark behind the headline as the "oversized background lettering" element, plus the existing orange glow re-coloured to the new orange. Purely decorative, `aria-hidden`, never intercepts clicks.
+- **Typography**: heading font changed from Unbounded to **Poppins** — **an approximation, not a verified match** (see below). Manrope stays for body/UI, unchanged.
+- **Hero paragraph** replaced with your exact new text; the **"Start with the problem..."** note line was **removed** (field deleted from `src/content/home.ts`, not just hidden).
+- **Hero layout compacted**: section padding, header-to-headline gap, and gap before the visual area all reduced; headline switched back to automatic `text-balance` (from Session 6's manual `<br>`s) because the manual breaks produced an orphaned single-word line ("customers" alone) at desktop once the font got smaller — `text-balance` self-corrects at every breakpoint instead of needing per-breakpoint tuning.
+- Verified visually (headless Edge screenshots, Playwright still refusing to connect) at ~496px, 768px and 1440px, across the full homepage and the shared demo-page header, not just the hero. `npm run typecheck`, `npm run lint`, `npm run build` all clean throughout.
 
-**Flagging one deliberate copy decision, not yet applied site-wide:** you asked for a "Book a Consultation" button in both the header and hero. `CLAUDE.md` and the rest of the site currently say **"Request a Call"** everywhere else (FinalCta, Footer, the real-estate demo's own CTA). I treated your new wording as an explicit, scoped decision — added it as a new `consultationCta` entry in `src/content/navigation.ts` (same `/contact` destination) and used it **only** in the Header and Hero, leaving `requestCallCta`/"Request a Call" untouched everywhere else. **This means the site currently has two different CTA labels for the identical action.** Tell me if you want "Book a Consultation" rolled out everywhere (and `CLAUDE.md` updated to match), or reverted back to "Request a Call" in the header/hero too.
+**Heading font: Poppins — APPROXIMATION, not verified.** The reference (`reference pdf gofullpage.pdf`, `reference_video.mp4`) is a rasterised screenshot/video with zero embedded font metadata (confirmed by inspecting the PDF's raw structure — it's JPEG images on a page, using only the 14 standard PDF fallback fonts for boilerplate, not the site's real font). There was no way to extract the real typeface name from the source files. Poppins was chosen by eye as a visually close, slimmer, normal-width geometric sans that reads much closer to the reference than Unbounded did. If you can identify the exact font (e.g. from the template's own source), tell me and I'll swap it in directly.
 
-**Not verified this session (static-screenshot method can't test these):** click-driven interaction — the mobile menu actually opening, the Web Design/Industry Solutions dropdown opening, hover/focus states, keyboard tab order. The underlying code for all of these was not changed (only restyled) and worked in prior sessions' interactive Playwright testing, but I could not re-confirm interactively this session since Playwright's MCP still would not connect (retried again) and Edge's `--screenshot` flag only takes one static shot, it can't click anything. If you want this actually re-verified interactively, either wait for Playwright to reconnect in a future session, or send me a screenshot of the open mobile menu and the open "Web Design" dropdown from your own browser.
+**Known, unfixable-in-code limitation:** the WALKFLOW logo artwork itself (`brand_assets/walkflow-logo/`, shown in the header/footer) still shows the old navy-blue colourway — it's a static image file, not something a CSS/token change can recolour. It now visually clashes slightly with the new near-black sections. Not fixed this session since re-exporting brand artwork is outside a code change's reach.
 
-**Not touched this session, unchanged from before:**
-- GoHighLevel/Wix logo mismatch in `tools_logos/` — still wrong, still not blocking.
-- Industries still at four (not six) — unchanged, not part of this task's scope.
-- The oversized two-tone Final CTA idea from `reference_for_walkflow/` — still just a suggestion, not applied.
+**Not verified this session (same limitation as Session 6):** click-driven interaction — mobile menu opening, nav dropdowns opening, hover/focus states, keyboard order. Only static screenshots were possible again this session (Playwright's MCP would not connect, retried).
+
+**Not touched, unchanged from before:** GoHighLevel/Wix logo mismatch; industries still at four; the "Book a Consultation" vs "Request a Call" split from Session 6 (still unreconciled — now also documented directly in `CLAUDE.md`).
 
 **Exact command to restart:**
 
@@ -31,9 +35,9 @@ npm run dev
 
 Then open **http://localhost:3000**.
 
-**Exact next step for next session:** wait for your review of the header/hero. Once approved, natural follow-ups are: (1) decide the "Book a Consultation" vs "Request a Call" question above, (2) interactively re-test the mobile menu/dropdowns once a browser tool is available, (3) move on to whichever section you want redesigned next.
+**Exact next step for next session:** wait for your review of the colour/font/header/hero changes. If you can identify the reference's real heading font, that's the one open item most worth resolving before building further pages against this new look.
 
-**Latest commit:** `2c051c2`. Nothing pushed anywhere; all work is local-only.
+**Latest commit:** see "Git checkpoints" below for today's hash once created.
 
 ## How to restart the local preview
 
@@ -57,7 +61,49 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 9. `bad41d6` — recorded the Session 5 commit hash in these notes.
 10. `e74bdfc` — Session 5 visual verification pass recorded (no code changes; screenshots confirmed the font migration renders correctly at all breakpoints).
 11. `e891853` — fixed a commit-hash placeholder and checkpoint list entry.
-12. `2c051c2` — Session 6: header and hero redesign (latest). See "Session 6" below.
+12. `2c051c2` — Session 6: header and hero redesign. See "Session 6" below.
+13. (Session 7 checkpoint — see "Session 7" below; hash recorded in a follow-up commit per this project's convention.)
+
+## Session 7 — Colour, font and hero corrections
+
+Corrections against the same `reference_for_walkflow/` references used in Session 6, this time covering brand colours, the heading font, and specific header/hero copy/layout fixes.
+
+### Colours
+
+`src/app/globals.css`'s `@theme` block is the single source of truth; every component already consumed it via `bg-navy`, `text-orange`, `bg-cream` etc., so recolouring meant changing hex values in one place, not touching 28+ component files. Token names were kept even though they no longer describe blue "navy" or warm "sand" — recolouring in place was far lower-risk than a project-wide rename, and it's called out clearly in a `globals.css` comment plus here.
+
+New values: `--color-orange:#ff991c`, `--color-orange-dark:#a85700`, `--color-orange-hover:#e8850f` (new token), `--color-orange-light:#ffb65c`, `--color-navy-deep:#0a0a0a`, `--color-navy:#141414`, `--color-navy-light:#242424`, `--color-navy-800:#1a1a1a`, `--color-cream:#fafafa`, `--color-sand:#f2f2f2`, `--color-surface:#f5f5f5`, `--color-border:#e5e5e5`, `--color-ink:#141414`, `--color-muted:#5c5c5c`.
+
+The `orange-dark`/`orange-hover` split exists because one shared token couldn't satisfy two different contrast requirements at once: `orange-dark` needs to be dark enough for orange *text* to pass 4.5:1 on white (eyebrow labels across the site all already used `text-orange-dark`, never plain `text-orange`, so this was a pre-existing pattern, not something I introduced), while the primary button's hover needs a *background* light enough that its dark navy text stays readable on top — those two needs pull in opposite directions on the lightness scale. `Button.tsx`'s primary variant now uses `hover:bg-orange-hover` instead of `hover:bg-orange-dark`.
+
+Three hardcoded-hex spots that bypass the token system were updated by hand: `src/components/ui/illustrations.tsx` (inline SVG fills in `WebsiteIllustration`/`AutomationIllustration`/`PropertyThumb`/`BrowserFrame`) and `src/app/icon.tsx` (the generated favicon).
+
+### Header
+
+- Nav labels uppercase (`uppercase tracking-wide`), both the desktop pill and the mobile panel's top-level links.
+- Replaced the shared `Container` (`max-w-6xl`) with a new `HeaderBand` wrapper local to `Header.tsx` (`max-w-[100rem]`), so the header spreads wider than the page's normal content column per the reference, without changing `Container` itself (which every other section still uses).
+
+### Hero eyebrow, background, paragraph, note
+
+- Eyebrow copy replaced with "Your **#1** Choice for Web Design & AI Automation"; "#1" rendered as its own `bg-orange`/dark-text badge (`h-5 w-7 rounded-md`), composed directly in `Hero.tsx` JSX (three separate `<span>`s inside the flex-wrap pill) rather than as one plain string, since the badge needs its own styling.
+- Added an oversized, ~3%-opacity "WALKFLOW" wordmark (`text-[26vw] sm:text-[20vw]`, `aria-hidden`) positioned behind the eyebrow/headline as the "oversized background lettering" element the reference uses; positioned with a fixed `top-16`/`top-20` offset (not `top-1/2` of the whole section) so it stays behind the headline specifically rather than drifting down to sit behind the visual panels as the section grows taller.
+- Hero paragraph replaced verbatim with the new approved copy.
+- The old note line ("Start with the problem you want to solve...") was deleted from `src/content/home.ts`'s `hero` object entirely (the field no longer exists), not just removed from the render — `Hero.tsx` no longer references `hero.note`.
+
+### Compact hero layout
+
+- Section padding: `pt-20 pb-28 sm:pt-28 sm:pb-40` → `pt-16 pb-16 sm:pt-20 sm:pb-20`.
+- Headline: `clamp(2.6rem,7vw,5.25rem)` → `clamp(2.25rem,6vw,4.25rem)`, `leading-[1.05]` → `leading-[1.1]` (a smaller font can afford slightly looser leading without feeling heavy), `mt-7` → `mt-5`.
+- Tried a manual `<br>` first (matching the Session 6 pattern) to force "Make it easier for customers" / "to choose you." — this produced a well-balanced 2-line result at tablet/mobile but an ugly orphaned 3rd line ("customers" alone) at desktop, because the clamp's max size only kicks in at wider viewports where the manual break point no longer matches natural wrapping. Switched to `text-balance` (letting the browser choose break points) instead, which self-corrects at every width — verified this produces clean, even lines at all three tested widths (2 lines at mobile/tablet, 3 evenly-balanced lines at desktop, no orphans anywhere).
+- Paragraph gap `mt-6`→`mt-4`; CTA row gap `mt-9`→`mt-7`; gap before the visual panels `mt-16 sm:mt-20` → `mt-10 sm:mt-12`. Net effect: the CTA and the start of the visual area both appear noticeably sooner on the page, per the instruction, without any fixed/clipped height.
+
+### Documentation
+
+`CLAUDE.md`'s Brand identity and Copy sections, and `brand_assets/website-content.md`'s brand summary + hero copy block, all updated to record: the new colour hex values and the orange-dark/orange-hover split; Poppins as an explicitly-flagged approximation, not a verified font match; the new eyebrow copy and its unsubstantiated-superlative flag; the hero paragraph and note-removal; and a pointer to the still-open "Book a Consultation" vs "Request a Call" question from Session 6.
+
+### Testing performed
+
+`npm run typecheck`, `npm run lint`, `npm run build` clean after every batch of changes. Visual verification via headless Edge screenshots (Playwright's MCP still refused to connect, retried again) at ~496px, 768px and 1440px: full homepage scroll-through (not just the hero) to confirm the global colour-token change reads correctly everywhere — Problem, Service Showcase, Platforms and tools, Journey, Industries sections all checked — plus the shared header on `/demos/real-estate`. No overflow, contrast, or wrapping problems found. **Not tested**: click interactions (mobile menu, dropdowns, hover/focus) — same static-screenshot limitation as Session 6.
 
 ## Session 6 — Header and hero redesign
 
@@ -231,6 +277,12 @@ Built `/demos/real-estate`: 10 fictional listings (fictional "Ashcombe" market, 
 - **"Book a Consultation" (Header/Hero) vs "Request a Call" (everywhere else)** — a deliberate scoped decision this session, not yet reconciled. See Session 6 above.
 - **Mobile menu, nav dropdowns, hover/focus states not re-tested interactively** after the Session 6 header restyle (code unchanged, only markup/classes touched, but not re-confirmed by clicking) — needs a working browser tool or your own manual check.
 - **Video reference (`reference_video.mp4`) still unreviewed** — no frame-extraction tool available on this machine (no ffmpeg/VLC). If a specific interaction from it matters, describe it directly.
+
+## Files touched, Session 7
+
+Edited: `src/app/globals.css` (full colour-token recolour + new `orange-hover` token + comments), `src/app/icon.tsx` (favicon colours), `src/components/ui/illustrations.tsx` (hardcoded SVG hex colours), `src/components/ui/Button.tsx` (primary hover uses new `orange-hover` token), `src/lib/fonts.ts` (Poppins replaces Unbounded), `src/app/layout.tsx` (font variable wiring), `src/components/layout/Header.tsx` (uppercase nav, new `HeaderBand` wide wrapper), `src/components/sections/home/Hero.tsx` (eyebrow badge, background wordmark, paragraph/note, compact layout, `text-balance` headline), `src/content/home.ts` (eyebrow/body copy, `note` field removed), `CLAUDE.md` and `brand_assets/website-content.md` (brand/colour/font/copy documentation).
+New: nothing.
+Removed: nothing (no files deleted this session).
 
 ## Files touched, Session 6
 

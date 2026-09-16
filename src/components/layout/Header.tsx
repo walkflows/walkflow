@@ -9,8 +9,17 @@ import { mainNav, consultationCta } from "@/content/navigation";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
 import { cx } from "@/lib/utils";
+
+/**
+ * The header spans a wider band than the rest of the page's content
+ * column (which uses the shared, narrower `Container`), per the reference
+ * layout's edge-to-edge feel. Kept local to Header rather than changing
+ * `Container` itself, since only the header/hero were in scope this round.
+ */
+function HeaderBand({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <div className={cx("mx-auto w-full max-w-[100rem] px-5 sm:px-8 lg:px-10", className)}>{children}</div>;
+}
 
 function isActivePath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -53,7 +62,7 @@ function NavDropdown({
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cx(
-          "flex items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-[0.9rem] font-medium transition-colors",
+          "flex items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide transition-colors",
           active ? "bg-white/12 text-orange-light" : "text-white/75 hover:text-white",
         )}
       >
@@ -119,7 +128,7 @@ export function Header() {
       <a href="#main-content" className="skip-link">
         Skip to Main Content
       </a>
-      <Container className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-4">
+      <HeaderBand className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-4">
         <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
           <Image
             src={media.logoOnDark.src!}
@@ -151,7 +160,7 @@ export function Header() {
                 href={item.href}
                 aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
                 className={cx(
-                  "whitespace-nowrap rounded-full px-4 py-2 text-[0.9rem] font-medium transition-colors",
+                  "whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide transition-colors",
                   isActivePath(pathname, item.href) ? "bg-white/12 text-orange-light" : "text-white/75 hover:text-white",
                 )}
               >
@@ -183,7 +192,7 @@ export function Header() {
             </svg>
           </button>
         </div>
-      </Container>
+      </HeaderBand>
 
       <AnimatePresence initial={false}>
         {mobileOpen && (
@@ -195,10 +204,14 @@ export function Header() {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.28, ease: "easeInOut" }}
           >
-            <Container className="flex flex-col gap-1 py-4">
+            <HeaderBand className="flex flex-col gap-1 py-4">
               {mainNav.map((item) => (
                 <div key={item.href} className="border-b border-white/10 py-2 last:border-none">
-                  <Link href={item.href} className="block py-2 text-base font-semibold text-white" onClick={() => setMobileOpen(false)}>
+                  <Link
+                    href={item.href}
+                    className="block py-2 text-base font-semibold uppercase tracking-wide text-white"
+                    onClick={() => setMobileOpen(false)}
+                  >
                     {item.label}
                   </Link>
                   {item.children && (
@@ -220,7 +233,7 @@ export function Header() {
               <Button href={consultationCta.href} className="mt-4 w-full">
                 {consultationCta.label}
               </Button>
-            </Container>
+            </HeaderBand>
           </motion.div>
         )}
       </AnimatePresence>

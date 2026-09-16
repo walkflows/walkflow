@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { hero } from "@/content/home";
 import { consultationCta } from "@/content/navigation";
+import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { BrowserFrame, AutomationIllustration, WebsiteIllustration } from "@/components/ui/illustrations";
@@ -42,10 +43,20 @@ export function Hero() {
   const d = (i: number) => (reduceMotion ? 0 : sequence[i]);
 
   return (
-    <section className="relative isolate overflow-hidden bg-navy-deep pb-28 pt-20 sm:pb-40 sm:pt-28">
+    <section className="relative isolate overflow-hidden bg-navy-deep pb-16 pt-16 sm:pb-20 sm:pt-20">
+      {/* Oversized, near-invisible wordmark — the reference's "oversized background
+          lettering/shapes" idea, adapted to our own brand name rather than inventing
+          decorative type. Purely decorative: aria-hidden, never intercepts pointer
+          events or reading order. */}
+      <p
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-16 -z-10 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[26vw] font-extrabold leading-none text-white/[0.03] sm:top-20 sm:text-[20vw]"
+      >
+        {site.name}
+      </p>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(231,110,12,0.16),transparent)]"
+        className="pointer-events-none absolute left-1/2 top-0 h-[26rem] w-[85%] max-w-3xl -translate-x-1/2 rounded-[50%] bg-orange/20 blur-[110px]"
       />
       <div
         aria-hidden
@@ -57,30 +68,30 @@ export function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.5, delay: d(0) }}
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-medium text-white/80"
+          className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-medium text-white/80"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-          {hero.eyebrow}
+          <span>Your</span>
+          <span className="flex h-5 w-7 flex-none items-center justify-center rounded-md bg-orange text-[0.7rem] font-extrabold text-navy-deep">
+            #1
+          </span>
+          <span>Choice for Web Design &amp; AI Automation</span>
         </motion.span>
 
         <motion.h1
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(1) }}
-          className="mt-7 max-w-4xl text-[clamp(2.6rem,7vw,5.25rem)] font-extrabold leading-[1.05] text-white"
+          className="mt-5 max-w-3xl text-balance text-[clamp(2.25rem,6vw,4.25rem)] font-extrabold leading-[1.1] text-white"
         >
-          Make it <span className="text-orange">easier</span>
-          <br />
-          for customers to
-          <br />
-          choose <span className="text-orange">you.</span>
+          Make it <span className="text-orange">easier</span> for customers to choose{" "}
+          <span className="text-orange">you.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(2) }}
-          className="mt-6 max-w-xl text-lg leading-relaxed text-white/65"
+          className="mt-4 max-w-xl text-lg leading-relaxed text-white/65"
         >
           {hero.body}
         </motion.p>
@@ -89,20 +100,19 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(3) }}
-          className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+          className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center"
         >
           <Button href={consultationCta.href}>{consultationCta.label}</Button>
           <Button href={hero.secondaryCta.href} variant="secondary-on-dark">
             {hero.secondaryCta.label}
           </Button>
         </motion.div>
-        <p className="mt-6 text-sm text-white/55">{hero.note}</p>
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.7, delay: d(3) + (reduceMotion ? 0 : 0.15) }}
-          className="relative mt-16 w-full max-w-4xl sm:mt-20"
+          className="relative mt-10 w-full max-w-4xl sm:mt-12"
         >
           <div
             aria-hidden

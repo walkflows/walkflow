@@ -1,24 +1,43 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand colours */
-  --color-orange: #e76e0c;
-  --color-orange-dark: #b4560a;
-  --color-orange-light: #ffb26b;
-  --color-navy-deep: #0b1526;
-  --color-navy: #13233c;
-  --color-navy-light: #1c3355;
-  --color-navy-800: #182c4a;
-  --color-cream: #fbf7f0;
-  --color-sand: #f2e8d8;
-  --color-surface: #f4eee3;
-  --color-border: #e6ddcd;
-  --color-ink: #13233c;
-  --color-muted: #55606e;
+  /*
+   * Brand colours — near-black / white palette (session 7).
+   * Token NAMES are kept from the previous navy/cream palette on purpose
+   * (dozens of components already reference bg-navy, text-ink, bg-cream,
+   * etc.) — only the underlying hex values changed, so no component files
+   * needed touching for the recolour. "navy" no longer means blue; treat
+   * every navy-* / ink token as "near-black" and every cream/sand/surface
+   * token as "white / very light neutral grey" from here on.
+   */
+  --color-orange: #ff991c;
+  /* Text/accents on LIGHT backgrounds (eyebrow labels, ghost-button hover
+     text). Deliberately darker than --color-orange-hover below — #ff991c
+     itself only hits ~2.1:1 on white, which fails WCAG AA, so labels use
+     this darker shade instead (~5.2:1 on white). */
+  --color-orange-dark: #a85700;
+  /* Hover background for the solid-orange primary button only (bg-orange
+     hover:bg-orange-hover, with dark navy text on top). Needs to stay much
+     lighter than --color-orange-dark above, or the dark button text loses
+     contrast — the two tokens solve different contrast problems and are
+     not interchangeable. */
+  --color-orange-hover: #e8850f;
+  /* Text/accents on DARK backgrounds (active nav pill, dark-section eyebrows). */
+  --color-orange-light: #ffb65c;
+  --color-navy-deep: #0a0a0a;
+  --color-navy: #141414;
+  --color-navy-light: #242424;
+  --color-navy-800: #1a1a1a;
+  --color-cream: #fafafa;
+  --color-sand: #f2f2f2;
+  --color-surface: #f5f5f5;
+  --color-border: #e5e5e5;
+  --color-ink: #141414;
+  --color-muted: #5c5c5c;
   --color-white: #ffffff;
 
   /* Typography */
-  --font-heading: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-accent: var(--font-caveat), cursive;
 
@@ -29,8 +48,8 @@
   --radius-xl: 2rem;
 
   /* Shadows */
-  --shadow-card: 0 20px 45px -24px rgba(19, 35, 60, 0.35);
-  --shadow-soft: 0 1px 2px rgba(19, 35, 60, 0.06);
+  --shadow-card: 0 20px 45px -24px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.08);
 
   /* Container */
   --breakpoint-xs: 22.5rem;

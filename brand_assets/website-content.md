@@ -6,7 +6,7 @@ Prepared 10 September 2026 | Review edition
 
 Purpose: help businesses turn customer interest into a clear next step, with thoughtful websites and practical automation.
 
-Brand: Orange #E76E0C · Navy #13233C. Unbounded for headings; Manrope for body text, navigation and buttons; Caveat as an optional handwritten accent, used sparingly.
+Brand (Session 7): Orange #FF991C · Near-black #0A0A0A (replaces the earlier Orange #E76E0C / Navy #13233C pairing). Poppins for headings — an approximation of the reference's slimmer letterforms, not a verified match, since the reference PDF/video carry no extractable font data; Manrope for body text, navigation and buttons; Caveat as an optional handwritten accent, used sparingly.
 
 Tagline: Take the steps. Build the flow.
 
@@ -102,17 +102,17 @@ Meta description: Make it easier for customers to choose you. Explore custom web
 
 ## SECTION - Hero
 
-Web Design & AI Automation
+Your #1 Choice for Web Design & AI Automation (Session 7 — "#1" rendered as a small styled badge; supersedes the plain "Web Design & AI Automation" eyebrow above; see CLAUDE.md for the unsubstantiated-superlative flag)
 
 **Make it easier for customers to choose you.**
 
-Your website should make your value clear. What happens next should feel just as simple. WALKFLOW brings web design and practical automation together to help you capture enquiries, follow up and move work forward.
+We build websites that earn attention and automations that handle follow-ups, helping you turn more enquiries into customers.
 
-Primary button: Request a Call
+Primary button: Book a Consultation (Session 6, header/hero only — see CLAUDE.md/SESSION-NOTES.md; "Request a Call" everywhere else)
 
 Secondary button: Explore Industry Solutions
 
-Start with the problem you want to solve. We’ll help you work out the next step.
+Removed (Session 7): "Start with the problem you want to solve. We'll help you work out the next step."
 
 ## SECTION - The problem
 
@@ -1672,7 +1672,7 @@ Keep bracketed fields out of the live site until completed. The founder introduc
 
 ## SECTION - Copy and proof rules
 
-Use the current orange/navy palette and Unbounded/Manrope (Caveat for sparing handwritten accents only), overriding the older uploaded brand kit. Use the tagline once or twice per page rather than repeating the mission in every section.
+Use the current orange/near-black palette and Poppins/Manrope (Caveat for sparing handwritten accents only), overriding the older uploaded brand kit and the earlier League Spartan/Unbounded and navy-blue decisions. Use the tagline once or twice per page rather than repeating the mission in every section.
 
 No invented testimonials, case studies, partner badges, client logos, conversion statistics or guarantees. Publish real client work only with permission. Do not label a screenshot or mockup as a working automation.
 

@@ -5,12 +5,19 @@ export const homeSeo = {
 };
 
 export const hero = {
-  eyebrow: "Web Design & AI Automation",
+  /**
+   * Session 7: replaced the CLAUDE.md-documented "Web Design & AI
+   * Automation" hero service label with this longer eyebrow per explicit
+   * instruction. Hero.tsx renders "#1" as a separate styled badge, so this
+   * string is kept for reference/consistency, not rendered verbatim as one
+   * plain text node. See SESSION-NOTES.md Session 7 re: the superlative
+   * "#1 Choice" wording against CLAUDE.md's no-unsupported-claims rule.
+   */
+  eyebrow: "Your #1 Choice for Web Design & AI Automation",
   heading: "Make it easier for customers to choose you.",
-  body: "Your website should make your value clear. What happens next should feel just as simple. WALKFLOW brings web design and practical automation together to help you capture enquiries, follow up and move work forward.",
+  body: "We build websites that earn attention and automations that handle follow-ups, helping you turn more enquiries into customers.",
   primaryCta: { label: "Request a Call", href: "/contact" },
   secondaryCta: { label: "Explore Our Solutions", href: "#solutions" },
-  note: "Start with the problem you want to solve. We’ll help you work out the next step.",
 };
 
 export const problem = {
