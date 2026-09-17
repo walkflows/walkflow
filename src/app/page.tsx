@@ -21,11 +21,11 @@ export default function HomePage() {
       <Hero />
       <Services />
       <PlatformsAndTools />
-      <Journey />
       <Industries />
       <DemoShowcase />
       <WhyAndProcess />
       <FAQ />
+      <Journey />
       <FinalCta />
     </>
   );

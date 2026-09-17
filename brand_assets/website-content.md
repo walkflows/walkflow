@@ -186,7 +186,7 @@ Button: Explore AI Automation
 
 Examples of the platforms and AI tools a WALKFLOW project might use or connect to, depending on scope — shown for reference, not as clients or partners.
 
-Logos shown: ChatGPT, Claude, Framer, GoHighLevel, Make, n8n, Shopify, Squarespace, Wix — reference-only, not clients, partners or endorsements.
+Logos shown, split into two scrolling rows (Session 9): automation/CRM/email marketing — ChatGPT, Claude, GoHighLevel, Make, n8n, ActiveCampaign, Brevo, Mailchimp, Klaviyo; web design/app development — Framer, Shopify, Squarespace, Wix, Webflow, WordPress, Bubble, Expo, Flutter, FlutterFlow, Supabase. Reference-only, not clients, partners or endorsements.
 
 **UNVERIFIED PLACEHOLDER, added Session 9 — pending your sign-off, do not treat as approved copy:**
 
@@ -205,6 +205,8 @@ Feature card — Stay involved at every step: See the work as it takes shape, sh
 Pills: Clear Scope · Practical Solutions · Regular Updates · Guided Handover
 
 ## SECTION - Industry solutions
+
+(Session 9: restyled dark with each card's real photo from `public/industries/` — the same images used in the homepage carousel — plus moved to sit directly after Platforms and Tools instead of after "How it works". Copy below is unchanged.)
 
 **Start with the problem your business knows too well.**
 

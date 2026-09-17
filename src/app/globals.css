@@ -130,6 +130,12 @@
     animation: marquee-x var(--marquee-duration, 34s) linear infinite;
   }
 
+  /* Same keyframes played backwards, for a second row scrolling the
+     opposite way — avoids duplicating the marquee-x keyframes. */
+  .animate-marquee-reverse {
+    animation: marquee-x var(--marquee-duration, 34s) linear infinite reverse;
+  }
+
   /*
    * Slow ambient-light drift and subtle glass-circle float, for the
    * Platforms and Tools section's cinematic background. Pure CSS (no JS

@@ -15,6 +15,10 @@ type Feature = (typeof platformsAndTools.features)[number];
 type Stat = (typeof platformsAndTools.stats)[number];
 type Pill = (typeof platformsAndTools.pills)[number];
 
+// Split once, at module scope, since the list itself never changes.
+const automationTools = tools.filter((t) => t.category === "automation");
+const designTools = tools.filter((t) => t.category === "design");
+
 const featureIcons = { people: IconPeople, document: IconDocument, chat: IconChat };
 const pillIcons = { document: IconDocument, gear: IconGear, refresh: IconAutomation, swap: IconSwap };
 
@@ -49,7 +53,10 @@ function ToolCard({ tool, decorative }: { tool: Tool; decorative?: boolean }) {
  * so the two transforms never fight over the same element.
  */
 function StatCircle({ stat, index, scrollYProgress }: { stat: Stat; index: number; scrollYProgress: MotionValue<number> }) {
-  const magnitude = 14 + index * 8;
+  // Kept deliberately small — an earlier, larger magnitude made the
+  // movement the first thing visitors noticed rather than the numbers
+  // themselves; this stays just perceptible as a "depth" cue on scroll.
+  const magnitude = 5 + index * 2;
   const direction = index % 2 === 0 ? 1 : -1;
   const parallaxY = useTransform(scrollYProgress, [0, 1], [magnitude * direction, -magnitude * direction]);
 
@@ -206,18 +213,36 @@ export function PlatformsAndTools() {
         </Reveal>
 
         <Reveal delay={0.15}>
-          <div className="relative mt-12 overflow-hidden motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
-            <ul
-              className="flex w-max animate-marquee gap-4 motion-reduce:w-auto motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center"
-              style={{ animationPlayState: paused ? "paused" : "running" }}
-            >
-              {tools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
-              ))}
-              {tools.map((tool) => (
-                <ToolCard key={`${tool.id}-dup`} tool={tool} decorative />
-              ))}
-            </ul>
+          <div className="mt-12 flex flex-col gap-4">
+            {/* Automation, CRM and email marketing tools — right to left. */}
+            <div className="relative overflow-hidden motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
+              <ul
+                className="flex w-max animate-marquee gap-4 motion-reduce:w-auto motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center"
+                style={{ animationPlayState: paused ? "paused" : "running" }}
+              >
+                {automationTools.map((tool) => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
+                {automationTools.map((tool) => (
+                  <ToolCard key={`${tool.id}-dup`} tool={tool} decorative />
+                ))}
+              </ul>
+            </div>
+
+            {/* Web design and app development tools — left to right. */}
+            <div className="relative overflow-hidden motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
+              <ul
+                className="flex w-max animate-marquee-reverse gap-4 motion-reduce:w-auto motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center"
+                style={{ animationPlayState: paused ? "paused" : "running" }}
+              >
+                {designTools.map((tool) => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
+                {designTools.map((tool) => (
+                  <ToolCard key={`${tool.id}-dup`} tool={tool} decorative />
+                ))}
+              </ul>
+            </div>
           </div>
         </Reveal>
 

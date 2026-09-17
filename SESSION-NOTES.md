@@ -3,6 +3,22 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 9 (continued yet again, 2026-09-17) — tool rows split, subtler circle motion, dark image-based Industry Solutions, section reorder
+
+Four separate fixes/changes in one round:
+
+**1. Tool marquee split into two rows by category** (`src/content/tools.ts` gained a `category: "automation" | "design"` field; `PlatformsAndTools.tsx` now renders two `<ul>` rows instead of one). Row 1 = automation, CRM and email marketing tools (ChatGPT, Claude, GoHighLevel, Make, n8n, plus three tools newly added this round — ActiveCampaign, Brevo, Mailchimp — and Klaviyo), scrolling right to left via the existing `.animate-marquee`. Row 2 = web design and app development tools (Framer, Shopify, Squarespace, Wix, plus newly added Webflow, WordPress, Bubble, Expo, Flutter, FlutterFlow, Supabase), scrolling left to right via a new `.animate-marquee-reverse` utility in `globals.css` (same `marquee-x` keyframes, `animation-direction: reverse` — no duplicate keyframes needed). Verified live by sampling each row's `matrix()` translateX before/after a short wait: row 1 moved -36px (leftward), row 2 moved +45px (rightward) — confirmed opposite directions, not just assumed from the code.
+
+New logo source files (`activecampaign.png`, `brevo.png`, `bubble.png`, `expo.png`, `flutter.png`, `flutterflow.png`, `mailchimp.png`, `supabase.png`, `webflow.png`, `wordpress.png`, `klaviyo.png`) were already sitting in `tools_logos/` from an earlier, unexplained addition (flagged last round as unrecognised) — copied into `public/tools/` with lowercase filenames, matching the existing naming convention, and wired into `tools.ts`. Not resized/compressed, consistent with how the original nine logos were already handled (checked: `public/tools/*.png` file sizes exactly match `tools_logos/*.png` for the pre-existing ones, i.e. no compression step has ever been applied here).
+
+**2. Stat-circle scroll parallax made much subtler.** You reported the circles "can't be seen very well" because the animation was too obvious — the previous magnitude (14–38px depending on circle) drew more attention to the movement than the numbers. Reduced to 5–11px. Verified the actual before/after pixel delta over a 300px scroll: now 1.1–2.5px per circle (previously would have been roughly 4–10px over the same distance) — present as a subtle depth cue, no longer the first thing you'd notice.
+
+**3. Industry Solutions rebuilt as a dark, image-led section**, styled after the attached "Case Studies" reference (extracting the visual technique — large image card + overlapping dark detail panel below it — not its copy, branding or fake stats). Background changed from the old light `bg-sand` to `bg-navy-deep`, matching the rest of the now-dark homepage. Each of the four existing industry cards (Real Estate, Home Services, Clinics, Consulting Firms — content unchanged) now shows its real photo from `public/industries/` (the same images already used in the hero carousel) in a rounded image card, with a dark panel overlapping its bottom edge holding the title, existing body copy and an `ExploreLink`. Added an `image` field to each entry in `industries.cards` (`src/content/home.ts`) — the only content-file change, additive only, no existing title/body/href text touched. Card image zooms slightly on hover; verified via computed `scale`.
+
+**4. Section order changed**: Industry Solutions now comes directly after Platforms and Tools (previously "How it works" was next). "How it works" (`Journey.tsx`) moved down to just before the closing call-to-action — both it and the final CTA use the same `bg-navy-deep`, so the two now sit together as a clean dark close to the page rather than "How it works" sitting deep in the middle. Per your note, this is deprioritised for now, not removed — nothing about the component itself changed, only its position in `src/app/page.tsx`.
+
+`lint`/`typecheck`/`build` all clean. Verified no horizontal overflow on mobile (390px) for both the new Industries cards and the two-row marquee.
+
 ## Session 9 (continued once more, 2026-09-17) — stat circle polish
 
 Three quick fixes to the Platforms and Tools section from the round above, all in `PlatformsAndTools.tsx`:
