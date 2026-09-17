@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { mainNav, consultationCta } from "@/content/navigation";
 import { media } from "@/content/media";
@@ -27,26 +27,57 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/** Trigger classes shared between the plain-link and dropdown-trigger nav items. */
+const navItemClass =
+  "whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide outline-none transition-colors duration-200";
+const navItemIdleClass = "text-white/75 hover:bg-white/10 hover:text-orange focus-visible:bg-white/10 focus-visible:text-orange";
+const navItemActiveClass = "bg-white/10 text-orange";
+
+/** Close delay bridges the visual gap between the trigger and the panel below it. */
+const CLOSE_DELAY_MS = 150;
+
 function NavDropdown({
   label,
-  href,
   items,
   active,
 }: {
   label: string;
-  href: string;
   items: { label: string; href: string }[];
   active: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearCloseTimer = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+  const openNow = () => {
+    clearCloseTimer();
+    setOpen(true);
+  };
+  const closeWithDelay = () => {
+    clearCloseTimer();
+    closeTimer.current = setTimeout(() => setOpen(false), CLOSE_DELAY_MS);
+  };
+  const closeNow = useCallback(() => {
+    clearCloseTimer();
+    setOpen(false);
+  }, []);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) closeNow();
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape" && open) {
+        closeNow();
+        triggerRef.current?.focus();
+      }
     }
     document.addEventListener("mousedown", onClick);
     document.addEventListener("keydown", onKey);
@@ -54,46 +85,52 @@ function NavDropdown({
       document.removeEventListener("mousedown", onClick);
       document.removeEventListener("keydown", onKey);
     };
-  }, []);
+  }, [open, closeNow]);
+
+  useEffect(() => clearCloseTimer, []);
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative" ref={wrapperRef} onMouseEnter={openNow} onMouseLeave={closeWithDelay}>
       <button
+        ref={triggerRef}
         type="button"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className={cx(
-          "flex items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide transition-colors",
-          active ? "bg-white/10 text-orange" : "text-white/75 hover:text-white",
-        )}
+        onClick={() => (open ? closeNow() : openNow())}
+        className={cx("flex items-center gap-1", navItemClass, active ? navItemActiveClass : navItemIdleClass)}
       >
         {label}
-        <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true" className={cx("transition-transform", open && "rotate-180")}>
+        <svg
+          width="10"
+          height="6"
+          viewBox="0 0 10 6"
+          aria-hidden="true"
+          className={cx("transition-transform duration-200", open && "rotate-180")}
+        >
           <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      {open && (
-        <div className="absolute left-1/2 top-full z-40 mt-2 w-64 -translate-x-1/2 rounded-2xl border border-navy/10 bg-white p-2 shadow-[var(--shadow-card)]">
-          <Link
-            href={href}
-            className="block rounded-xl px-3 py-2 text-sm font-semibold text-navy hover:bg-surface"
-            onClick={() => setOpen(false)}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="absolute left-1/2 top-full z-40 mt-2 w-64 -translate-x-1/2 rounded-2xl border border-navy/10 bg-white p-2 shadow-[var(--shadow-card)]"
           >
-            {label} overview
-          </Link>
-          <div className="my-1 h-px bg-border" />
-          {items.map((child) => (
-            <Link
-              key={child.href}
-              href={child.href}
-              className="block rounded-xl px-3 py-2 text-sm text-navy/80 hover:bg-surface hover:text-navy"
-              onClick={() => setOpen(false)}
-            >
-              {child.label}
-            </Link>
-          ))}
-        </div>
-      )}
+            {items.map((child) => (
+              <Link
+                key={child.href}
+                href={child.href}
+                className="block rounded-xl px-3 py-2 text-sm text-navy/80 outline-none transition-colors duration-150 hover:bg-surface hover:text-orange-dark focus-visible:bg-surface focus-visible:text-orange-dark"
+                onClick={closeNow}
+              >
+                {child.label}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -152,21 +189,17 @@ export function Header() {
           {mainNav.map((item) =>
             item.children ? (
               <NavDropdown
-                key={item.href}
+                key={item.label}
                 label={item.label}
-                href={item.href}
                 items={item.children}
-                active={isActivePath(pathname, item.href)}
+                active={item.children.some((child) => isActivePath(pathname, child.href))}
               />
             ) : (
               <Link
-                key={item.href}
-                href={item.href}
-                aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
-                className={cx(
-                  "whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide transition-colors",
-                  isActivePath(pathname, item.href) ? "bg-white/10 text-orange" : "text-white/75 hover:text-white",
-                )}
+                key={item.label}
+                href={item.href!}
+                aria-current={isActivePath(pathname, item.href!) ? "page" : undefined}
+                className={cx(navItemClass, isActivePath(pathname, item.href!) ? navItemActiveClass : navItemIdleClass)}
               >
                 {item.label}
               </Link>
@@ -213,21 +246,25 @@ export function Header() {
           >
             <HeaderBand className="flex flex-col gap-1 py-4">
               {mainNav.map((item) => (
-                <div key={item.href} className="border-b border-white/10 py-2 last:border-none">
-                  <Link
-                    href={item.href}
-                    className="block py-2 text-base font-semibold uppercase tracking-wide text-white"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
+                <div key={item.label} className="border-b border-white/10 py-2 last:border-none">
+                  {item.href ? (
+                    <Link
+                      href={item.href}
+                      className="block py-2 text-base font-semibold uppercase tracking-wide text-white"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <p className="py-2 text-base font-semibold uppercase tracking-wide text-white/50">{item.label}</p>
+                  )}
                   {item.children && (
                     <div className="mt-1 flex flex-col gap-1 pl-3">
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="py-1.5 text-sm text-white/65"
+                          className="rounded-lg py-1.5 text-sm text-white/65 transition-colors duration-150 hover:text-orange"
                           onClick={() => setMobileOpen(false)}
                         >
                           {child.label}

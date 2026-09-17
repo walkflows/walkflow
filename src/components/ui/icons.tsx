@@ -90,6 +90,24 @@ export function IconPulse({ className }: IconProps) {
   );
 }
 
+export function IconMail({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2.2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="m4.5 6.5 7.5 6.5 7.5-6.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconMobile({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <rect x="7" y="3" width="10" height="18" rx="2.2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M10.5 18h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function IconBriefcase({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

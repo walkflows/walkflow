@@ -20,33 +20,50 @@ export const hero = {
   secondaryCta: { label: "Explore Our Solutions", href: "#solutions" },
 };
 
-export const problem = {
-  heading: "Getting an enquiry is only the beginning.",
-  body: "Someone finds your business, visits your website and gets in touch. Then the details sit in an inbox, a follow-up gets forgotten or arranging a call takes days of back-and-forth.",
-  resolution:
-    "We help you improve those moments, so customers know what to do and your team knows what needs attention.",
-};
-
-/** Section 3: two equally-weighted service showcases. */
-export const serviceShowcase = {
+/**
+ * Section 3: the single homepage services section (replaces the old
+ * "Getting an enquiry is only the beginning." problem statement and the
+ * two-service showcase below it — this is now the only services
+ * presentation on the homepage). `id: "solutions"` is preserved from the
+ * old serviceShowcase export so Hero's "Explore Our Solutions" (#solutions)
+ * link keeps working. Each item's `icon` key is looked up against the icon
+ * map in Services.tsx; each `cta.href` matches the corresponding entry
+ * under Services in `mainNav` (src/content/navigation.ts) so the card link
+ * and the nav dropdown item lead to the same place.
+ */
+export const services = {
   id: "solutions",
-  eyebrow: "What we build",
-  heading: "Two services. Built to work together.",
-  body: "A website with no follow-through leaves enquiries stuck in an inbox. Automation with no clear front door never gets used. WALKFLOW builds both, so they work as one system.",
-  services: [
+  eyebrow: "OUR SERVICES",
+  headingLines: ["Get more enquiries.", "Make the next steps easier."],
+  cta: { label: "Request a Call", href: "/contact" },
+  items: [
+    {
+      id: "automation",
+      icon: "automation" as const,
+      title: "Business Automation & CRM",
+      body: "Tired of chasing enquiries across emails, spreadsheets and messages? We connect your tools, organise customer details and automate routine follow-ups. Add AI chatbots or voice agents to help answer questions and capture enquiries while your team is busy.",
+      cta: { label: "Explore Business Automation", href: "/ai-automation" },
+    },
+    {
+      id: "email-marketing",
+      icon: "mail" as const,
+      title: "Email Marketing",
+      body: "Give customers a reason to come back. We create welcome emails, follow-up sequences and campaigns that speak to what they need—whether they're considering their first purchase, booking a service or ready to buy again.",
+      cta: { label: "Explore Email Marketing", href: "/services/email-marketing" },
+    },
     {
       id: "web-design",
+      icon: "website" as const,
       title: "Web Design",
-      body: "Help visitors understand your services, trust your business and enquire or buy with confidence. Build a new website or improve the one you already have.",
-      tags: ["Business websites", "E-commerce", "Landing pages", "Web apps"],
+      body: "Your website should make customers feel confident about choosing you. We build business websites, landing pages and online stores that explain your offer, work smoothly on every screen and make it easy to enquire, book or buy.",
       cta: { label: "Explore Web Design", href: "/web-design" },
     },
     {
-      id: "ai-automation",
-      title: "AI Automation",
-      body: "Organise enquiry details, support follow-ups and reduce repeated admin. Start with one task that slows you down, then connect the steps around it.",
-      tags: ["Enquiry handling", "Follow-up", "Appointment admin", "Internal handoffs"],
-      cta: { label: "Explore AI Automation", href: "/ai-automation" },
+      id: "mobile-apps",
+      icon: "mobile" as const,
+      title: "Mobile App Development",
+      body: "Make booking, shopping or accessing your services easier for your customers. We turn your app idea into a practical mobile experience, built around the tasks people need to complete and the reasons they'll return.",
+      cta: { label: "Explore Mobile Apps", href: "/services/mobile-app-development" },
     },
   ],
 };

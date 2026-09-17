@@ -6,35 +6,58 @@ export type NavLink = {
 
 export type NavItem = {
   label: string;
-  href: string;
+  /**
+   * Only present on plain links (Home, About, Contact). Dropdown triggers
+   * (Industry Solutions, Services, Demo Projects) omit this on purpose —
+   * explicitly required to open a menu only, never navigate to a parent
+   * page. "Active" highlighting for a dropdown trigger is instead computed
+   * from whether the current path matches any child.
+   */
+  href?: string;
   children?: NavLink[];
 };
 
+/**
+ * Order and "Demo Projects" naming corrected per explicit instruction
+ * (previously: Home, Services, Industry Solutions, Demos Projects, About,
+ * Contact). Every child link reuses an existing/approved route name where
+ * one exists; two service destinations don't have an approved route
+ * anywhere in CLAUDE.md's route list, so a new `/services/*` path was
+ * introduced for them — flagged in SESSION-NOTES.md as needing sign-off,
+ * same as the `/demos/*` industry sub-pages (only `/demos/real-estate` is an
+ * approved, built route; the other three are extrapolated from that
+ * pattern, not yet built or approved).
+ */
 export const mainNav: NavItem[] = [
   { label: "Home", href: "/" },
-  {
-    label: "Web Design",
-    href: "/web-design",
-    children: [
-      { label: "Business Websites", href: "/web-design/business-websites" },
-      { label: "E-commerce Websites", href: "/web-design/ecommerce" },
-      { label: "Landing Pages", href: "/web-design/landing-pages" },
-      { label: "Web Apps & Internal Tools", href: "/web-design/web-apps" },
-      { label: "AI Automation", href: "/ai-automation" },
-    ],
-  },
+  { label: "About", href: "/about" },
   {
     label: "Industry Solutions",
-    href: "/industries",
     children: [
       { label: "Real Estate", href: "/industries/real-estate" },
-      { label: "Home Services", href: "/industries/home-services" },
+      { label: "Home Services – HVAC & Plumbing", href: "/industries/home-services" },
       { label: "Clinics", href: "/industries/clinics" },
       { label: "Consulting Firms", href: "/industries/consulting" },
-      { label: "Demos", href: "/demos" },
     ],
   },
-  { label: "About", href: "/about" },
+  {
+    label: "Services",
+    children: [
+      { label: "Business Automation & CRM", href: "/ai-automation" },
+      { label: "Email Marketing", href: "/services/email-marketing" },
+      { label: "Web Design", href: "/web-design" },
+      { label: "Mobile App Development", href: "/services/mobile-app-development" },
+    ],
+  },
+  {
+    label: "Demo Projects",
+    children: [
+      { label: "Real Estate", href: "/demos/real-estate" },
+      { label: "Home Services – HVAC & Plumbing", href: "/demos/home-services" },
+      { label: "Clinics", href: "/demos/clinics" },
+      { label: "Consulting Firms", href: "/demos/consulting" },
+    ],
+  },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -48,6 +71,12 @@ export const requestCallCta = { label: "Request a Call", href: "/contact" };
 export const consultationCta = { label: "Book a Consultation", href: "/contact" };
 
 export const footerNav = {
+  /**
+   * Not updated to the new 4-service model this session (only the header
+   * nav and the homepage services section were in scope) — still reflects
+   * the older two-service positioning. Flagged in SESSION-NOTES.md as
+   * likely wanting the same update for consistency.
+   */
   services: [
     { label: "Web Design", href: "/web-design" },
     { label: "AI Automation", href: "/ai-automation" },

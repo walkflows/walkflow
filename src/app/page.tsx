@@ -6,8 +6,7 @@ import { Hero } from "@/components/sections/home/Hero";
 import { Industries } from "@/components/sections/home/Industries";
 import { Journey } from "@/components/sections/home/Journey";
 import { PlatformsAndTools } from "@/components/sections/home/PlatformsAndTools";
-import { Problem } from "@/components/sections/home/Problem";
-import { ServiceShowcase } from "@/components/sections/home/ServiceShowcase";
+import { Services } from "@/components/sections/home/Services";
 import { WhyAndProcess } from "@/components/sections/home/WhyAndProcess";
 import { homeSeo } from "@/content/home";
 
@@ -20,8 +19,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Problem />
-      <ServiceShowcase />
+      <Services />
       <PlatformsAndTools />
       <Journey />
       <Industries />

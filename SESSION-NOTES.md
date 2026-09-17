@@ -3,6 +3,34 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 9 (continued, 2026-09-17) — OUR SERVICES section + navigation corrections
+
+Implemented the attached-image services section (refined against https://agencee.framer.website/ per your note) plus a navigation reorder/rename. Both fully built and interactively verified with Playwright, not just reviewed as code.
+
+**1. Navigation corrected:**
+- New order: **Home | About | Industry Solutions | Services | Demo Projects | Contact** (was Home/Services/Industry Solutions/Demos Projects/About/Contact). "Demos Projects" renamed to "Demo Projects" everywhere it appeared (label only — routes are still under `/demos/*`, unaffected).
+- Dropdown contents, hover/focus styling, chevron rotation, gap-bridging (dropdown stays open moving from trigger to panel), Escape-to-close-and-refocus-trigger, and mobile tap-to-expand are all unchanged from before — only the order and label text moved. Reused the existing `NavDropdown` in `Header.tsx` as-is; only `src/content/navigation.ts`'s array order/labels changed.
+- **Verified live**: dropdown opens on hover with the orange label + dark rounded background and rotated chevron; Escape closes it and returns focus to the trigger button (confirmed via `document.activeElement`); mobile menu shows the corrected order and "DEMO PROJECTS" spelling.
+- Also fixed, while in this file: a pre-existing ESLint warning (`closeNow` missing from a `useEffect` dependency array in `Header.tsx`) — wrapped `closeNow` in `useCallback` so it could be safely added as a dependency. No behaviour change.
+
+**2. New "OUR SERVICES" section built** (`src/components/sections/home/Services.tsx`, content in `src/content/home.ts`'s new `services` export): placed directly after the hero's "Who We Work With" carousel, `id="solutions"` preserved so the hero's "Explore Our Solutions" anchor still works. Two equal columns on desktop, one column on mobile, `bg-navy-deep` (#0A0A0A) matching the hero for a continuous dark background. Eyebrow pill "OUR SERVICES", two-line left-aligned heading in Unbounded at the established weight 500 (not Poppins, not heavy bold), "Request a Call →" positioned right of the heading on desktop and beneath it on mobile.
+
+Refined the attached reference image's styling down per your explicit notes (oversized icon boxes, strong glow, spacing, link alignment) rather than copying it directly: smaller/less dominant icon containers (44px, thin orange border, low-opacity orange fill), subtle charcoal card fill (`bg-navy` #141414) against the page's near-black, thin low-contrast borders, no glossy/glow effects, consistent internal padding, and Explore links verified to align at the exact same bottom pixel within each row regardless of paragraph length (measured directly: 566px and 924px viewport-bottom for both cards in each row).
+
+Exact copy and link destinations implemented verbatim: Business Automation & CRM → `/ai-automation`, Email Marketing → `/services/email-marketing` (new, unapproved route), Web Design → `/web-design`, Mobile App Development → `/services/mobile-app-development` (new, unapproved route) — all matching their corresponding Services dropdown entries.
+
+**3. Explore-link circular arrow animation** (new `src/components/ui/ExploreLink.tsx`, reusable): label + arrow as one `<Link>`. Verified live via direct DOM/computed-style inspection (not just visual screenshot) that on both real mouse hover and real keyboard Tab-focus: the circle's background/border go to `rgb(255,153,28)` (#FF991C), the resting white arrow moves to `translate(16px,-16px)` (slides out to the upper right, clipped by the circle's `overflow-hidden`), a second dark (`rgb(10,10,10)`) arrow that starts pre-positioned at the lower-left settles to `translate(0,0)`, and the label text turns orange (`rgb(255,153,28)`). `:focus-visible` was confirmed to match via `element.matches(':focus-visible')` after a real Tab keypress, not a scripted `.focus()` call. Movement relies on plain CSS transform/colour transitions, so the existing site-wide `prefers-reduced-motion` rule in `globals.css` (which zeroes all transition durations) automatically collapses this to an instant colour change with no perceptible slide — no separate reduced-motion styling needed.
+
+**4. Removed:** `Problem.tsx` and `ServiceShowcase.tsx` (both deleted — the old "Getting an enquiry is only the beginning." section and the old two-service showcase). `page.tsx` now renders `<Hero /><Services /><PlatformsAndTools />...`.
+
+**Missing destination pages flagged (pre-existing gap, not introduced this session — confirmed by checking `src/app/`, which only has `/` and `/demos/real-estate` built):** `/contact`, `/about`, `/web-design`, `/ai-automation`, `/industries/*`, `/services/email-marketing`, `/services/mobile-app-development`, `/demos/home-services`, `/demos/clinics`, `/demos/consulting` all currently 404. This affects every CTA on the homepage (Request a Call, Book a Consultation, all Explore links), not just this session's additions — confirmed live by clicking "Request a Call" in the new section and observing a real 404 response, then navigating back. No pages were built this session, per instruction ("report missing destinations without creating broken links or building additional pages").
+
+**Verified this round:** desktop (1440px) and mobile (390px) layout, card alignment/bottom-alignment of Explore links, heading wrapping to two lines, no horizontal overflow on mobile, nav dropdown open/hover/Escape/mobile-tap, Explore-link hover and real-keyboard-focus animation via computed style, `npm run lint`/`typecheck`/`build` all clean.
+
+**Not independently re-verified:** `prefers-reduced-motion` behaviour for the new ExploreLink and Services reveal animations — reasoned from the existing global CSS rule (proven correct for this same mechanism in earlier sessions) but not re-tested live, since this session's toolset has no way to emulate the OS-level reduced-motion preference.
+
+**Files touched, Session 9 (continued):** New: `src/components/sections/home/Services.tsx`, `src/components/ui/ExploreLink.tsx`. Edited: `src/content/navigation.ts`, `src/content/home.ts`, `src/app/page.tsx`, `src/components/layout/Header.tsx` (lint fix only), `CLAUDE.md`, `brand_assets/website-content.md`. Removed: `src/components/sections/home/Problem.tsx`, `src/components/sections/home/ServiceShowcase.tsx`.
+
 ## Session 9 (2026-09-17) — carousel speed + seamless-loop fix
 
 Two quick follow-up requests on the "Who We Work With" carousel, both carousel-only in scope.

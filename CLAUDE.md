@@ -61,7 +61,13 @@
 - Run the local development server through the framework. Use its reported localhost URL; reuse the running server rather than starting duplicates.
 
 ## Pages and navigation
-- Keep the approved main navigation: Home, Web Design, Industry Solutions, About, Contact; primary button: Request a Call.
+- Keep the approved main navigation (Session 9, supersedes the original Home/Web Design/Industry Solutions/About/Contact order): **Home | About | Industry Solutions | Services | Demo Projects | Contact**; header/hero button: Book a Consultation, primary button elsewhere: Request a Call.
+- Industry Solutions, Services and Demo Projects are dropdown-only triggers (no parent destination page, opens a menu on hover/click/focus only). Dropdown contents:
+  - Industry Solutions: Real Estate, Home Services – HVAC & Plumbing, Clinics, Consulting Firms.
+  - Services: Business Automation & CRM, Email Marketing, Web Design, Mobile App Development.
+  - Demo Projects: Real Estate, Home Services – HVAC & Plumbing, Clinics, Consulting Firms.
+  - "Industry Solutions" describes the offering; "Demo Projects" shows practical examples of how it works.
+- Two Services children and three Demo Projects children point at routes not yet in this file's approved list (`/services/email-marketing`, `/services/mobile-app-development`, `/demos/home-services`, `/demos/clinics`, `/demos/consulting`) — introduced by pattern-matching the existing route conventions, flagged in SESSION-NOTES.md as needing explicit sign-off, not yet built.
 - Include AI Automation and Demos through relevant menus, internal links and the footer without overcrowding the main navigation.
 - Use the supplied complete content pack as the authority for page-level copy and any approved route refinements.
 - Core routes:

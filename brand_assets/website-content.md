@@ -24,9 +24,14 @@ Policy pages are working drafts for the proposed launch setup. Complete the mark
 
 ## SECTION - Main navigation
 
-Web Design · AI Automation · Industries · Demos · About · Contact
+Home · About · Industry Solutions · Services · Demo Projects · Contact (Session 9 — supersedes the "Web Design · AI Automation · Industries · Demos · About · Contact" order above)
 
-Logo links to Home. Main button: Request a Call.
+Industry Solutions, Services and Demo Projects are dropdown-only menu triggers with no destination page of their own:
+- Industry Solutions: Real Estate · Home Services – HVAC & Plumbing · Clinics · Consulting Firms
+- Services: Business Automation & CRM · Email Marketing · Web Design · Mobile App Development
+- Demo Projects: Real Estate · Home Services – HVAC & Plumbing · Clinics · Consulting Firms
+
+Logo links to Home. Header/hero button: Book a Consultation. Main button elsewhere: Request a Call.
 
 ## SECTION - Pages and subpages
 
@@ -114,7 +119,42 @@ Secondary button: Explore Industry Solutions
 
 Removed (Session 7): "Start with the problem you want to solve. We'll help you work out the next step."
 
-## SECTION - The problem
+## SECTION - Our Services
+
+(Session 9 — replaces both "The problem" and "What we build" below, which are removed from the live page; this is now the only services presentation on the homepage, placed directly after the hero's "Who We Work With" carousel.)
+
+Small label: OUR SERVICES
+
+**Get more enquiries.**
+**Make the next steps easier.**
+
+Button: Request a Call → /contact
+
+**Business Automation & CRM**
+
+Tired of chasing enquiries across emails, spreadsheets and messages? We connect your tools, organise customer details and automate routine follow-ups. Add AI chatbots or voice agents to help answer questions and capture enquiries while your team is busy.
+
+Link: Explore Business Automation → /ai-automation
+
+**Email Marketing**
+
+Give customers a reason to come back. We create welcome emails, follow-up sequences and campaigns that speak to what they need—whether they're considering their first purchase, booking a service or ready to buy again.
+
+Link: Explore Email Marketing → /services/email-marketing (new route, not yet in the approved page list — see CLAUDE.md/SESSION-NOTES.md)
+
+**Web Design**
+
+Your website should make customers feel confident about choosing you. We build business websites, landing pages and online stores that explain your offer, work smoothly on every screen and make it easy to enquire, book or buy.
+
+Link: Explore Web Design → /web-design
+
+**Mobile App Development**
+
+Make booking, shopping or accessing your services easier for your customers. We turn your app idea into a practical mobile experience, built around the tasks people need to complete and the reasons they'll return.
+
+Link: Explore Mobile Apps → /services/mobile-app-development (new route, not yet in the approved page list — see CLAUDE.md/SESSION-NOTES.md)
+
+## SECTION - The problem (removed, Session 9)
 
 **Getting an enquiry is only the beginning.**
 
@@ -122,7 +162,7 @@ Someone finds your business, visits your website and gets in touch. Then the det
 
 We help you improve those moments, so customers know what to do and your team knows what needs attention.
 
-## SECTION - What we build
+## SECTION - What we build (removed, Session 9)
 
 **A better website. A simpler way to handle what comes next.**
 
