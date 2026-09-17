@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
 import { platformsAndTools } from "@/content/home";
 import { tools, type Tool } from "@/content/tools";
 import { ButtonEl } from "@/components/ui/Button";
@@ -41,29 +41,42 @@ function ToolCard({ tool, decorative }: { tool: Tool; decorative?: boolean }) {
   );
 }
 
-function StatCircle({ stat, index }: { stat: Stat; index: number }) {
+/**
+ * Per-circle scroll parallax: alternating direction and increasing
+ * magnitude by index, so the row has a gentle "cascade" feel as the page
+ * scrolls, distinct from the entrance reveal (which only fires once).
+ * Applied on a plain wrapping motion.div, outside Reveal's own motion.div,
+ * so the two transforms never fight over the same element.
+ */
+function StatCircle({ stat, index, scrollYProgress }: { stat: Stat; index: number; scrollYProgress: MotionValue<number> }) {
+  const magnitude = 14 + index * 8;
+  const direction = index % 2 === 0 ? 1 : -1;
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [magnitude * direction, -magnitude * direction]);
+
   return (
     // Earlier (leftmost) circles render above later ones, so each circle's
     // own text always sits on top rather than being covered by the next
     // overlapping circle's edge.
     <div className="relative" style={{ zIndex: 100 - index }}>
-      <Reveal delay={0.3 + index * 0.1} y={40} scale={0.9}>
-        <div
-          style={
-            {
-              "--float-delay": `${index * 0.5}s`,
-              "--float-duration": "7s",
-              "--float-amount": "-6px",
-            } as React.CSSProperties
-          }
-          className="flex h-[4.5rem] w-[4.5rem] flex-none animate-float-soft flex-col items-center justify-center overflow-hidden rounded-full border border-white/12 bg-navy-deep/70 px-2 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm motion-reduce:[animation:none] sm:h-28 sm:w-28 lg:h-32 lg:w-32"
-        >
-          <p className="text-[0.8rem] font-bold text-white sm:text-lg lg:text-2xl">{stat.value}</p>
-          <p className="mt-1 max-w-[3rem] text-[0.5rem] leading-tight text-white/55 sm:max-w-[4.5rem] sm:text-[0.6rem] lg:max-w-[5.5rem] lg:text-[0.68rem]">
-            {stat.label}
-          </p>
-        </div>
-      </Reveal>
+      <motion.div style={{ y: parallaxY }} className="motion-reduce:!transform-none">
+        <Reveal delay={0.3 + index * 0.1} y={40} scale={0.9}>
+          <div
+            style={
+              {
+                "--float-delay": `${index * 0.5}s`,
+                "--float-duration": "7s",
+                "--float-amount": "-6px",
+              } as React.CSSProperties
+            }
+            className="flex h-24 w-24 flex-none animate-float-soft flex-col items-center justify-center overflow-hidden rounded-full border border-white/12 bg-navy-deep/70 px-2 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm motion-reduce:[animation:none] sm:h-36 sm:w-36 lg:h-44 lg:w-44"
+          >
+            <p className="whitespace-nowrap font-heading text-sm font-medium text-white sm:text-2xl lg:text-3xl">{stat.value}</p>
+            <p className="mt-1.5 max-w-[4rem] text-[0.55rem] leading-tight text-white/55 sm:max-w-[5rem] sm:text-[0.68rem] lg:max-w-[7rem] lg:text-[0.78rem]">
+              {stat.label}
+            </p>
+          </div>
+        </Reveal>
+      </motion.div>
     </div>
   );
 }
@@ -170,7 +183,7 @@ export function PlatformsAndTools() {
             <span className="inline-flex items-center rounded-full border border-orange/40 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {platformsAndTools.eyebrow}
             </span>
-            <h2 className="max-w-2xl text-[clamp(1.9rem,3.6vw,2.5rem)] text-white">{platformsAndTools.heading}</h2>
+            <h2 className="max-w-2xl text-[clamp(2rem,4.2vw,3rem)] text-white">{platformsAndTools.heading}</h2>
             <p className="max-w-xl leading-relaxed text-white/60">{platformsAndTools.body}</p>
             {/*
               motion-reduce:hidden — under prefers-reduced-motion the strip
@@ -209,9 +222,9 @@ export function PlatformsAndTools() {
         </Reveal>
 
         <div className="mt-20 flex flex-col items-center">
-          <div className="flex -space-x-1.5 sm:-space-x-2.5 lg:-space-x-3">
+          <div className="flex -space-x-2 sm:-space-x-3 lg:-space-x-4">
             {platformsAndTools.stats.map((stat, i) => (
-              <StatCircle key={stat.id} stat={stat} index={i} />
+              <StatCircle key={stat.id} stat={stat} index={i} scrollYProgress={scrollYProgress} />
             ))}
           </div>
           <Reveal delay={0.3 + platformsAndTools.stats.length * 0.1}>

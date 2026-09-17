@@ -3,6 +3,17 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 9 (continued once more, 2026-09-17) — stat circle polish
+
+Three quick fixes to the Platforms and Tools section from the round above, all in `PlatformsAndTools.tsx`:
+
+1. **Stat circle numbers now use the local Unbounded font** (`font-heading font-medium`, matching the weight-500 convention used everywhere else headings appear) — they were plain `<p>` tags before, so they'd inherited the Manrope body font instead of picking up Unbounded automatically the way `<h1>`–`<h4>` tags do.
+2. **"Platforms and tools" heading size now matches the OUR SERVICES heading above it** (`clamp(2rem,4.2vw,3rem)` on both — the Platforms heading was mistakenly left at a smaller `clamp(1.9rem,3.6vw,2.5rem)` from an earlier draft).
+3. **Circles made noticeably bigger, closer to the reference**: 80px→96px on mobile, 112px→144px on tablet, 128px→176px on desktop. Had to also bump the mobile value text to `whitespace-nowrap` at a smaller size ("7 Years" was wrapping to two lines at the old mobile size, pushing the label down until it clipped against `overflow-hidden`) — reverified with a screenshot that it now sits on one line with no clipping at 390px.
+4. **Added scroll-linked parallax to the stat circles** (new, on top of the existing one-time entrance reveal and continuous idle float): each circle now drifts a few pixels as the page scrolls, with alternating direction and increasing magnitude by index (circle 1 moves opposite to circle 2, circle 4 moves further than circle 1), giving the row a layered "cascade" feel while scrolling rather than just settling once. Implemented via a `motion.div` wrapper around each circle bound to the section's existing `scrollYProgress`, kept as a separate layer from the entrance-reveal `motion.div` so the two transforms don't fight over the same element. Verified via `getComputedStyle` before/after a scroll: all four circles move, in the correct alternating directions — and reverified frozen (`transform: none`) under `page.emulateMedia({reducedMotion:'reduce'})`, reusing the same `motion-reduce:!transform-none` fix from the round above.
+
+`lint`/`typecheck`/`build` all clean.
+
 ## Session 9 (continued further, 2026-09-17) — cinematic motion pass on Platforms and Tools
 
 Scope for this round was explicitly **motion/visual effects only** — no content or brand changes — targeting the Platforms and Tools section, per a detailed 22-point motion brief referencing a screenshot, a video (never actually attached — flagged and the work proceeded on the screenshot + spec text only, per your instruction), and https://agencee.framer.website/ for premium-agency motion language.
