@@ -34,7 +34,7 @@ export const media: Record<string, MediaAsset> = {
     alt: "WALKFLOW",
     status: "live",
     recommended: "PNG, transparent or navy background, min 480px wide",
-    usedIn: "Footer (still the old navy-backed treatment — Session 8 only updated the header; the footer now sits on the new near-black palette too and likely wants the same swap, but wasn't in scope)",
+    usedIn: "Currently unused — the footer switched to logoOnBlack (Session 9) to match the header exactly, per explicit instruction. Kept registered here in case a navy-background surface needs this treatment again.",
   },
   /** Session 8: header-only icon, replacing the navy-backed version that
    * clashed with the near-black palette introduced in Session 7.

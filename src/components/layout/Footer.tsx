@@ -4,6 +4,9 @@ import { footerNav } from "@/content/navigation";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
+import { IconMail, IconMapPin, IconPhone, IconWhatsapp, IconLinkedin, IconInstagram } from "@/components/ui/icons";
+
+const socialIcons = { whatsapp: IconWhatsapp, linkedin: IconLinkedin, instagram: IconInstagram };
 
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
@@ -27,25 +30,70 @@ export function Footer() {
 
   return (
     <footer className="bg-navy text-white">
-      <Container className="grid gap-12 py-16 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <Container className="grid gap-12 py-16 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
         <div>
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
             <Image
-              src={media.logoOnDark.src!}
-              alt={media.logoOnDark.alt}
+              src={media.logoOnBlack.src!}
+              alt={media.logoOnBlack.alt}
               width={160}
               height={160}
               className="h-11 w-11 object-contain"
             />
-            <span className="font-heading text-lg font-bold text-white">{site.name}</span>
+            <span className="font-heading text-lg font-bold">
+              <span className="text-orange">WALK</span>
+              <span className="text-white">FLOW</span>
+            </span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/75">{site.footerDescription}</p>
           <p className="mt-4 font-accent text-2xl font-medium text-orange-light">{site.tagline}</p>
         </div>
 
-        <FooterColumn title="Services" links={footerNav.services} />
         <FooterColumn title="Industries" links={footerNav.industries} />
-        <FooterColumn title="Explore" links={footerNav.explore} />
+        <FooterColumn title="Services" links={footerNav.services} />
+
+        <div>
+          <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-white/60">Connect with Us</h3>
+          {/*
+            Placeholder contact details (src/content/site.ts `contact`) — not
+            Joshua's real email/phone/address yet. See CLAUDE.md/SESSION-NOTES.md.
+          */}
+          <ul className="mt-4 flex flex-col gap-3">
+            <li className="flex items-start gap-2.5 text-sm text-white/85">
+              <IconMail className="mt-0.5 h-4 w-4 flex-none text-orange" />
+              <a href={`mailto:${site.contact.email}`} className="hover:text-orange">
+                {site.contact.email}
+              </a>
+            </li>
+            <li className="flex items-start gap-2.5 text-sm text-white/85">
+              <IconPhone className="mt-0.5 h-4 w-4 flex-none text-orange" />
+              <a href={`tel:${site.contact.phone.replace(/[^+\d]/g, "")}`} className="hover:text-orange">
+                {site.contact.phone}
+              </a>
+            </li>
+            <li className="flex items-start gap-2.5 text-sm text-white/85">
+              <IconMapPin className="mt-0.5 h-4 w-4 flex-none text-orange" />
+              <span>{site.contact.address}</span>
+            </li>
+          </ul>
+
+          <h3 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-white/60">Follow us</h3>
+          <div className="mt-4 flex items-center gap-3">
+            {site.social.map((profile) => {
+              const Icon = socialIcons[profile.id as keyof typeof socialIcons];
+              return (
+                <Link
+                  key={profile.id}
+                  href={profile.href}
+                  aria-label={profile.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/75 transition-colors duration-200 hover:border-orange hover:text-orange"
+                >
+                  <Icon className="h-4 w-4" />
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </Container>
 
       <div className="border-t border-white/10">

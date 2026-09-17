@@ -93,6 +93,7 @@
 - Request a Call leads to `/contact` or the accessible enquiry form. It must not falsely imply a calendar booking has been confirmed.
 - Use concise, human wording. Avoid hype, unsupported promises, fake urgency, invented metrics, testimonials, certifications or client logos.
 - **Known exception, flagged not silently fixed (Session 9)**: the homepage Platforms and Tools section (`platformsAndTools.stats`/`features` in `src/content/home.ts`) currently holds explicitly unverified PLACEHOLDER numbers/copy ("7 Years", "200+ Successful Projects", "100+ Happy Clients", "150+ Client Reviews", plus three feature-card claims) — added at your explicit direction as a layout placeholder for a motion/visual-effects task, pending your sign-off on real figures or removal. Do not treat as approved. See SESSION-NOTES.md.
+- **Second known exception (Session 9)**: the footer's "Connect with Us" column (`site.contact` in `src/content/site.ts`) holds a dummy email, phone number and address, added at your explicit direction for the footer redesign layout. Not Joshua's real business details — replace before publishing. The three social links (WhatsApp/LinkedIn/Instagram, `site.social`) point to `#` placeholders, ready to become real profile URLs once they exist.
 - Explain industry offerings as scoped solutions that can be built, not existing live capabilities unless verified.
 - SECTION labels in the content pack are editorial instructions, not text to display on the public website.
 

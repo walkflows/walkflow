@@ -240,25 +240,8 @@ export const demoShowcase = {
   ],
 };
 
-export const why = {
-  heading: "Start with what matters. Build from there.",
-  points: [
-    {
-      title: "Your priorities first",
-      body: "We begin with your customers, your goals and the work taking up your day.",
-    },
-    {
-      title: "A clear scope",
-      body: "Understand the deliverables, costs and responsibilities before the build begins.",
-    },
-    {
-      title: "Room to grow",
-      body: "Start with a website or one useful automation. Add more when it makes sense.",
-    },
-  ],
-};
-
 export const process = {
+  eyebrow: "OUR PROCESS",
   heading: "From “this needs fixing” to a clear next step.",
   steps: [
     {
@@ -281,6 +264,7 @@ export const process = {
 };
 
 export const faq = {
+  eyebrow: "FAQ",
   heading: "Quick answers",
   items: [
     {

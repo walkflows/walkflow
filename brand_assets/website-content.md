@@ -77,17 +77,23 @@ Industry and service cards link to their corresponding addresses above. Each ind
 
 ## SECTION - Shared footer
 
+(Session 9: columns changed to Industries, Services, Connect with Us — replacing the old Services/Industries/Explore layout. Logo and wordmark now match the header exactly.)
+
 WALKFLOW
 
 Websites that help customers take the next step. Practical automation that helps your team follow through.
 
 Take the steps. Build the flow.
 
-Services: Web Design · AI Automation
+Industries: Real Estate · Home Services – HVAC & Plumbing · Clinics · Consulting Firms
 
-Industries: Real Estate · Home Services · Clinics · Consulting Firms
+Services: Business Automation & CRM · Email Marketing · Web Design · Mobile App Development
 
-Explore: Demos · About WALKFLOW · Contact
+Connect with Us — UNVERIFIED PLACEHOLDER, pending your real business details:
+- Email: hello@walkflow.com
+- Phone: +1 (555) 123-4567
+- Address: 123 Business Ave, Suite 100, Springfield, ST 00000
+- Follow us: WhatsApp · LinkedIn · Instagram (icons link to "#" for now — ready to become real profile URLs once accounts exist)
 
 Legal: Privacy Policy · Cookie Policy · Website Terms · Accessibility · Cookie Settings
 
@@ -222,6 +228,8 @@ Button: Explore Industry Solutions
 
 ## SECTION - Demonstration
 
+(This block is stale — pre-dates the current 4-item Demos grid in `DemoShowcase.tsx`/`home.ts`'s `demoShowcase` export: eyebrow "Demos", heading "See a concept in action", one live Real Estate demo plus three "Coming soon" industry placeholders. Kept here rather than silently deleted; needs a proper resync, out of scope for this round's redesign which only touched visual styling, not copy.)
+
 **See how the experience could work for your business.**
 
 Explore a property website concept built around browsing listings and taking the next step. See the intended customer journey before discussing your own version.
@@ -230,7 +238,7 @@ Button: Explore the Real Estate Demo
 
 Concept demonstration with sample listings. Simulated steps are labelled.
 
-## SECTION - Why WALKFLOW
+## SECTION - Why WALKFLOW (removed, Session 9)
 
 **Start with what matters. Build from there.**
 
@@ -242,6 +250,8 @@ Room to grow: Start with a website or one useful automation. Add more when it ma
 
 ## SECTION - Our process
 
+(Session 9: restyled as its own dark section directly after Demos, with a new small label "OUR PROCESS" above the heading; the four steps now display as a 2×2 card grid instead of a numbered list beside "Why WALKFLOW", which was removed. Wording unchanged.)
+
 **From “this needs fixing” to a clear next step.**
 
 1. Tell us what’s happening. Share your goals and where customers or your team get stuck.
@@ -250,6 +260,8 @@ Room to grow: Start with a website or one useful automation. Add more when it ma
 4. Test and launch. Check the agreed features together and learn how to use them.
 
 ## SECTION - Quick answers
+
+(Session 9: restyled to match a reference FAQ layout — dark rounded rows, filled-orange toggle buttons, first question open by default, small label "FAQ" added above the heading. Wording/questions/answers unchanged.)
 
 **Can I start with just a website?**
 

@@ -4,10 +4,9 @@ import { FAQ } from "@/components/sections/home/FAQ";
 import { FinalCta } from "@/components/sections/home/FinalCta";
 import { Hero } from "@/components/sections/home/Hero";
 import { Industries } from "@/components/sections/home/Industries";
-import { Journey } from "@/components/sections/home/Journey";
 import { PlatformsAndTools } from "@/components/sections/home/PlatformsAndTools";
+import { Process } from "@/components/sections/home/Process";
 import { Services } from "@/components/sections/home/Services";
-import { WhyAndProcess } from "@/components/sections/home/WhyAndProcess";
 import { homeSeo } from "@/content/home";
 
 export const metadata: Metadata = {
@@ -23,9 +22,8 @@ export default function HomePage() {
       <PlatformsAndTools />
       <Industries />
       <DemoShowcase />
-      <WhyAndProcess />
+      <Process />
       <FAQ />
-      <Journey />
       <FinalCta />
     </>
   );

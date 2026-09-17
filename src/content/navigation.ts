@@ -70,27 +70,26 @@ export const requestCallCta = { label: "Request a Call", href: "/contact" };
  */
 export const consultationCta = { label: "Book a Consultation", href: "/contact" };
 
+/**
+ * Now synced with mainNav's Industry Solutions and Services dropdown
+ * children (Session 9) so the footer's submenu lists match the header
+ * exactly — previously flagged as drifted/out of date. The old "Explore"
+ * column (Demos, About WALKFLOW, Contact) was dropped when the footer
+ * moved to its new three-column layout (Industries, Services, Connect with
+ * Us); those destinations are still reachable from the main header nav.
+ */
 export const footerNav = {
-  /**
-   * Not updated to the new 4-service model this session (only the header
-   * nav and the homepage services section were in scope) — still reflects
-   * the older two-service positioning. Flagged in SESSION-NOTES.md as
-   * likely wanting the same update for consistency.
-   */
-  services: [
-    { label: "Web Design", href: "/web-design" },
-    { label: "AI Automation", href: "/ai-automation" },
-  ],
   industries: [
     { label: "Real Estate", href: "/industries/real-estate" },
-    { label: "Home Services", href: "/industries/home-services" },
+    { label: "Home Services – HVAC & Plumbing", href: "/industries/home-services" },
     { label: "Clinics", href: "/industries/clinics" },
     { label: "Consulting Firms", href: "/industries/consulting" },
   ],
-  explore: [
-    { label: "Demos", href: "/demos" },
-    { label: "About WALKFLOW", href: "/about" },
-    { label: "Contact", href: "/contact" },
+  services: [
+    { label: "Business Automation & CRM", href: "/ai-automation" },
+    { label: "Email Marketing", href: "/services/email-marketing" },
+    { label: "Web Design", href: "/web-design" },
+    { label: "Mobile App Development", href: "/services/mobile-app-development" },
   ],
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
