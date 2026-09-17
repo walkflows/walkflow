@@ -34,7 +34,7 @@ Then open **http://localhost:3000**.
 
 **Exact next step for next session:** interactively verify the carousel (drag, buttons, keyboard, autoplay loop) once a working browser tool is available — that's the one piece of this session's work that's implemented and reasoned-through but not actually watched running.
 
-**Latest commit:** see "Git checkpoints" below for today's hash.
+**Latest commit:** `3e6eb84`. Nothing pushed anywhere; all work is local-only.
 
 ## How to restart the local preview
 
@@ -60,7 +60,7 @@ Then open **http://localhost:3000**. `npm install` has already been run, so `nod
 11. `e891853` — fixed a commit-hash placeholder and checkpoint list entry.
 12. `2c051c2` — Session 6: header and hero redesign. See "Session 6" below.
 13. `eca0209` — Session 7: near-black/orange palette, Poppins heading font, hero copy/badge/background/compact-layout corrections. See "Session 7" below.
-14. (Session 8 checkpoint — see "Session 8" below for what it covers; hash recorded once created.)
+14. `3e6eb84` — Session 8: local Unbounded restored, industry carousel added, logo/wordmark corrections, a real hydration bug fixed (latest). See "Session 8" below.
 
 ## Session 8 — Local Unbounded restored, industry carousel, logo/wordmark corrections
 
