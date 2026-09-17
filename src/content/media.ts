@@ -34,7 +34,27 @@ export const media: Record<string, MediaAsset> = {
     alt: "WALKFLOW",
     status: "live",
     recommended: "PNG, transparent or navy background, min 480px wide",
-    usedIn: "Footer / navy sections",
+    usedIn: "Footer (still the old navy-backed treatment — Session 8 only updated the header; the footer now sits on the new near-black palette too and likely wants the same swap, but wasn't in scope)",
+  },
+  /** Session 8: header-only icon, replacing the navy-backed version that
+   * clashed with the near-black palette introduced in Session 7.
+   * Superseded once already within Session 8 — first swapped to a
+   * black-background copy of the existing icon (logo-white-on-black.png,
+   * still in public/brand/ if needed), then swapped again to this
+   * orange-background "walkflow new logo.png" asset per explicit
+   * instruction. Both source files still contain the old "Walkflow Agcy."
+   * wordmark arced above the icon, illegible at the ~40px render size this
+   * asset is used at, and NOT the same text as the "WALKFLOW" wordmark
+   * rendered separately in Header.tsx — flagged in SESSION-NOTES.md as
+   * worth a proper icon-only crop if that illegible baked-in text ever
+   * needs to go away for good. */
+  logoOnBlack: {
+    id: "logoOnBlack",
+    src: "/brand/logo-icon-orange.png",
+    alt: "WALKFLOW",
+    status: "live",
+    recommended: "PNG, transparent background, icon only (no wordmark baked in), min 480px wide",
+    usedIn: "Header (dark)",
   },
   heroVisual: {
     id: "heroVisual",

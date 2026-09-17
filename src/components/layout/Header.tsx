@@ -9,6 +9,7 @@ import { mainNav, consultationCta } from "@/content/navigation";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
+import { IconArrowRight } from "@/components/ui/icons";
 import { cx } from "@/lib/utils";
 
 /**
@@ -63,7 +64,7 @@ function NavDropdown({
         onClick={() => setOpen((v) => !v)}
         className={cx(
           "flex items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide transition-colors",
-          active ? "bg-white/12 text-orange-light" : "text-white/75 hover:text-white",
+          active ? "bg-white/10 text-orange" : "text-white/75 hover:text-white",
         )}
       >
         {label}
@@ -131,14 +132,17 @@ export function Header() {
       <HeaderBand className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-4">
         <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
           <Image
-            src={media.logoOnDark.src!}
-            alt={media.logoOnDark.alt}
+            src={media.logoOnBlack.src!}
+            alt={media.logoOnBlack.alt}
             width={160}
             height={160}
             className="h-10 w-10 object-contain"
             priority
           />
-          <span className="font-heading text-lg font-bold text-white">{site.name}</span>
+          <span className="font-heading text-lg font-bold">
+            <span className="text-orange">WALK</span>
+            <span className="text-white">FLOW</span>
+          </span>
         </Link>
 
         <nav
@@ -161,7 +165,7 @@ export function Header() {
                 aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
                 className={cx(
                   "whitespace-nowrap rounded-full px-4 py-2 text-[0.8rem] font-semibold uppercase tracking-wide transition-colors",
-                  isActivePath(pathname, item.href) ? "bg-white/12 text-orange-light" : "text-white/75 hover:text-white",
+                  isActivePath(pathname, item.href) ? "bg-white/10 text-orange" : "text-white/75 hover:text-white",
                 )}
               >
                 {item.label}
@@ -172,7 +176,10 @@ export function Header() {
 
         <div className="flex items-center justify-end gap-3">
           <div className="hidden lg:block">
-            <Button href={consultationCta.href}>{consultationCta.label}</Button>
+            <Button href={consultationCta.href}>
+              {consultationCta.label}
+              <IconArrowRight />
+            </Button>
           </div>
 
           <button
@@ -232,6 +239,7 @@ export function Header() {
               ))}
               <Button href={consultationCta.href} className="mt-4 w-full">
                 {consultationCta.label}
+                <IconArrowRight />
               </Button>
             </HeaderBand>
           </motion.div>

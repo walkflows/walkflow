@@ -37,7 +37,7 @@
   --color-white: #ffffff;
 
   /* Typography */
-  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-accent: var(--font-caveat), cursive;
 
@@ -75,7 +75,7 @@
   h3,
   h4 {
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 0;
   }
 
