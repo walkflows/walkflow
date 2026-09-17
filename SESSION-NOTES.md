@@ -3,6 +3,19 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 9 (2026-09-17) — carousel speed + seamless-loop fix
+
+Two quick follow-up requests on the "Who We Work With" carousel, both carousel-only in scope.
+
+1. **Speed increased ~10%**: `PX_PER_SECOND` in `IndustryCarousel.tsx` went from `36` to `39.6`. **Done, verified** — sampled the live `translateX` value in the browser at both desktop and mobile widths; measured rate matched the target within normal timer jitter.
+2. **A real (if narrow) bug fixed in the seamless-loop mechanism**: `runCycle` (the function that re-triggers each animation cycle from inside its own `onComplete`) called itself directly by name from inside a `useCallback`. This is a self-reference ESLint flags as unsafe ("accessed before it is declared") — functionally correct in the common case, but fragile: if the closure were ever recreated mid-flight (Fast Refresh, StrictMode remounts, a future dependency change) an old, stale copy of the loop could keep running underneath a new one, which is consistent with the "stops/reverses/jumps back" symptom described. Fixed by routing the recursive call through a `useRef` that always holds the latest function (`runCycleRef.current()` instead of calling `runCycle` by name), which removes the fragility without changing the animation logic itself. `npm run lint` is now fully clean for this file (previously a blocking error, not just a warning).
+3. **Wrap-point math verified directly, not just reasoned about**: temporarily set the loop speed to 2000px/s (test-only, reverted before finishing) and sampled `translateX` every 15ms across several full wraps, both before and after the ref fix. Confirmed the only "jumps" in the raw signal are the intentional one-copy-width resets (which land on pixel-identical duplicated content, so they're invisible on screen) — no stall, no reversal, no gap, in either version. This is the same duplicated-track technique used since Session 8; the bug (such as it was) was in the recursion's fragility, not the wrap arithmetic.
+4. **Pause/hover/resume re-verified interactively** (Playwright is connected again this session): clicking pause stops movement almost immediately (~2px of drift while the state update commits); clicking again resumes from the exact paused position, not a reset; real `mouseenter`/`mouseleave` events pause and resume the same way. All confirmed via direct `translateX` sampling, not just code review.
+5. **Not independently re-verified this round**: `prefers-reduced-motion` behavior. The code path (`useReducedMotion()` gating `shouldPlay`, `motion-reduce:hidden` on the pause button) is unchanged from the Session 8 fix and wasn't touched by this round's edits, but this session's toolset has no way to emulate the OS-level reduced-motion preference, so it wasn't re-tested live — flagging honestly rather than assuming.
+6. `npm run lint`, `npm run typecheck`, and `npm run build` all pass cleanly. One pre-existing, unrelated lint **warning** (not error) remains in `Header.tsx` (`closeNow` missing from a `useEffect` dependency array) — left untouched since this round's instruction was carousel-only.
+
+**Files touched, Session 9:** `src/components/sections/home/IndustryCarousel.tsx` only.
+
 ## Stopping point — end of Session 8 (2026-09-17)
 
 Work paused here **for the day**, at your request. This session had three rounds of instructions in quick succession (carousel + logo, then a colour/logo/font correction, then this stop-work request) — all implemented, verified as far as a browser-less method allows, and checkpointed below.
