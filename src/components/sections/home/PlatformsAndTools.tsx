@@ -46,26 +46,37 @@ function ToolCard({ tool, decorative }: { tool: Tool; decorative?: boolean }) {
 }
 
 /**
- * Per-circle scroll parallax: alternating direction and increasing
- * magnitude by index, so the row has a gentle "cascade" feel as the page
- * scrolls, distinct from the entrance reveal (which only fires once).
+ * Gathered-to-separated reveal: as the row scrolls into view (tracked by
+ * its own short, local scroll range via `statsProgress` — not the whole
+ * section — so the motion actually plays out over a visible distance
+ * instead of being spread thin across the entire, much taller section),
+ * each circle starts pulled in toward the centre (heavily overlapping its
+ * neighbours) and gently glides out to its resting, evenly-spaced position.
  * Applied on a plain wrapping motion.div, outside Reveal's own motion.div,
- * so the two transforms never fight over the same element.
+ * so the one-off entrance transform and this scroll-linked one never fight
+ * over the same element.
  */
-function StatCircle({ stat, index, scrollYProgress }: { stat: Stat; index: number; scrollYProgress: MotionValue<number> }) {
-  // Kept deliberately small — an earlier, larger magnitude made the
-  // movement the first thing visitors noticed rather than the numbers
-  // themselves; this stays just perceptible as a "depth" cue on scroll.
-  const magnitude = 5 + index * 2;
-  const direction = index % 2 === 0 ? 1 : -1;
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [magnitude * direction, -magnitude * direction]);
+function StatCircle({
+  stat,
+  index,
+  total,
+  statsProgress,
+}: {
+  stat: Stat;
+  index: number;
+  total: number;
+  statsProgress: MotionValue<number>;
+}) {
+  const center = (total - 1) / 2;
+  const startOffset = (center - index) * 60;
+  const separationX = useTransform(statsProgress, [0, 1], [startOffset, 0]);
 
   return (
     // Earlier (leftmost) circles render above later ones, so each circle's
     // own text always sits on top rather than being covered by the next
     // overlapping circle's edge.
     <div className="relative" style={{ zIndex: 100 - index }}>
-      <motion.div style={{ y: parallaxY }} className="motion-reduce:!transform-none">
+      <motion.div style={{ x: separationX }} className="motion-reduce:!transform-none">
         <Reveal delay={0.3 + index * 0.1} y={40} scale={0.9}>
           <div
             style={
@@ -135,6 +146,13 @@ export function PlatformsAndTools() {
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
   const typographyYFar = useTransform(scrollYProgress, [0, 1], [50, -50]);
   const typographyYNear = useTransform(scrollYProgress, [0, 1], [-36, 36]);
+
+  // Separate, short scroll range just for the stat-circle row (see
+  // StatCircle's own comment) — deliberately its own useScroll call rather
+  // than reusing scrollYProgress above, since that one spans the entire,
+  // much taller section and would make the circles' movement imperceptible.
+  const statsRowRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: statsProgress } = useScroll({ target: statsRowRef, offset: ["start 95%", "start 45%"] });
 
   // Extremely subtle cursor-follow on one ambient light layer. Skipped
   // entirely under reduced motion (a runtime early-return, not a render
@@ -247,9 +265,15 @@ export function PlatformsAndTools() {
         </Reveal>
 
         <div className="mt-20 flex flex-col items-center">
-          <div className="flex -space-x-2 sm:-space-x-3 lg:-space-x-4">
+          <div ref={statsRowRef} className="flex -space-x-2 sm:-space-x-3 lg:-space-x-4">
             {platformsAndTools.stats.map((stat, i) => (
-              <StatCircle key={stat.id} stat={stat} index={i} scrollYProgress={scrollYProgress} />
+              <StatCircle
+                key={stat.id}
+                stat={stat}
+                index={i}
+                total={platformsAndTools.stats.length}
+                statsProgress={statsProgress}
+              />
             ))}
           </div>
           <Reveal delay={0.3 + platformsAndTools.stats.length * 0.1}>

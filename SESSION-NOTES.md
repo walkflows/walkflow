@@ -3,6 +3,16 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 9 (one more round, 2026-09-17) — Industry Solutions heading to 2 lines, stat circles redone with a "separating" scroll effect
+
+**1. Industry Solutions heading now wraps to exactly two lines** at tablet/desktop widths ("Start with the problem your business" / "knows too well."). `industries.heading` (a single string) became `industries.headingLines` (a two-item array, same pattern already used by the Services section) — `Industries.tsx` renders each as its own line with `sm:whitespace-nowrap` so each holds to one line from the `sm` breakpoint up; below that (very narrow phones) the first line can still soft-wrap further rather than overflow or shrink unreadably, which is the same graceful-degradation approach used elsewhere on this site. No wording changed, only where the break falls.
+
+**2. Stat circles redone**: replaced the previous whole-section-scroll-linked vertical jitter (which you reported as barely visible) with a purpose-built "gather → separate" reveal. Each circle now starts pulled in toward the row's centre — heavily overlapping its neighbours — and gently glides out to its normal, evenly-overlapped resting position as the row scrolls into view. The key fix making this actually visible: it's driven by a **second, local `useScroll` call scoped to the stat row itself** (`offset: ["start 95%", "start 45%"]`), not the one shared with the huge background typography (which spans the *entire*, much taller section — the old effect was real but stretched so thin across that scroll distance it was nearly imperceptible, which is almost certainly what "can't see it well" was pointing at).
+
+Verified numerically, not just by eye: sampled each circle's `translateX` at the start, middle and end of that local scroll range — `[90, 30, -30, -90]` → `[45, 15, -15, -45]` → `[0, 0, 0, 0]` — confirming a smooth, symmetric separation from a tightly gathered cluster to the normal spaced layout. Re-verified the effect is fully inert under `page.emulateMedia({reducedMotion:'reduce'})` (`transform: none` regardless of scroll position), reusing the same `motion-reduce:!transform-none` approach as everywhere else in this file. The continuous idle float (the very subtle up/down bob once settled) is untouched.
+
+`lint`/`typecheck`/`build` all clean. Checked mobile (390px) for both changes: no overflow either way.
+
 ## Session 9 (continued yet again, 2026-09-17) — tool rows split, subtler circle motion, dark image-based Industry Solutions, section reorder
 
 Four separate fixes/changes in one round:

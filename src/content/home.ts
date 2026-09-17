@@ -122,7 +122,7 @@ export const platformsAndTools = {
 /** Section 5: equally-weighted industry cards. Add entries here to extend the grid. */
 export const industries = {
   eyebrow: "Industry solutions",
-  heading: "Start with the problem your business knows too well.",
+  headingLines: ["Start with the problem your business", "knows too well."],
   cards: [
     {
       title: "Real Estate",

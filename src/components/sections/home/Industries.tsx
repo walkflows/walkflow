@@ -15,7 +15,13 @@ export function Industries() {
               <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
                 {industries.eyebrow}
               </span>
-              <h2 className="mt-4 max-w-xl text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">{industries.heading}</h2>
+              <h2 className="mt-4 max-w-3xl text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">
+                {industries.headingLines.map((line) => (
+                  <span key={line} className="block sm:whitespace-nowrap">
+                    {line}
+                  </span>
+                ))}
+              </h2>
             </div>
             <Button href={industries.cta.href} variant="secondary-on-dark" className="flex-none">
               {industries.cta.label}
