@@ -70,10 +70,53 @@ export const services = {
 
 /** Platforms and tools strip. Logos are shown for reference only — not clients, partners or endorsements. */
 export const platformsAndTools = {
+  eyebrow: "PLATFORMS & TOOLS",
   heading: "Platforms and tools",
   body: "Examples of the platforms and AI tools a WALKFLOW project might use or connect to, depending on scope — shown for reference, not as clients or partners.",
   pause: "Pause moving logos",
   resume: "Resume moving logos",
+  /**
+   * UNVERIFIED PLACEHOLDER CONTENT — added for the cinematic motion pass on
+   * this section, using the reference screenshot's own numbers/copy exactly
+   * as instructed, pending your sign-off. None of these figures (years,
+   * project/client/review counts) are confirmed real WALKFLOW numbers yet;
+   * CLAUDE.md prohibits invented metrics as approved marketing claims, so
+   * treat this block as a layout placeholder, not launch-ready copy. See
+   * SESSION-NOTES.md.
+   */
+  stats: [
+    { id: "years", value: "7 Years", label: "Hands-on Experience" },
+    { id: "projects", value: "200+", label: "Successful Projects" },
+    { id: "clients", value: "100+", label: "Happy Clients" },
+    { id: "reviews", value: "150+", label: "Client Reviews" },
+  ],
+  statsCaption: "Experience and results across our founder's and team members' work.",
+  features: [
+    {
+      id: "priorities",
+      icon: "people" as const,
+      title: "Your business comes first",
+      body: "Tell us where enquiries get missed or work slows down. We help you choose a practical starting point and build around what your business needs.",
+    },
+    {
+      id: "scope",
+      icon: "document" as const,
+      title: "Know what you're paying for",
+      body: "Get a clear scope, price and timeline before work begins. Understand what's included, what happens next and which ongoing costs to expect.",
+    },
+    {
+      id: "involved",
+      icon: "chat" as const,
+      title: "Stay involved at every step",
+      body: "See the work as it takes shape, share feedback and get clear updates. Before launch, we test the agreed features together and show you how to use them.",
+    },
+  ],
+  pills: [
+    { id: "clear-scope", icon: "document" as const, label: "Clear Scope" },
+    { id: "practical", icon: "gear" as const, label: "Practical Solutions" },
+    { id: "updates", icon: "refresh" as const, label: "Regular Updates" },
+    { id: "handover", icon: "swap" as const, label: "Guided Handover" },
+  ],
 };
 
 /** Section 5: equally-weighted industry cards. Add entries here to extend the grid. */

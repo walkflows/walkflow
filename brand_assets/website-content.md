@@ -178,6 +178,32 @@ Organise enquiry details, support follow-ups and reduce repeated admin. Start wi
 
 Button: Explore AI Automation
 
+## SECTION - Platforms and tools
+
+(Added Session 4, never previously logged in this content pack; recorded here now while updating the section's motion/visuals in Session 9.)
+
+**Platforms and tools**
+
+Examples of the platforms and AI tools a WALKFLOW project might use or connect to, depending on scope — shown for reference, not as clients or partners.
+
+Logos shown: ChatGPT, Claude, Framer, GoHighLevel, Make, n8n, Shopify, Squarespace, Wix — reference-only, not clients, partners or endorsements.
+
+**UNVERIFIED PLACEHOLDER, added Session 9 — pending your sign-off, do not treat as approved copy:**
+
+Small label: PLATFORMS & TOOLS
+
+Statistic circles: 7 Years (Hands-on Experience) · 200+ (Successful Projects) · 100+ (Happy Clients) · 150+ (Client Reviews)
+
+Caption: Experience and results across our founder's and team members' work.
+
+Feature card — Your business comes first: Tell us where enquiries get missed or work slows down. We help you choose a practical starting point and build around what your business needs.
+
+Feature card — Know what you're paying for: Get a clear scope, price and timeline before work begins. Understand what's included, what happens next and which ongoing costs to expect.
+
+Feature card — Stay involved at every step: See the work as it takes shape, share feedback and get clear updates. Before launch, we test the agreed features together and show you how to use them.
+
+Pills: Clear Scope · Practical Solutions · Regular Updates · Guided Handover
+
 ## SECTION - Industry solutions
 
 **Start with the problem your business knows too well.**

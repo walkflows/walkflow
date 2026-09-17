@@ -92,6 +92,7 @@
 - Main CTA: "Request a Call" — still used site-wide except the header and hero, which say "Book a Consultation" (Session 6 decision, not yet reconciled; see SESSION-NOTES.md). Secondary hero CTA: "Explore Our Solutions".
 - Request a Call leads to `/contact` or the accessible enquiry form. It must not falsely imply a calendar booking has been confirmed.
 - Use concise, human wording. Avoid hype, unsupported promises, fake urgency, invented metrics, testimonials, certifications or client logos.
+- **Known exception, flagged not silently fixed (Session 9)**: the homepage Platforms and Tools section (`platformsAndTools.stats`/`features` in `src/content/home.ts`) currently holds explicitly unverified PLACEHOLDER numbers/copy ("7 Years", "200+ Successful Projects", "100+ Happy Clients", "150+ Client Reviews", plus three feature-card claims) — added at your explicit direction as a layout placeholder for a motion/visual-effects task, pending your sign-off on real figures or removal. Do not treat as approved. See SESSION-NOTES.md.
 - Explain industry offerings as scoped solutions that can be built, not existing live capabilities unless verified.
 - SECTION labels in the content pack are editorial instructions, not text to display on the public website.
 

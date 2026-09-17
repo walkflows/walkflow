@@ -130,6 +130,70 @@
     animation: marquee-x var(--marquee-duration, 34s) linear infinite;
   }
 
+  /*
+   * Slow ambient-light drift and subtle glass-circle float, for the
+   * Platforms and Tools section's cinematic background. Pure CSS (no JS
+   * branching on useReducedMotion), so the existing global
+   * prefers-reduced-motion rule above already neutralises these
+   * automatically — no extra reduced-motion handling needed here.
+   */
+  @keyframes drift-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(3vw, -2vh, 0);
+    }
+  }
+
+  @keyframes drift-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(-2.5vw, 3vh, 0);
+    }
+  }
+
+  @keyframes drift-c {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(2vw, 2.5vh, 0);
+    }
+  }
+
+  .animate-drift-a {
+    animation: drift-a 24s ease-in-out infinite;
+  }
+
+  .animate-drift-b {
+    animation: drift-b 30s ease-in-out infinite;
+  }
+
+  .animate-drift-c {
+    animation: drift-c 20s ease-in-out infinite;
+  }
+
+  @keyframes float-soft {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(var(--float-amount, -6px));
+    }
+  }
+
+  .animate-float-soft {
+    animation: float-soft var(--float-duration, 7s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+
   .skip-link {
     position: absolute;
     left: 1rem;

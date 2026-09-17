@@ -108,6 +108,72 @@ export function IconMobile({ className }: IconProps) {
   );
 }
 
+export function IconPeople({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="8.5" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="16" cy="8.5" r="2" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M3.5 19c.55-3.1 2.55-4.7 5-4.7s4.45 1.6 5 4.7M14.3 19c.4-2.3 1.7-3.7 3.4-4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function IconDocument({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path
+        d="M7 3.5h6.5L18 8v11.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M13.5 3.5V8H18" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M8.7 12.5h6M8.7 15.5h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function IconChat({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path
+        d="M4 6.8A2.8 2.8 0 0 1 6.8 4h10.4A2.8 2.8 0 0 1 20 6.8v6.9a2.8 2.8 0 0 1-2.8 2.8H10l-4.2 3.4v-3.4H6.8A2.8 2.8 0 0 1 4 13.7V6.8Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IconGear({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M17.8 6.2l-1.55 1.55M7.75 16.25 6.2 17.8M17.8 17.8l-1.55-1.55M7.75 7.75 6.2 6.2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function IconSwap({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M4 8h13.5M13.5 4.5 17.5 8l-4 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 16H6.5M10.5 12.5 6.5 16l4 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconBriefcase({ className }: IconProps) {
   return (
     <svg {...base} className={className}>
