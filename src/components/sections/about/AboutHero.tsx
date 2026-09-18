@@ -17,7 +17,7 @@ export function AboutHero() {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(255,153,28,0.18),transparent)]"
       />
 
-      <Container className="relative grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+      <Container className="relative grid items-center gap-14 lg:grid-cols-[1fr_1fr] lg:gap-10">
         <Reveal>
           <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
             {aboutHero.eyebrow}
@@ -45,22 +45,28 @@ export function AboutHero() {
         </Reveal>
 
         <Reveal delay={0.12} scale={0.94}>
-          <div className="relative mx-auto w-full max-w-sm">
+          <div className="relative mx-auto w-full max-w-md lg:max-w-lg">
             <div
               aria-hidden
-              className="pointer-events-none absolute -inset-10 -z-10 rounded-full bg-orange/25 blur-[90px]"
+              className="pointer-events-none absolute -inset-16 -z-20 rounded-full bg-orange/15 blur-[110px]"
             />
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] border border-white/10">
+            <div className="relative aspect-[4/5] w-full">
+              {/* Solid orange backdrop shape behind the cutout photo, echoing the reference layout's circular
+                  accent — kept inside this image box (not the outer wrapper) so it never reaches the name text below. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute bottom-0 left-1/2 -z-10 h-[68%] w-[80%] -translate-x-1/2 rounded-[45%] bg-gradient-to-b from-orange to-orange-hover"
+              />
               <Image
                 src={aboutHero.photo.src}
                 alt={aboutHero.photo.alt}
                 fill
-                sizes="(min-width: 1024px) 384px, (min-width: 640px) 320px, 80vw"
-                className="object-cover"
+                sizes="(min-width: 1024px) 512px, (min-width: 640px) 420px, 88vw"
+                className="object-contain object-bottom"
                 priority
               />
             </div>
-            <p className="mt-5 text-center font-heading text-[clamp(1.5rem,2.6vw,1.9rem)] font-medium leading-none text-white lg:text-left">
+            <p className="mt-4 text-center font-heading text-[clamp(1.5rem,2.6vw,1.9rem)] font-medium leading-none text-white lg:text-left">
               {aboutHero.name.split(" ")[0]} <span className="text-orange">{aboutHero.name.split(" ").slice(1).join(" ")}</span>
             </p>
           </div>

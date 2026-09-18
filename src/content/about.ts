@@ -60,7 +60,7 @@ export const aboutHero = {
   tags: ["Mechanical Engineering Grad", "Content Writer", "Self-Taught Web Designer", "AI Automation"],
   cta: { label: "Request a Call", href: "/contact" },
   photo: {
-    src: "/about/founder.png",
+    src: "/about/founder-headshot.png",
     alt: "Joshua Ayomide, founder of WALKFLOW",
   },
 };
