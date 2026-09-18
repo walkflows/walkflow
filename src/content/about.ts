@@ -1,15 +1,19 @@
 /**
  * About page copy, sourced from `about us/walkflow-about-us.md` (approved
- * content pack) with no invented facts, metrics or claims added. Two
- * exceptions, both flagged in SESSION-NOTES.md as needing sign-off rather
- * than treated as approved verbatim copy:
- *  - `aboutFounder.tags` are short factual descriptors derived from the
+ * content pack) with no invented facts, metrics or claims added. Exceptions,
+ * all flagged in SESSION-NOTES.md as needing sign-off rather than treated as
+ * approved verbatim copy:
+ *  - `aboutHero.tags` are short factual descriptors derived from the
  *    approved bio (mechanical engineering, content writing, web design,
  *    automation), not soft-skill claims like "Visionary Thinker".
  *  - `aboutValues.items` are short labels synthesized from phrases already
  *    in the approved Mission/Vision/Who We Are copy (e.g. "remove friction",
  *    "tools you don't need", "keeps working long after the project ends"),
  *    written to fill the reference layout's value-tag section.
+ *  - `aboutTeam` has no real people in it yet — Joshua said the other three
+ *    team members' details are coming soon, so these are honest placeholder
+ *    seats (no invented names/roles/photos), not the fabricated staff shown
+ *    in the reference screenshot for that section's layout.
  */
 
 export const aboutSeo = {
@@ -47,17 +51,25 @@ export const aboutAccordion = [
   },
 ];
 
-export const aboutFounder = {
+export const aboutHero = {
   eyebrow: "About Founder",
   heading: "Meet the Founder",
   intro:
     "Joshua Ayomide didn't set out to run an automation agency. He studied mechanical engineering, taught himself content writing, picked up web design during lockdown, and learned automation because a client needed it. WALKFLOW is what happens when you keep saying yes to the next skill the work demands — until one day you've built a team instead of just a career.",
   name: "Joshua Ayomide",
   tags: ["Mechanical Engineering Grad", "Content Writer", "Self-Taught Web Designer", "AI Automation"],
+  cta: { label: "Request a Call", href: "/contact" },
   photo: {
     src: "/about/founder.png",
     alt: "Joshua Ayomide, founder of WALKFLOW",
   },
+};
+
+export const aboutTeam = {
+  eyebrow: "The Team",
+  heading: "Meet the Team",
+  body: "WALKFLOW is growing beyond one person. Profiles for the rest of the team are on the way.",
+  seatCount: 3,
 };
 
 export const aboutValues = {

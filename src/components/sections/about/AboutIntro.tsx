@@ -5,14 +5,10 @@ import { AboutAccordion } from "@/components/sections/about/AboutAccordion";
 
 export function AboutIntro() {
   return (
-    <section className="relative isolate overflow-hidden bg-navy-deep pb-20 pt-16 sm:pb-28 sm:pt-20">
+    <section className="relative isolate overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(255,153,28,0.16),transparent)]"
       />
 
       <Container className="relative grid gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
