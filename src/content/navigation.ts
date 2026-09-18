@@ -23,10 +23,9 @@ export type NavItem = {
  * Contact). Every child link reuses an existing/approved route name where
  * one exists; two service destinations don't have an approved route
  * anywhere in CLAUDE.md's route list, so a new `/services/*` path was
- * introduced for them — flagged in SESSION-NOTES.md as needing sign-off,
- * same as the `/demos/*` industry sub-pages (only `/demos/real-estate` is an
- * approved, built route; the other three are extrapolated from that
- * pattern, not yet built or approved).
+ * introduced for them — flagged in SESSION-NOTES.md as needing sign-off.
+ * All four `/demos/*` destinations are now built (Session 10) — no longer
+ * a gap, though the copy/content still needs your sign-off before launch.
  */
 export const mainNav: NavItem[] = [
   { label: "Home", href: "/" },

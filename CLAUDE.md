@@ -67,7 +67,7 @@
   - Services: Business Automation & CRM, Email Marketing, Web Design, Mobile App Development.
   - Demo Projects: Real Estate, Home Services – HVAC & Plumbing, Clinics, Consulting Firms.
   - "Industry Solutions" describes the offering; "Demo Projects" shows practical examples of how it works.
-- Two Services children and three Demo Projects children point at routes not yet in this file's approved list (`/services/email-marketing`, `/services/mobile-app-development`, `/demos/home-services`, `/demos/clinics`, `/demos/consulting`) — introduced by pattern-matching the existing route conventions, flagged in SESSION-NOTES.md as needing explicit sign-off, not yet built.
+- Two Services children point at routes not yet in this file's approved list (`/services/email-marketing`, `/services/mobile-app-development`) — introduced by pattern-matching the existing route conventions, flagged in SESSION-NOTES.md as needing explicit sign-off, not yet built. The three Demo Projects children pointing at `/demos/home-services`, `/demos/clinics`, `/demos/consulting` are now built (Session 10) — see the `/demos/*` entry below.
 - Include AI Automation and Demos through relevant menus, internal links and the footer without overcrowding the main navigation.
 - Use the supplied complete content pack as the authority for page-level copy and any approved route refinements.
 - Core routes:
@@ -78,7 +78,7 @@
   - `/industries`: industry solutions overview.
   - `/industries/real-estate`, `/industries/home-services`, `/industries/clinics`, `/industries/consulting`: four industry pages.
   - `/industries/home-services/hvac`, `/industries/home-services/plumbing`, `/industries/home-services/roofing`: supporting pages when supplied in the approved content pack.
-  - `/demos`: demo showcase; `/demos/real-estate`: real-estate walkthrough when ready.
+  - `/demos`: demo showcase overview (not yet built as a standalone page — the homepage's Demo Showcase section currently serves this role). `/demos/real-estate`, `/demos/home-services`, `/demos/clinics`, `/demos/consulting`: four concept-demonstration walkthroughs, all built (Session 10), each with an interactive customer-flow-plus-business-view demo. Copy/content still pending your sign-off before launch.
   - `/about`, `/contact`, `/thank-you`, `/privacy`, `/cookies`, `/terms`, `/accessibility`, plus the framework's not-found page.
 - Keep FAQ and process content within the relevant pages unless separate pages are explicitly approved.
 - Do not create extra portfolio cases, blogs, pricing plans, admin interfaces or dashboards merely to fill space.
