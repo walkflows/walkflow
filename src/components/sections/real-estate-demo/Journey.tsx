@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { realEstateDemoJourney, realEstateDemoProblem } from "@/content/real-estate-demo";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -11,6 +12,9 @@ export function Journey() {
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-orange">{realEstateDemoProblem.heading}</p>
               <p className="mt-4 max-w-md text-lg leading-relaxed text-white/60">{realEstateDemoProblem.body}</p>
+              <div className="relative mt-8 aspect-[4/3] max-w-md overflow-hidden rounded-3xl border border-white/10">
+                <Image src="/demo-visuals/real-estate/problem.jpg" alt="" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover" />
+              </div>
             </div>
             <div>
               <h2 className="text-[clamp(1.75rem,3.4vw,2.25rem)] leading-[1.15] text-white">

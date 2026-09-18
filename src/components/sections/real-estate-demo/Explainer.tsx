@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { realEstateDemoExplainer } from "@/content/real-estate-demo";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -5,8 +6,13 @@ import { Reveal } from "@/components/ui/Reveal";
 export function Explainer() {
   return (
     <section className="border-t border-white/10 bg-navy-deep py-20 sm:py-28">
-      <Container className="max-w-3xl">
-        <Reveal>
+      <Container className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-16">
+        <Reveal delay={0.1} y={28} className="lg:order-1">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10">
+            <Image src="/demo-visuals/real-estate/solution.jpg" alt="" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          </div>
+        </Reveal>
+        <Reveal className="lg:order-2">
           <h2 className="text-[clamp(1.75rem,3.4vw,2.25rem)] leading-[1.15] text-white">
             {realEstateDemoExplainer.heading}
           </h2>

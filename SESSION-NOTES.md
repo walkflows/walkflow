@@ -3,6 +3,22 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 10 (one more round, 2026-09-18) — background words reverted big, real photos added throughout the demo pages
+
+**1. Reverted the background typography sizes** ("WALKFLOW", "PLATFORMS", "EXPERIENCE") back to their original large scale (`26vw`/`20vw`, `19vw`, `15vw`) — you explicitly said you preferred the earlier, bigger, more abstractly-cropped look over last round's "fixed to be fully legible" version. Also removed the `tracking-tight` I'd added to "DEMO" so all four background words now share the exact same treatment again.
+
+**2. Wired in the 25 images you supplied** (`New image examples to use/`) — copied a selection into `public/demo-visuals/{home-services,clinics,consulting,real-estate}/` (hero/problem/solution roles per industry), matched to each industry by the filename's own label. Full folder was 9 Home Services, 8 Clinics, 6 Consulting, 5 Real Estate photos; used 3 each for Home Services/Clinics/Consulting and 2 for Real Estate, leaving the rest available if more sections want images later.
+
+**3. Home Services, Clinics and Consulting Firms hero sections rebuilt to match the homepage Hero's actual polish**, not just visually resemble it: converted `DemoHero` from a single static `Reveal` wrap to the same staggered `motion.p`/`motion.h1`/`motion.p`/`motion.div` entrance sequence as the homepage (same delays, same easing), added the homepage's grid-texture background layer, added a big cropped background wordmark using each page's own heading (same big/abstract treatment as point 1 — consistent rather than a special case), and added a real photo in a rounded, gradient-overlaid panel in the same position the homepage's "Who We Work With" carousel occupies. Also added an accent-colour treatment to the heading (last word in orange for two-word headings — "Home **Services**", "Consulting **Firms**" — the whole word for one-word headings — **Clinics**), matching the homepage hero's coloured-word signature.
+
+**4. Added images to the Problem and Solution sections on all three new pages**, alternating text/image column order between the two (Problem: text left, image right; Solution: image left, text right) for visual rhythm rather than a repetitive stack of identical layouts — a `DemoProblem`/`DemoSolution` prop addition (`image: string`), not a new component.
+
+**5. Real Estate demo page also got two of the new images** (`Journey.tsx` and `Explainer.tsx`, previously text-only) for the same "all demo pages" coverage, in addition to the 9 real property photos it already had from the previous round.
+
+**Deliberately left untouched**: `DemoVisual`'s "screenshots go here, coming soon" placeholder — the new photos are industry-context stock photography, not screenshots of an actual product UI, so swapping them in there would misleadingly imply a finished live demo per CLAUDE.md's demo-state rules. The stock photos are used only where they're clearly illustrative (hero, problem, solution), never presented as "this is the live site."
+
+**Verified**: all three new hero pages screenshot-checked at desktop and mobile (390px) with no horizontal overflow; console clean on all three pages and Real Estate; reduced-motion emulation confirmed the hero still renders correctly (Motion's own informational reduced-motion console notice is expected, not an error). `lint`/`typecheck`/`build` all clean.
+
 ## Session 10 (continued, 2026-09-18) — three new demo pages: Home Services, Clinics, Consulting Firms
 
 Built the three demo pages that were previously only placeholder links in the header's Demo Projects dropdown and the homepage's "Coming soon" cards (`/demos/home-services`, `/demos/clinics`, `/demos/consulting` — all previously 404s, flagged since Session 9). Each follows the exact same section order, styling and interactive-demo mechanism as `/demos/real-estate`, per explicit instruction, with only copy, labels and sample data differing per industry.

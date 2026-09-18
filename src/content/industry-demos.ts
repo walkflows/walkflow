@@ -10,9 +10,10 @@ export type IndustryDemoContent = {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
     notice: string;
+    image: string;
   };
-  problem: { heading: string; points: string[] };
-  solution: { heading: string; body: string; components: string[] };
+  problem: { heading: string; points: string[]; image: string };
+  solution: { heading: string; body: string; components: string[]; image: string };
   steps: { heading: string; items: IndustryDemoStep[] };
   visual: { heading: string; body: string };
   results: { heading: string; body: string; outcomes: string[] };
@@ -57,6 +58,7 @@ export const industryDemos: Record<"home-services" | "clinics" | "consulting", I
       secondaryCta: { label: "Request a Call", href: "/contact" },
       notice:
         "Sample requests and demonstration content. This is not a live home services business. No real callout or job is arranged through this demo.",
+      image: "/demo-visuals/home-services/hero.jpg",
     },
     problem: {
       heading: "The business problem",
@@ -65,11 +67,13 @@ export const industryDemos: Record<"home-services" | "clinics" | "consulting", I
         "Scheduling is manual and chaotic, with details spread across calls, texts and paper notes.",
         "There's no system to capture leads after hours, when many callouts actually come in.",
       ],
+      image: "/demo-visuals/home-services/problem.jpg",
     },
     solution: {
       heading: "What WALKFLOW builds",
       body: "A website with instant lead capture, automated follow-up and a booking system that works around the clock — so a callout request never just sits in a voicemail.",
       components: ["Instant lead capture", "Automated SMS/email follow-up", "24/7 appointment booking"],
+      image: "/demo-visuals/home-services/solution.jpg",
     },
     steps: {
       heading: "The intended journey",
@@ -132,6 +136,7 @@ export const industryDemos: Record<"home-services" | "clinics" | "consulting", I
       secondaryCta: { label: "Request a Call", href: "/contact" },
       notice:
         "Sample bookings and demonstration content. This is not a live clinic or medical practice. No real appointment is arranged through this demo.",
+      image: "/demo-visuals/clinics/hero.jpg",
     },
     problem: {
       heading: "The business problem",
@@ -140,11 +145,13 @@ export const industryDemos: Record<"home-services" | "clinics" | "consulting", I
         "No-shows are costly, and easy to reduce with a simple reminder sequence.",
         "Front-desk staff are overwhelmed with repetitive scheduling calls that a system could handle.",
       ],
+      image: "/demo-visuals/clinics/problem.jpg",
     },
     solution: {
       heading: "What WALKFLOW builds",
       body: "A website with online booking, automated appointment reminders and patient follow-up sequences — reducing no-shows and admin load on reception.",
       components: ["Online booking", "Automated appointment reminders", "Patient follow-up sequences"],
+      image: "/demo-visuals/clinics/solution.jpg",
     },
     steps: {
       heading: "The intended journey",
@@ -207,6 +214,7 @@ export const industryDemos: Record<"home-services" | "clinics" | "consulting", I
       secondaryCta: { label: "Request a Call", href: "/contact" },
       notice:
         "Sample enquiries and demonstration content. This is not a live consulting firm. No real proposal or engagement is arranged through this demo.",
+      image: "/demo-visuals/consulting/hero.jpg",
     },
     problem: {
       heading: "The business problem",
@@ -215,11 +223,13 @@ export const industryDemos: Record<"home-services" | "clinics" | "consulting", I
         "Manual proposal and follow-up processes lose deals that a timely nudge could have saved.",
         "There's no system for nurturing the long sales cycles consulting engagements often need.",
       ],
+      image: "/demo-visuals/consulting/problem.jpg",
     },
     solution: {
       heading: "What WALKFLOW builds",
       body: "A website with lead qualification forms, automated nurture sequences and a booking system for discovery calls — keeping prospects engaged until they're ready to convert.",
       components: ["Lead qualification forms", "Automated nurture sequences", "Discovery call booking"],
+      image: "/demo-visuals/consulting/solution.jpg",
     },
     steps: {
       heading: "The intended journey",
