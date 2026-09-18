@@ -7,12 +7,7 @@ import { IconArrowRight } from "@/components/ui/icons";
 
 export function AboutHero() {
   return (
-    <section className="relative isolate overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px]"
-      />
-
+    <section className="overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       <Container className="relative grid items-center gap-14 lg:grid-cols-[1fr_1fr] lg:gap-10">
         <Reveal>
           <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">

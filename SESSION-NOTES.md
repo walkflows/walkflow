@@ -3,6 +3,18 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 15 (2026-09-18) — plain founder background, TEAM watermark, new Experience section
+
+**1. "Meet the Founder" background simplified.** Removed the faint grid-texture pattern from `AboutHero.tsx` per explicit instruction ("use plain background") — now a flat `bg-navy-deep`, no overlay.
+
+**2. Added the same oversized low-opacity background-word treatment to the Team section** — "TEAM", behind the three cards, identical classes to the WALKFLOW/VALUES watermarks elsewhere on the page (`AboutTeam.tsx` needed `relative isolate overflow-hidden` added to its section wrapper to clip it properly, since it didn't need that before).
+
+**3. Added a new "Experience & Results" section** (`AboutExperience.tsx`), positioned right after "What We Stand For" (Values) and before the closing CTA, per explicit instruction. Reuses the homepage's existing stat-circle data (`platformsAndTools.stats`/`statsCaption` from `src/content/home.ts` — 7 Years / 200+ Projects / 100+ Clients / 150+ Reviews) rather than duplicating or inventing new numbers; those are the **same already-flagged UNVERIFIED PLACEHOLDER figures** from the homepage's Platforms & Tools section, not new claims — carrying an existing flag forward, not introducing one. Built as a simpler, static version of the homepage's stat-circle row (Reveal stagger only, no scroll-linked separation animation, no tool marquee/feature cards) since duplicating the full homepage mega-section here would be redundant — just the "EXPERIENCE" watermark + circles + caption, scoped appropriately for a secondary page.
+
+**Bug caught and fixed before shipping**: simplifying `AboutHero.tsx`'s background (item 1) accidentally dropped `overflow-hidden` from the section entirely, which let an existing decorative element — the photo's ambient blur halo (`-inset-10 blur-[100px]`, previously safely clipped) — bleed past the viewport edge on mobile, causing real horizontal scroll (confirmed via `document.documentElement.scrollWidth` = 383 vs clientWidth 375 at 375px). Fixed by keeping `overflow-hidden` on the section (structural, not visual — doesn't reintroduce the grid pattern) while still removing the pattern itself.
+
+**Verified**: `lint`/`typecheck`/`build` all clean. Restarted the dev server proactively before visual checks this time (after two prior sessions hit stale Turbopack/image caches) — no repeat of that issue. Checked live at 1440px and 390px; caught and fixed the 375px overflow above; console clean.
+
 ## Session 14 (2026-09-18) — section reorder, swapped photo back, values redesigned, team card format
 
 **1. Reordered `/about`**: "Who We Are" (`AboutIntro`) is now the first section, "Meet the Founder" (`AboutHero`) second — swapped from last session's order, per explicit instruction. Moved the `<h1>` to `AboutIntro` accordingly (it owns the page's primary heading now) and downgraded `AboutHero`'s heading to `<h2>`; also swapped which section carries the "first section" styling (asymmetric top padding, no divider) versus the "later section" styling (`border-t` divider) to match.

@@ -8,8 +8,14 @@ export function AboutTeam() {
   const seats = Array.from({ length: aboutTeam.seatCount }, (_, i) => i + 1);
 
   return (
-    <section className="border-t border-white/10 bg-navy py-20 sm:py-28">
-      <Container>
+    <section className="relative isolate overflow-hidden border-t border-white/10 bg-navy py-20 sm:py-28">
+      <p
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-heading text-[26vw] font-medium leading-none tracking-wide text-white/[0.05]"
+      >
+        TEAM
+      </p>
+      <Container className="relative">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">

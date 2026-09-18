@@ -93,6 +93,19 @@ export const aboutValues = {
   ],
 };
 
+/**
+ * Reuses `platformsAndTools.stats`/`statsCaption` from the homepage
+ * (src/content/home.ts) rather than duplicating the numbers here — same
+ * UNVERIFIED PLACEHOLDER figures flagged there (7 Years / 200+ Projects /
+ * 100+ Clients / 150+ Reviews), not new claims. Positioned after "What We
+ * Stand For" (Values) per explicit instruction.
+ */
+export const aboutExperience = {
+  eyebrow: "Track Record",
+  heading: "Experience & Results",
+  backgroundWord: "EXPERIENCE",
+};
+
 export const aboutCta = {
   heading: "Have a project in mind?",
   body: "Tell us what you're working on and we'll reply by email to arrange a call.",
