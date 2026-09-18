@@ -2,9 +2,6 @@ import { aboutValues } from "@/content/about";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 
-/** Small deterministic tilt per pill, purely decorative and static (no animation loop). */
-const tilts = ["-rotate-2", "rotate-1", "rotate-0", "-rotate-1", "rotate-2", "rotate-0", "-rotate-1", "rotate-1"];
-
 export function AboutValues() {
   return (
     <section className="relative isolate overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
@@ -29,14 +26,13 @@ export function AboutValues() {
           </div>
         </Reveal>
 
-        <div className="mx-auto mt-12 flex max-w-3xl flex-wrap justify-center gap-3">
+        <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {aboutValues.items.map((item, i) => (
-            <Reveal key={item} delay={i * 0.05} y={16}>
-              <span
-                className={`inline-flex items-center rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white/80 ${tilts[i % tilts.length]}`}
-              >
-                {item}
-              </span>
+            <Reveal key={item.title} delay={i * 0.05} y={16}>
+              <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <p className="font-heading text-lg font-medium text-orange">{item.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-white/60">{item.description}</p>
+              </div>
             </Reveal>
           ))}
         </div>

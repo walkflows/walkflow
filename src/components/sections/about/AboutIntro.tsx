@@ -5,7 +5,7 @@ import { AboutAccordion } from "@/components/sections/about/AboutAccordion";
 
 export function AboutIntro() {
   return (
-    <section className="relative isolate overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
+    <section className="relative isolate overflow-hidden bg-navy-deep pb-20 pt-16 sm:pb-28 sm:pt-20">
       {/* Oversized background wordmark — same treatment as the homepage hero. */}
       <p
         aria-hidden
@@ -31,9 +31,9 @@ export function AboutIntro() {
           <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
             {aboutIntro.eyebrow}
           </span>
-          <h2 className="mt-5 text-balance text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] text-white">
+          <h1 className="mt-5 text-balance text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] text-white">
             {aboutIntro.heading}
-          </h2>
+          </h1>
           <div className="mt-6 flex flex-col gap-4">
             {aboutIntro.paragraphs.map((p) => (
               <p key={p} className="leading-relaxed text-white/65">

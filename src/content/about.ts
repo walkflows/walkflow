@@ -5,11 +5,16 @@
  * approved verbatim copy:
  *  - `aboutHero.tags` are short factual descriptors derived from the
  *    approved bio (mechanical engineering, content writing, web design,
- *    automation), not soft-skill claims like "Visionary Thinker".
- *  - `aboutValues.items` are short labels synthesized from phrases already
- *    in the approved Mission/Vision/Who We Are copy (e.g. "remove friction",
- *    "tools you don't need", "keeps working long after the project ends"),
- *    written to fill the reference layout's value-tag section.
+ *    automation). One entry, "Certified Web Designer", was dictated verbatim
+ *    by Joshua — flagged because CLAUDE.md's copy rules call out inventing
+ *    certifications specifically, and nothing in the approved bio names an
+ *    actual certification. Left as instructed (an explicit, specific
+ *    instruction from Joshua), not silently softened — confirm there's a
+ *    real credential behind this before publishing, or reword it.
+ *  - `aboutValues.items` pairs two lists Joshua sent together in the same
+ *    message (8 short words + 8 conversational lines) by position — he
+ *    didn't specify the pairing, so this is a judgment call, not verified
+ *    1:1 intent. Worth a quick sanity check against his intended pairing.
  *  - `aboutTeam` has no real people in it yet — Joshua said the other three
  *    team members' details are coming soon, so these are honest placeholder
  *    seats (no invented names/roles/photos), not the fabricated staff shown
@@ -57,10 +62,10 @@ export const aboutHero = {
   intro:
     "Joshua Ayomide didn't set out to run an automation agency. He studied mechanical engineering, taught himself content writing, picked up web design during lockdown, and learned automation because a client needed it. WALKFLOW is what happens when you keep saying yes to the next skill the work demands — until one day you've built a team instead of just a career.",
   name: "Joshua Ayomide",
-  tags: ["Mechanical Engineering Grad", "Content Writer", "Self-Taught Web Designer", "AI Automation"],
+  tags: ["Mech Engineering Grad", "Content Writer", "Certified Web Designer", "AI Automation Consultant"],
   cta: { label: "Request a Call", href: "/contact" },
   photo: {
-    src: "/about/founder-headshot.png",
+    src: "/about/founder-business.png",
     alt: "Joshua Ayomide, founder of WALKFLOW",
   },
 };
@@ -77,14 +82,14 @@ export const aboutValues = {
   heading: "Our Values",
   backgroundWord: "VALUES",
   items: [
-    "Remove Friction",
-    "No Unnecessary Tools",
-    "Show Up and Listen",
-    "Built to Keep Working",
-    "Steps Before Flow",
-    "Practical Automation",
-    "Honest, Scoped Work",
-    "Straightforward Communication",
+    { title: "Automation", description: "We'll figure it out with you." },
+    { title: "Innovation", description: "No jargon, just answers." },
+    { title: "Reliability", description: "Easy to say yes to." },
+    { title: "Trust", description: "We walk you through it." },
+    { title: "Efficiency", description: "Systems that keep working after we're gone." },
+    { title: "Partnership", description: "One team handling everything." },
+    { title: "Scalability", description: "We tell you the truth upfront." },
+    { title: "Results", description: "Built to launch, not to sit on a shelf." },
   ],
 };
 
