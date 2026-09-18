@@ -3,6 +3,22 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 11 (2026-09-18) — built the About Us page
+
+Built `/about` from scratch (route was already reserved in CLAUDE.md/navigation but no page file existed), using the approved `about us/walkflow-about-us.md` content pack and `about us/MY BUSINESS IMAGE.png` (copied to `public/about/founder.png`) as the authority for copy and photo, and the pasted reference screenshot/link (agencee.framer.website/about) as the layout target — same overall structure (intro + expandable History/Mission/Vision cards, founder photo + bio, big-background-word values section, closing CTA), rebuilt with WALKFLOW's own dark navy/orange identity and existing component conventions rather than copying the reference's design.
+
+**New files**: `src/content/about.ts` (all copy, kept separate from presentation per the project's usual pattern), `src/components/sections/about/{AboutIntro,AboutAccordion,AboutFounder,AboutValues,AboutCta}.tsx`, `src/app/about/page.tsx`.
+
+**Deliberately left out the reference's "Brands we've worked with" logo strip** — WALKFLOW has no real client/platform logos to show there (unlike the homepage's Platforms & Tools section, which shows tools WALKFLOW actually builds with, not client endorsements), and CLAUDE.md rules out inventing client logos, so a fabricated version wasn't built as a stand-in.
+
+**Two spots need your sign-off, flagged rather than silently treated as approved:**
+- `aboutFounder.tags` — factual descriptor pills ("Mechanical Engineering Grad", "Content Writer", "Self-Taught Web Designer", "AI Automation") derived directly from the approved founder bio, used in place of the reference's unverifiable soft-skill labels ("Visionary Thinker" etc.).
+- `aboutValues.items` — the 8 value-pill labels (e.g. "Remove Friction", "Show Up and Listen") are short phrases synthesized from wording already in the approved Mission/Vision/Who We Are copy, written to fill the reference layout's value-cloud section since the content pack didn't include a values list itself.
+
+Reused existing patterns rather than inventing new ones: the FAQ accordion's exact toggle/animation logic (`AboutAccordion.tsx`), the DemoHero/PlatformsAndTools big-background-word treatment (font-medium, tracking-wide, low-opacity, aria-hidden) for the "VALUES" word, and the FinalCta/DemoFinalCta card styling for the closing CTA.
+
+**Verified**: `lint`/`typecheck`/`build` all clean, `/about` prerenders as a static route. Checked live at 1440px, 390px and confirmed no horizontal overflow at 375px; scrolled through every section to confirm the `Reveal` (`whileInView`) animations actually fire — a first full-page screenshot showed large blank gaps between sections, which turned out to be a screenshot-capture artifact (Playwright's single-shot full-page capture doesn't trigger `IntersectionObserver`-based reveals the way real scrolling does, same as the rest of the site's existing sections), not a rendering bug — confirmed by scrolling to each section and re-screenshotting. Console clean on `/about`; also re-checked `/demos/consulting` after seeing stale HMR errors reference a since-removed `image` prop — reloading confirmed it was leftover dev-server state from the prior session's edits, not a real issue on the current code.
+
 ## Session 10 (final round, 2026-09-18) — background words bolder/wider, demo-page images removed
 
 **1. Background words made bolder and wider.** "WALKFLOW" (Hero), "PLATFORMS"/"EXPERIENCE" (Platforms and Tools), and "DEMO" (Demos) were all plain `<p>` tags with no explicit font-weight — since only `<h1>`–`<h4>` get the site-wide weight-500 default, these were silently rendering at the browser's normal (400) weight despite using the Unbounded heading font, which is why they read as thin even after being sized big again last round. Added `font-medium` (500, the heaviest weight actually loaded — avoids triggering synthetic/fake bold) and `tracking-wide` to all four, nudged their opacity up slightly (0.035→0.05, 0.03→0.045) so the heavier weight actually reads, and increased each one's size by roughly 10–15% for a "wider" footprint. Applied the identical treatment to the Home Services/Clinics/Consulting Firms hero background word for consistency, since it uses the same pattern.
