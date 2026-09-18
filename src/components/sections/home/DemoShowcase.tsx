@@ -6,7 +6,18 @@ import { cx } from "@/lib/utils";
 
 export function DemoShowcase() {
   return (
-    <section className="bg-navy-deep py-20 sm:py-28">
+    <section className="relative isolate overflow-hidden bg-navy-deep py-20 sm:py-28">
+      {/* Huge, near-invisible background typography, matching the treatment
+          used for "PLATFORMS"/"EXPERIENCE" in the section above. Purely
+          decorative: aria-hidden, clipped by the section's own
+          overflow-hidden, never intercepts pointer events or reading order. */}
+      <p
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-heading text-[26vw] leading-none tracking-tight text-white/[0.035] sm:text-[20vw]"
+      >
+        DEMO
+      </p>
+
       <Container>
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">

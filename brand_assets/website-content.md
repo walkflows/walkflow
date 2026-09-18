@@ -261,23 +261,39 @@ Room to grow: Start with a website or one useful automation. Add more when it ma
 
 ## SECTION - Quick answers
 
-(Session 9: restyled to match a reference FAQ layout — dark rounded rows, filled-orange toggle buttons, first question open by default, small label "FAQ" added above the heading. Wording/questions/answers unchanged.)
+(Session 9: restyled to match a reference FAQ layout — dark rounded rows, filled-orange toggle buttons, first question open by default, small label "FAQ" added above the heading. Session 10: all 8 questions/answers replaced per explicit instruction — the previous 4 shown further down this doc's history are superseded, not merely edited.)
 
-**Can I start with just a website?**
+**What is WALKFLOW?**
 
-Yes. Web design is a standalone service. Automation can be a separate project later.
+WALKFLOW is an agency that builds websites, apps, and automation systems for high-value service businesses — designed to capture leads, convert them, and eliminate repetitive manual work.
 
-**Can you improve my existing website?**
+**Who do you work with?**
 
-Yes. We’ll review what you have and discuss whether focused improvements or a rebuild would better suit your goals.
+We work directly with decision-makers — CEOs, MDs, COOs, CFOs, CTOs, CIOs, CMOs, CCOs, VPs, Presidents, Directors General, and General Managers — at service-based businesses that already have demand but are losing time or leads to manual processes.
 
-**Do I need to know which tools to use?**
+**What services do you offer?**
 
-No. Explain what you want to achieve. We’ll recommend suitable tools and outline any subscription costs before you commit.
+Web design, app development, email marketing, and business automation — as standalone projects or combined into one connected system.
 
-**How much will my project cost?**
+**What makes WALKFLOW different from a regular agency?**
 
-Your quote depends on the pages, features and integrations you need. We’ll agree on the scope and price before starting.
+We don't just deliver a design and walk away. Every project connects to a system — lead capture, follow-up, booking, or automation — so what we build actually works for your business, not just looks good.
+
+**How does a project usually start?**
+
+With a short discovery call to understand your business, current bottlenecks, and goals. From there, we scope the right combination of services for you.
+
+**How much does it cost?**
+
+It depends on scope — a single service is priced differently than a full connected system. We give you a clear quote after understanding your needs on the discovery call.
+
+**Do you offer ongoing support after launch?**
+
+Yes — we offer maintenance and optimization plans so your systems keep running and improving after launch, plus the option of a one-off build if that's what you prefer.
+
+**Will this replace my team, or support them?**
+
+It supports them. Automation handles the repetitive parts (follow-ups, reminders, data entry) so your team can focus on higher-value work.
 
 ## SECTION - Final invitation
 

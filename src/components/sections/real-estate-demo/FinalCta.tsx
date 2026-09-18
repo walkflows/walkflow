@@ -13,7 +13,7 @@ export function FinalCta() {
             className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-orange/20 blur-[90px]"
           />
           <Container className="relative max-w-xl px-0">
-            <h2 className="text-[clamp(1.9rem,4.2vw,2.75rem)] font-extrabold leading-[1.08] text-white">
+            <h2 className="text-[clamp(1.9rem,4.2vw,2.75rem)] leading-[1.15] text-white">
               {realEstateDemoFinalCta.heading}
             </h2>
             <div className="mt-8 flex justify-center">

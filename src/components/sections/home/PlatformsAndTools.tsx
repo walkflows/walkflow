@@ -183,13 +183,13 @@ export function PlatformsAndTools() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <motion.p
           style={{ y: typographyYFar }}
-          className="absolute -top-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[19vw] leading-none text-white/[0.035] motion-reduce:!transform-none"
+          className="absolute -top-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[9vw] leading-none tracking-tight text-white/[0.035] motion-reduce:!transform-none"
         >
           PLATFORMS
         </motion.p>
         <motion.p
           style={{ y: typographyYNear }}
-          className="absolute top-[60%] left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[15vw] leading-none text-white/[0.03] motion-reduce:!transform-none"
+          className="absolute top-[60%] left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[8vw] leading-none tracking-tight text-white/[0.03] motion-reduce:!transform-none"
         >
           EXPERIENCE
         </motion.p>
@@ -233,7 +233,7 @@ export function PlatformsAndTools() {
         <Reveal delay={0.15}>
           <div className="mt-12 flex flex-col gap-4">
             {/* Automation, CRM and email marketing tools — right to left. */}
-            <div className="relative overflow-hidden motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
+            <div className="relative overflow-x-clip motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
               <ul
                 className="flex w-max animate-marquee gap-4 motion-reduce:w-auto motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center"
                 style={{ animationPlayState: paused ? "paused" : "running" }}
@@ -248,7 +248,7 @@ export function PlatformsAndTools() {
             </div>
 
             {/* Web design and app development tools — left to right. */}
-            <div className="relative overflow-hidden motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
+            <div className="relative overflow-x-clip motion-reduce:overflow-visible [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] motion-reduce:[mask-image:none]">
               <ul
                 className="flex w-max animate-marquee-reverse gap-4 motion-reduce:w-auto motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center"
                 style={{ animationPlayState: paused ? "paused" : "running" }}

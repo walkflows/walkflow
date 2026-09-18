@@ -3,6 +3,29 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 10 (2026-09-18) — bug fixes, typography fit, FAQ content swap, Real Estate demo page overhaul
+
+**1. Fixed the tool-card hover clipping bug.** The Platforms and Tools marquee rows used `overflow-hidden` on a wrapper exactly the height of one card, so the hover lift (`-translate-y-1.5`) and glow shadow got clipped at the top edge. First attempt (`overflow-x-hidden overflow-y-visible`) didn't work — confirmed via `getComputedStyle` that the browser silently coerces `overflow-y: visible` to `auto` (which still clips) whenever the other axis is `hidden`/`scroll`/`auto`, per the CSS Overflow spec. Fixed properly with `overflow-x-clip` (the `clip` keyword doesn't trigger that coupling) and no explicit `overflow-y` at all. Verified live: hovered a card, confirmed `overflowY` computes to `visible` (not `auto`) and the lifted card's border/glow render fully, not clipped.
+
+**2. Fixed three instances of oversized, illegibly-cropped background typography** — "WALKFLOW" (Hero), "PLATFORMS" and "EXPERIENCE" (Platforms and Tools) were sized so large (`26vw`/`20vw`, `19vw`, `15vw`) that only a few letters were visible on screen at once, reading as abstract shapes rather than words. Reduced each independently (not one blanket size) so the full word fits within the section at both mobile and desktop: WALKFLOW to `13vw`/`9vw`, PLATFORMS to `9vw`, EXPERIENCE to `8vw`. Verified via screenshot that all three now read as complete words.
+
+**3. Added matching "DEMO" background typography** to the Demos section, same treatment as Platforms and Tools (huge, `text-white/[0.035]`, aria-hidden, clipped by the section's own `overflow-hidden`) — sized larger per-word (`26vw`/`20vw`, since "DEMO" is much shorter than "PLATFORMS") to read at a similar visual weight.
+
+**4. "Our Process" heading now wraps to exactly 2 lines** (`headingLines` array, same pattern as Industries/Services) — first attempt still wrapped the first line internally to 2 lines on its own (3 lines total) because the container was too narrow; fixed by widening to `max-w-3xl` and adding `sm:whitespace-nowrap` per line, same fix already applied to the Industries heading in an earlier round.
+
+**5. "Our Process" background treatment added**: a faint dot/grid texture (same technique as the Hero) plus two soft, blurred orange glows in opposite corners — all very low-opacity, `aria-hidden`, `pointer-events-none`. Keeps the section from reading as flat black without competing with the card content.
+
+**6. Homepage animation audit**: most sections already had `Reveal` entrance animations and hover states from earlier rounds. Found and fixed the one real gap — the Footer had no entrance animation at all — added a `Reveal` around its main content grid and a subtle hover-lift on the social icons.
+
+**7. FAQ content fully replaced** with the 8 new questions/answers supplied (WALKFLOW overview, who we work with, services, what makes us different, how projects start, pricing, ongoing support, team impact) — styling untouched, exactly as instructed.
+
+**8. Real Estate demo page (`/demos/real-estate`) — images wired in and the whole page restyled to match the current dark homepage system.** This was the largest item:
+- Copied the 9 supplied photos from `Real estate demo images/` into `public/real-estate-demo/` (slugified filenames) and added an optional `image` field to each entry in `real-estate-properties.ts`. **"Greenway Duplex" has no matching photo in the supplied folder** — flagged in a code comment; it correctly falls back to the existing illustrated `PropertyThumb` placeholder rather than breaking or showing a broken image.
+- `PropertyCard.tsx` and `PropertyDetailsDialog.tsx` now render the real photo via `next/image` when `property.image` is set, falling back to the illustration otherwise. Verified all 9 real photos render correctly and the Greenway fallback still works.
+- Restyled every section and every interactive-demo component (Hero, Journey, the "Try the interactive demo" wrapper, Explainer, FinalCta, the notice banner, tabs, all form controls in `PropertyExplorer`/`PreferenceForm`/`ViewingRequestForm`, `AgentView`'s lead list, and the property dialog) from the old light/mixed theme (`bg-white`, `bg-sand`, `bg-cream`, `text-navy`, `text-muted`, `border-navy/*`) to the current dark system (`bg-navy-deep`/`bg-navy`, `text-white`/`text-white/60`, `border-white/*`, orange accents). Added a new `ghost-on-dark` variant to the shared `Button` component for the one control (the filter "Reset filters" link) that needed it. Verified live end-to-end: browsed listings, opened a property dialog, submitted the requirements form and saw the matched-listings panel, switched to Agent View and saw the submitted lead with its status badge, all rendering correctly in the dark theme with no light-on-light or dark-on-dark contrast failures spotted.
+
+`lint`/`typecheck`/`build` all clean throughout. No console errors/warnings on either page after a fresh load. No horizontal overflow at 390px on either page.
+
 ## Session 9 (major round, 2026-09-17) — Demos/Process/FAQ redesigned dark, "why" removed, "How it works" removed from the page, footer overhauled
 
 Using a reference FAQ screenshot (dark bg, orange pill eyebrow, big heading, orange accordion toggles) as the design language to extend across the remaining light-themed homepage sections, matching the dark aesthetic already established for Hero/Services/Platforms and Tools/Industry Solutions.

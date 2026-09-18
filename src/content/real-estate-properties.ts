@@ -16,6 +16,13 @@ export type Property = {
   bathrooms: number;
   status: PropertyStatus;
   description: string;
+  /**
+   * Real sample photo from "Real estate demo images/" (Session 9), served
+   * from public/real-estate-demo/. Optional: "Greenway Duplex" has no
+   * matching photo in that folder, so it falls back to the illustrated
+   * PropertyThumb placeholder in PropertyCard/PropertyDetailsDialog.
+   */
+  image?: string;
 };
 
 /** A clearly fictional sample market — no resemblance to a real place is intended. */
@@ -67,6 +74,7 @@ export const properties: Property[] = [
     bathrooms: 2,
     status: "Available",
     description: "A two-storey family home with a private garden, a converted loft study and off-street parking.",
+    image: "/real-estate-demo/ashcombe-garden-house.jpg",
   },
   {
     id: "wf-102",
@@ -79,6 +87,7 @@ export const properties: Property[] = [
     bathrooms: 2,
     status: "Available",
     description: "A high-floor apartment with an open living area, floor-to-ceiling windows and a shared rooftop terrace.",
+    image: "/real-estate-demo/skyline-view-apartment.jpg",
   },
   {
     id: "wf-103",
@@ -91,6 +100,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     status: "Available",
     description: "A converted warehouse loft with exposed brick, factory-style windows and a mezzanine sleeping area.",
+    image: "/real-estate-demo/riverside-loft.jpg",
   },
   {
     id: "wf-104",
@@ -103,6 +113,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     status: "Available",
     description: "A single-storey home with a wide driveway, a low-maintenance garden and step-free access throughout.",
+    image: "/real-estate-demo/cedar-row-bungalow.jpg",
   },
   {
     id: "wf-105",
@@ -115,6 +126,7 @@ export const properties: Property[] = [
     bathrooms: 2,
     status: "Under Offer",
     description: "A period townhouse on a quiet, tree-lined street, close to local shops and a short walk from the park.",
+    image: "/real-estate-demo/thorn-hill-townhouse.jpg",
   },
   {
     id: "wf-106",
@@ -127,6 +139,7 @@ export const properties: Property[] = [
     bathrooms: 4,
     status: "Available",
     description: "A detached villa with a private pool, a landscaped garden and views across the lake from the upper floor.",
+    image: "/real-estate-demo/lakeside-villa.jpg",
   },
   {
     id: "wf-107",
@@ -139,6 +152,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     status: "Available",
     description: "A compact studio with a kitchenette and a fold-out desk, a short walk from the waterfront path.",
+    image: "/real-estate-demo/harbor-row-studio.jpg",
   },
   {
     id: "wf-108",
@@ -163,6 +177,7 @@ export const properties: Property[] = [
     bathrooms: 2,
     status: "Available",
     description: "A top-floor apartment with a wraparound terrace and an open view across the harbour at dusk.",
+    image: "/real-estate-demo/southbank-penthouse.jpg",
   },
   {
     id: "wf-110",
@@ -175,6 +190,7 @@ export const properties: Property[] = [
     bathrooms: 2,
     status: "Available",
     description: "A restored cottage with a mature garden, a wood-burning stove and a converted outbuilding studio.",
+    image: "/real-estate-demo/fernwood-cottage.jpg",
   },
 ];
 

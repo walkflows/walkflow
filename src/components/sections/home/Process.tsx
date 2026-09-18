@@ -4,14 +4,38 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Process() {
   return (
-    <section className="bg-navy-deep py-20 sm:py-28">
-      <Container>
+    <section className="relative isolate overflow-hidden bg-navy-deep py-20 sm:py-28">
+      {/* Subtle depth so the section doesn't read as flat black: a faint
+          grid texture (same technique as the hero) plus two soft, blurred
+          orange glows tucked into opposite corners. All aria-hidden,
+          low-opacity and pointer-events-none — never competes with the
+          cards or text for attention. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-24 -top-24 h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(closest-side,rgba(255,153,28,0.12),transparent)] blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 -right-24 h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(closest-side,rgba(255,153,28,0.1),transparent)] blur-3xl"
+      />
+
+      <Container className="relative">
         <Reveal>
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {process.eyebrow}
             </span>
-            <h2 className="mt-4 text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">{process.heading}</h2>
+            <h2 className="mt-4 text-[clamp(1.75rem,4.2vw,3rem)] leading-[1.15] text-white">
+              {process.headingLines.map((line) => (
+                <span key={line} className="block sm:whitespace-nowrap">
+                  {line}
+                </span>
+              ))}
+            </h2>
           </div>
         </Reveal>
 

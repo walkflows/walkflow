@@ -4,6 +4,7 @@ import { footerNav } from "@/content/navigation";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
 import { IconMail, IconMapPin, IconPhone, IconWhatsapp, IconLinkedin, IconInstagram } from "@/components/ui/icons";
 
 const socialIcons = { whatsapp: IconWhatsapp, linkedin: IconLinkedin, instagram: IconInstagram };
@@ -30,7 +31,8 @@ export function Footer() {
 
   return (
     <footer className="bg-navy text-white">
-      <Container className="grid gap-12 py-16 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+      <Reveal y={24}>
+        <Container className="grid gap-12 py-16 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
         <div>
           <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
             <Image
@@ -86,7 +88,7 @@ export function Footer() {
                   key={profile.id}
                   href={profile.href}
                   aria-label={profile.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/75 transition-colors duration-200 hover:border-orange hover:text-orange"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/75 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-orange hover:text-orange"
                 >
                   <Icon className="h-4 w-4" />
                 </Link>
@@ -94,7 +96,8 @@ export function Footer() {
             })}
           </div>
         </div>
-      </Container>
+        </Container>
+      </Reveal>
 
       <div className="border-t border-white/10">
         <Container className="flex flex-col gap-4 py-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">

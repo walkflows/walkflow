@@ -12,9 +12,9 @@ import { ButtonEl } from "@/components/ui/Button";
 import type { Filters } from "./types";
 
 const selectClass =
-  "w-full rounded-xl border border-navy/15 bg-white px-3.5 py-2.5 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
 const inputClass = selectClass;
-const labelClass = "block text-xs font-semibold uppercase tracking-wide text-muted";
+const labelClass = "block text-xs font-semibold uppercase tracking-wide text-white/50";
 
 export type PreferenceValues = Omit<Filters, "listingType"> & { listingType: "buy" | "rent"; name: string; email: string };
 
@@ -46,7 +46,7 @@ export function PreferenceForm({
 
   return (
     <div>
-      <p className="max-w-xl text-muted">
+      <p className="max-w-xl text-white/60">
         Tell us what you’re looking for and we’ll check it against the sample listings — just like a buyer would on a real
         WALKFLOW-built property site.
       </p>
@@ -144,16 +144,16 @@ export function PreferenceForm({
       </form>
 
       {result && (
-        <div className="mt-8 rounded-2xl border border-navy/10 bg-white p-6">
-          <p className="text-sm leading-relaxed text-muted">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+          <p className="text-sm leading-relaxed text-white/70">
             {matches && matches.length > 0 ? demoStrings.propertyResult : demoStrings.noListingMatch}
           </p>
           {matches && matches.length > 0 && (
             <ul className="mt-4 flex flex-col gap-2">
               {matches.map((p) => (
-                <li key={p.id} className="flex items-center justify-between gap-3 rounded-xl bg-surface px-4 py-3 text-sm">
-                  <span className="font-semibold text-navy">{p.name}</span>
-                  <span className="text-muted">{formatPrice(p)}</span>
+                <li key={p.id} className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.05] px-4 py-3 text-sm">
+                  <span className="font-semibold text-white">{p.name}</span>
+                  <span className="text-white/60">{formatPrice(p)}</span>
                 </li>
               ))}
             </ul>

@@ -12,7 +12,7 @@ import { PropertyExplorer, initialFilters, matchesFilters } from "./PropertyExpl
 import type { Filters, Lead } from "./types";
 import { ViewingRequestForm, type ViewingResult, type ViewingValues } from "./ViewingRequestForm";
 
-const tabPanelClass = "mt-8 rounded-3xl border border-navy/8 bg-sand/60 p-5 sm:p-8";
+const tabPanelClass = "mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-8";
 
 function summarisePreferences(values: PreferenceValues) {
   const listing = values.listingType === "buy" ? "Buy" : "Rent";
@@ -96,7 +96,7 @@ export function RealEstateDemo() {
 
   return (
     <div id="interactive-demo" className="scroll-mt-24">
-      <div className="rounded-2xl border border-orange/25 bg-orange/10 p-4 text-sm font-medium text-navy">
+      <div className="rounded-2xl border border-orange/25 bg-orange/[0.08] p-4 text-sm font-medium text-white/85">
         {demoStrings.persistentNotice}
       </div>
 
@@ -107,10 +107,10 @@ export function RealEstateDemo() {
           activeId={activeTab}
           onChange={(id) => setActiveTab(id as DemoTabId)}
           className="flex flex-wrap gap-2"
-          tabClassName="rounded-full border border-navy/15 bg-white px-4 py-2 text-sm font-semibold text-navy/70 hover:text-navy"
-          activeTabClassName="border-navy! bg-navy! text-white!"
+          tabClassName="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-white/70 transition-colors duration-200 hover:text-white"
+          activeTabClassName="border-orange! bg-orange! text-navy-deep!"
         />
-        <ButtonEl variant="secondary" size="sm" onClick={handleResetDemo} className="self-start sm:self-auto">
+        <ButtonEl variant="secondary-on-dark" size="sm" onClick={handleResetDemo} className="self-start sm:self-auto">
           {demoStrings.restartDemo}
         </ButtonEl>
       </div>

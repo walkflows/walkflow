@@ -12,8 +12,8 @@ import { PropertyCard } from "./PropertyCard";
 import type { Filters } from "./types";
 
 const selectClass =
-  "w-full rounded-xl border border-navy/15 bg-white px-3.5 py-2.5 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
-const labelClass = "block text-xs font-semibold uppercase tracking-wide text-muted";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
+const labelClass = "block text-xs font-semibold uppercase tracking-wide text-white/50";
 
 export const initialFilters: Filters = {
   listingType: "any",
@@ -142,16 +142,16 @@ export function PropertyExplorer({
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted">
+        <p className="text-sm text-white/50">
           {results.length} of {properties.length} sample listings · {sampleMarketLabel}
         </p>
-        <ButtonEl variant="ghost" size="sm" className="self-start sm:self-auto" onClick={() => onFiltersChange(initialFilters)}>
+        <ButtonEl variant="ghost-on-dark" size="sm" className="self-start sm:self-auto" onClick={() => onFiltersChange(initialFilters)}>
           {demoStrings.resetFilters}
         </ButtonEl>
       </div>
 
       {results.length === 0 ? (
-        <p className="mt-8 rounded-2xl border border-dashed border-navy/20 bg-white p-6 text-sm leading-relaxed text-muted">
+        <p className="mt-8 rounded-2xl border border-dashed border-white/20 bg-white/[0.03] p-6 text-sm leading-relaxed text-white/60">
           {demoStrings.noListingMatch}
         </p>
       ) : (

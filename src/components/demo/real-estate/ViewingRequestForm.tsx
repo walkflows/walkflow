@@ -4,9 +4,9 @@ import { demoStrings, realEstateDemoFinalCta } from "@/content/real-estate-demo"
 import { Button, ButtonEl } from "@/components/ui/Button";
 
 const selectClass =
-  "w-full rounded-xl border border-navy/15 bg-white px-3.5 py-2.5 text-sm text-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
 const inputClass = selectClass;
-const labelClass = "block text-xs font-semibold uppercase tracking-wide text-muted";
+const labelClass = "block text-xs font-semibold uppercase tracking-wide text-white/50";
 
 export const viewingSlots = ["Saturday 10:30", "Saturday 14:00", "Sunday 11:00", "Monday 16:30"];
 
@@ -38,7 +38,7 @@ export function ViewingRequestForm({
 
   return (
     <div>
-      <p className="max-w-xl text-muted">
+      <p className="max-w-xl text-white/60">
         Choose a sample property and a time that suits — an agent would confirm access and the next step from here.
       </p>
       <form className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
@@ -107,14 +107,14 @@ export function ViewingRequestForm({
       </form>
 
       {result && resultProperty && (
-        <div className="mt-8 rounded-2xl border border-navy/10 bg-white p-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">{demoStrings.sampleAppointmentLabel}</p>
-          <p className="mt-2 text-navy">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+          <p className="text-xs font-semibold uppercase tracking-wide text-orange">{demoStrings.sampleAppointmentLabel}</p>
+          <p className="mt-2 text-white">
             Viewing requested for <strong>{resultProperty.name}</strong> · {result.date}.
           </p>
 
-          <div className="mt-6 border-t border-navy/10 pt-6">
-            <p className="font-semibold text-navy">{demoStrings.completionHeading}</p>
+          <div className="mt-6 border-t border-white/10 pt-6">
+            <p className="font-semibold text-white">{demoStrings.completionHeading}</p>
             <div className="mt-4">
               <Button href={realEstateDemoFinalCta.cta.href}>{demoStrings.requestACall}</Button>
             </div>

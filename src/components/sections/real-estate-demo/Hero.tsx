@@ -12,14 +12,13 @@ export function Hero() {
       />
       <Container className="relative max-w-3xl text-center">
         <Reveal>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-medium text-white/80">
-            <span className="h-1.5 w-1.5 rounded-full bg-orange" />
+          <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
             {realEstateDemoHero.eyebrow}
           </span>
-          <h1 className="mt-6 text-balance text-[clamp(2.25rem,5.5vw,3.75rem)] font-extrabold leading-[1.05] text-white">
+          <h1 className="mt-6 text-balance text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.05] text-white">
             {realEstateDemoHero.heading}
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/65">{realEstateDemoHero.body}</p>
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/60">{realEstateDemoHero.body}</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button href={realEstateDemoHero.primaryCta.href}>{realEstateDemoHero.primaryCta.label}</Button>
             <Button href={realEstateDemoHero.secondaryCta.href} variant="secondary-on-dark">

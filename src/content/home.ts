@@ -242,7 +242,7 @@ export const demoShowcase = {
 
 export const process = {
   eyebrow: "OUR PROCESS",
-  heading: "From “this needs fixing” to a clear next step.",
+  headingLines: ["From “this needs fixing”", "to a clear next step."],
   steps: [
     {
       title: "Tell us what’s happening",
@@ -268,23 +268,43 @@ export const faq = {
   heading: "Quick answers",
   items: [
     {
-      question: "Can I start with just a website?",
-      answer: "Yes. Web design is a standalone service. Automation can be a separate project later.",
+      question: "What is WALKFLOW?",
+      answer:
+        "WALKFLOW is an agency that builds websites, apps, and automation systems for high-value service businesses — designed to capture leads, convert them, and eliminate repetitive manual work.",
     },
     {
-      question: "Can you improve my existing website?",
+      question: "Who do you work with?",
       answer:
-        "Yes. We’ll review what you have and discuss whether focused improvements or a rebuild would better suit your goals.",
+        "We work directly with decision-makers — CEOs, MDs, COOs, CFOs, CTOs, CIOs, CMOs, CCOs, VPs, Presidents, Directors General, and General Managers — at service-based businesses that already have demand but are losing time or leads to manual processes.",
     },
     {
-      question: "Do I need to know which tools to use?",
-      answer:
-        "No. Explain what you want to achieve. We’ll recommend suitable tools and outline any subscription costs before you commit.",
+      question: "What services do you offer?",
+      answer: "Web design, app development, email marketing, and business automation — as standalone projects or combined into one connected system.",
     },
     {
-      question: "How much will my project cost?",
+      question: "What makes WALKFLOW different from a regular agency?",
       answer:
-        "Your quote depends on the pages, features and integrations you need. We’ll agree on the scope and price before starting.",
+        "We don't just deliver a design and walk away. Every project connects to a system — lead capture, follow-up, booking, or automation — so what we build actually works for your business, not just looks good.",
+    },
+    {
+      question: "How does a project usually start?",
+      answer:
+        "With a short discovery call to understand your business, current bottlenecks, and goals. From there, we scope the right combination of services for you.",
+    },
+    {
+      question: "How much does it cost?",
+      answer:
+        "It depends on scope — a single service is priced differently than a full connected system. We give you a clear quote after understanding your needs on the discovery call.",
+    },
+    {
+      question: "Do you offer ongoing support after launch?",
+      answer:
+        "Yes — we offer maintenance and optimization plans so your systems keep running and improving after launch, plus the option of a one-off build if that's what you prefer.",
+    },
+    {
+      question: "Will this replace my team, or support them?",
+      answer:
+        "It supports them. Automation handles the repetitive parts (follow-ups, reminders, data entry) so your team can focus on higher-value work.",
     },
   ],
 };

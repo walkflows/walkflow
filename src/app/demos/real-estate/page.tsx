@@ -18,13 +18,13 @@ export default function RealEstateDemoPage() {
     <>
       <Hero />
       <Journey />
-      <section className="bg-sand py-20 sm:py-28">
+      <section className="bg-navy-deep py-20 sm:py-28">
         <Container>
           <Reveal>
-            <h2 className="text-[clamp(1.9rem,3.8vw,2.75rem)] font-extrabold text-navy">
+            <h2 className="text-[clamp(1.9rem,3.8vw,2.75rem)] leading-[1.15] text-white">
               Try the interactive demo
             </h2>
-            <p className="mt-3 max-w-2xl leading-relaxed text-muted">
+            <p className="mt-3 max-w-2xl leading-relaxed text-white/60">
               Browse the sample listings, share requirements as a buyer would, request a viewing, then switch to Agent View
               to see how the same actions would appear to an agent.
             </p>

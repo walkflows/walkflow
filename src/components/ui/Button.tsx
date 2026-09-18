@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { cx } from "@/lib/utils";
 
-type Variant = "primary" | "secondary" | "secondary-on-dark" | "ghost";
+type Variant = "primary" | "secondary" | "secondary-on-dark" | "ghost" | "ghost-on-dark";
 type Size = "md" | "sm";
 
 const base =
@@ -18,6 +18,7 @@ const variants: Record<Variant, string> = {
   secondary: "border border-navy/25 text-navy hover:border-navy hover:bg-navy hover:text-white",
   "secondary-on-dark": "border border-white/30 text-white hover:bg-white hover:text-navy",
   ghost: "text-navy hover:text-orange-dark",
+  "ghost-on-dark": "text-white/70 hover:text-orange",
 };
 
 type LinkButtonProps = {
