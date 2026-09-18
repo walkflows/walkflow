@@ -15,10 +15,10 @@
  *    message (8 short words + 8 conversational lines) by position — he
  *    didn't specify the pairing, so this is a judgment call, not verified
  *    1:1 intent. Worth a quick sanity check against his intended pairing.
- *  - `aboutTeam` has no real people in it yet — Joshua said the other three
- *    team members' details are coming soon, so these are honest placeholder
- *    seats (no invented names/roles/photos), not the fabricated staff shown
- *    in the reference screenshot for that section's layout.
+ *  - `aboutTeam.members` — real names, roles and photos supplied by Joshua
+ *    in the `Team members/` folder (`team information.txt` plus one photo
+ *    per person), copied into `public/team/`. Role/body copy is used
+ *    verbatim from that file; nothing invented.
  */
 
 export const aboutSeo = {
@@ -73,8 +73,27 @@ export const aboutHero = {
 export const aboutTeam = {
   eyebrow: "The Team",
   heading: "Meet the Team",
-  body: "WALKFLOW is growing beyond one person. Profiles for the rest of the team are on the way.",
-  seatCount: 3,
+  body: "The people behind the steps and the flow.",
+  members: [
+    {
+      name: "Boluwatife A.",
+      role: "AI Automation Specialist",
+      body: "Builds and optimizes the automation systems that keep your business running efficiently, from lead capture to follow-up.",
+      photo: { src: "/team/boluwatife.jpg", alt: "Boluwatife A., AI Automation Specialist at WALKFLOW" },
+    },
+    {
+      name: "Bukola M.",
+      role: "Web Designer & UI/UX Expert",
+      body: "Designs clean, user-friendly websites and interfaces that turn visitors into customers.",
+      photo: { src: "/team/bukola.png", alt: "Bukola M., Web Designer & UI/UX Expert at WALKFLOW" },
+    },
+    {
+      name: "Samuel B.",
+      role: "App Developer",
+      body: "Builds custom apps tailored to your business needs, from concept to launch.",
+      photo: { src: "/team/samuel.png", alt: "Samuel B., App Developer at WALKFLOW" },
+    },
+  ],
 };
 
 export const aboutValues = {
@@ -101,7 +120,6 @@ export const aboutValues = {
  * Stand For" (Values) per explicit instruction.
  */
 export const aboutExperience = {
-  eyebrow: "Track Record",
   heading: "Experience & Results",
   backgroundWord: "EXPERIENCE",
 };

@@ -20,10 +20,7 @@ export function AboutExperience() {
       <Container className="relative">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
-              {aboutExperience.eyebrow}
-            </span>
-            <h2 className="mt-4 text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">{aboutExperience.heading}</h2>
+            <h2 className="text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">{aboutExperience.heading}</h2>
           </div>
         </Reveal>
 

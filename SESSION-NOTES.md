@@ -3,6 +3,16 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 16 (2026-09-18) — real team profiles; removed Track Record eyebrow
+
+**1. Replaced the "coming soon" team placeholders with real profiles.** Joshua added a `Team members/` folder to the project root with `team information.txt` (name, role, one-line description per person) and one photo each. Copied the photos into `public/team/` (`boluwatife.jpg`, `bukola.png`, `samuel.png`) and added `aboutTeam.members` to `src/content/about.ts` with the three real people, using the file's text verbatim — no invented names, roles or bios this time.
+
+Rebuilt `AboutTeam.tsx` around the real photos: dropped the placeholder-era numeral accent, "+" badge and alternating-orange "featured" card (that whole scheme only made sense for faceless slots — with real photos filling the cards via `object-cover`, an orange background behind an opaque photo wouldn't even be visible, and arbitrarily highlighting one real person's card over the other two isn't something that was asked for). Replaced with plain, consistent cards matching the site's existing `FeatureCard` hover treatment (lift + border glow on hover) — photo on top, name/role/description below. The "TEAM" background watermark from last session stays.
+
+**2. Removed the "Track Record" eyebrow pill** from the Experience & Results section per explicit instruction — the section now opens straight on the heading. Removed the now-unused `eyebrow` field from `aboutExperience` in `about.ts` rather than leaving dead content behind.
+
+**Verified**: `lint`/`typecheck`/`build` all clean. Restarted the dev server before visual checks (now standard practice this project, after three prior stale-cache incidents). Checked live at 1440px and 390px, no horizontal overflow, console clean.
+
 ## Session 15 (2026-09-18) — plain founder background, TEAM watermark, new Experience section
 
 **1. "Meet the Founder" background simplified.** Removed the faint grid-texture pattern from `AboutHero.tsx` per explicit instruction ("use plain background") — now a flat `bg-navy-deep`, no overlay.
