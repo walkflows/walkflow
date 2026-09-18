@@ -6,7 +6,7 @@ import { cx } from "@/lib/utils";
 
 export function DemoShowcase() {
   return (
-    <section className="relative isolate overflow-hidden bg-navy-deep py-20 sm:py-28">
+    <section id="demos" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-deep py-20 sm:py-28">
       {/* Huge, near-invisible background typography, matching the treatment
           used for "PLATFORMS"/"EXPERIENCE" in the section above. Purely
           decorative: aria-hidden, clipped by the section's own

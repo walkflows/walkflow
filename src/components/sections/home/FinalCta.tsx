@@ -1,4 +1,5 @@
 import { finalCta } from "@/content/home";
+import { consultationCta } from "@/content/navigation";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -21,8 +22,11 @@ export function FinalCta() {
               {finalCta.heading}
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-lg leading-relaxed text-white/65">{finalCta.body}</p>
-            <div className="mt-9 flex justify-center">
+            <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Button href={finalCta.cta.href}>{finalCta.cta.label}</Button>
+              <Button href={consultationCta.href} variant="secondary-on-dark">
+                {consultationCta.label}
+              </Button>
             </div>
             <p className="mt-5 text-sm text-white/55">{finalCta.note}</p>
           </Container>

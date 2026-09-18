@@ -29,8 +29,10 @@ export function AboutValues() {
         <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {aboutValues.items.map((item, i) => (
             <Reveal key={item.title} delay={i * 0.05} y={16}>
-              <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                <p className="font-heading text-lg font-medium text-orange">{item.title}</p>
+              <div className="group h-full rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-orange/30 hover:bg-white/[0.05] hover:shadow-[0_0_24px_-10px_rgba(255,153,28,0.45)]">
+                <p className="font-heading text-lg font-medium text-orange transition-transform duration-300 ease-out group-hover:translate-x-0.5">
+                  {item.title}
+                </p>
                 <p className="mt-2 text-sm leading-relaxed text-white/60">{item.description}</p>
               </div>
             </Reveal>

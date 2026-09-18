@@ -20,10 +20,11 @@ export type NavItem = {
 /**
  * Order and "Demo Projects" naming corrected per explicit instruction
  * (previously: Home, Services, Industry Solutions, Demos Projects, About,
- * Contact). Every child link reuses an existing/approved route name where
- * one exists; two service destinations don't have an approved route
- * anywhere in CLAUDE.md's route list, so a new `/services/*` path was
- * introduced for them — flagged in SESSION-NOTES.md as needing sign-off.
+ * Contact). All four Services children now live under `/services/*`
+ * (Session 21) — Business Automation & CRM and Web Design previously
+ * pointed at `/ai-automation` and `/web-design`, neither of which was ever
+ * built (both 404'd); moved to match the real, now-built pages at
+ * `/services/business-automation-crm` and `/services/web-design`.
  * All four `/demos/*` destinations are now built (Session 10) — no longer
  * a gap, though the copy/content still needs your sign-off before launch.
  */
@@ -42,9 +43,9 @@ export const mainNav: NavItem[] = [
   {
     label: "Services",
     children: [
-      { label: "Business Automation & CRM", href: "/ai-automation" },
+      { label: "Business Automation & CRM", href: "/services/business-automation-crm" },
       { label: "Email Marketing", href: "/services/email-marketing" },
-      { label: "Web Design", href: "/web-design" },
+      { label: "Web Design", href: "/services/web-design" },
       { label: "Mobile App Development", href: "/services/mobile-app-development" },
     ],
   },
@@ -85,9 +86,9 @@ export const footerNav = {
     { label: "Consulting Firms", href: "/industries/consulting" },
   ],
   services: [
-    { label: "Business Automation & CRM", href: "/ai-automation" },
+    { label: "Business Automation & CRM", href: "/services/business-automation-crm" },
     { label: "Email Marketing", href: "/services/email-marketing" },
-    { label: "Web Design", href: "/web-design" },
+    { label: "Web Design", href: "/services/web-design" },
     { label: "Mobile App Development", href: "/services/mobile-app-development" },
   ],
   legal: [

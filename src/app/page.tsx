@@ -7,9 +7,7 @@ import { Industries } from "@/components/sections/home/Industries";
 import { PlatformsAndTools } from "@/components/sections/home/PlatformsAndTools";
 import { Process } from "@/components/sections/home/Process";
 import { Services } from "@/components/sections/home/Services";
-import { ContactPromptCta } from "@/components/sections/home/ContactPromptCta";
 import { homeSeo } from "@/content/home";
-import { contactPrompts } from "@/content/contact";
 
 export const metadata: Metadata = {
   title: homeSeo.title,
@@ -21,11 +19,9 @@ export default function HomePage() {
     <>
       <Hero />
       <Services />
-      <ContactPromptCta {...contactPrompts.afterServices} />
       <PlatformsAndTools />
       <Industries />
       <DemoShowcase />
-      <ContactPromptCta {...contactPrompts.afterDemos} />
       <Process />
       <FAQ />
       <FinalCta />

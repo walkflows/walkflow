@@ -57,17 +57,3 @@ export const contactForm = {
   unconfiguredBody:
     "This form isn't connected to a backend yet, so nothing was sent. (Developer note: wire a real submission handler in src/lib/enquiry.ts.)",
 };
-
-/** Compact CTA cards used after the Services and Demo Showcase sections on the homepage. */
-export const contactPrompts = {
-  afterServices: {
-    heading: "Not sure where to start?",
-    body: "Tell us what's slowing your business down and we'll point you to the right fix.",
-    cta: { label: "Start the Conversation", href: "/contact" },
-  },
-  afterDemos: {
-    heading: "Like what you see?",
-    body: "Let's talk about what a project like this would look like for your business.",
-    cta: { label: "Book a Discovery Call", href: "/contact" },
-  },
-};

@@ -17,16 +17,17 @@ export const hero = {
   heading: "Make it easier for customers to choose you.",
   body: "We build websites that earn attention and automations that handle follow-ups, helping you turn more enquiries into customers.",
   primaryCta: { label: "Request a Call", href: "/contact" },
-  secondaryCta: { label: "Explore Our Solutions", href: "#solutions" },
+  secondaryCta: { label: "Explore Our Solutions", href: "#demos" },
 };
 
 /**
  * Section 3: the single homepage services section (replaces the old
  * "Getting an enquiry is only the beginning." problem statement and the
  * two-service showcase below it — this is now the only services
- * presentation on the homepage). `id: "solutions"` is preserved from the
- * old serviceShowcase export so Hero's "Explore Our Solutions" (#solutions)
- * link keeps working. Each item's `icon` key is looked up against the icon
+ * presentation on the homepage). `id: "solutions"` is kept as an anchor
+ * even though Hero's "Explore Our Solutions" now points at the Demo
+ * Showcase section instead (#demos) per explicit instruction — left in
+ * place in case anything else links here later. Each item's `icon` key is looked up against the icon
  * map in Services.tsx; each `cta.href` matches the corresponding entry
  * under Services in `mainNav` (src/content/navigation.ts) so the card link
  * and the nav dropdown item lead to the same place.
@@ -42,7 +43,7 @@ export const services = {
       icon: "automation" as const,
       title: "Business Automation & CRM",
       body: "Tired of chasing enquiries across emails, spreadsheets and messages? We connect your tools, organise customer details and automate routine follow-ups. Add AI chatbots or voice agents to help answer questions and capture enquiries while your team is busy.",
-      cta: { label: "Explore Business Automation", href: "/ai-automation" },
+      cta: { label: "Explore Business Automation", href: "/services/business-automation-crm" },
     },
     {
       id: "email-marketing",
@@ -56,7 +57,7 @@ export const services = {
       icon: "website" as const,
       title: "Web Design",
       body: "Your website should make customers feel confident about choosing you. We build business websites, landing pages and online stores that explain your offer, work smoothly on every screen and make it easy to enquire, book or buy.",
-      cta: { label: "Explore Web Design", href: "/web-design" },
+      cta: { label: "Explore Web Design", href: "/services/web-design" },
     },
     {
       id: "mobile-apps",
