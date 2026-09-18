@@ -112,17 +112,19 @@
 
 ## Enquiries and Supabase
 - Use the user's existing Supabase project only when configured. MCP access helps development; it does not automatically wire the website to the database.
-- Form fields: Name; Email address; Business name; What do you need help with?; Tell us about your project.
-- Submit button: "Send My Enquiry".
-- Success copy: "Thanks for getting in touch. Your enquiry has been received. We’ll contact you by email to discuss the next step."
-- Show success only after a confirmed database insert. A click, timeout or unconfigured integration must never produce a fake success.
-- Validate on the server and client; trim inputs, bound lengths, validate email and reject unexpected fields. Add suitable spam protection and request throttling.
+- Form fields (Session 17, supersedes the original Name/Email address/Business name/"What do you need help with?"/"Tell us about your project" list): Name; Business email; Company name; "Tell us what's slowing your business down" (textarea); Role (optional); Website URL (optional); Preferred contact method — Email or WhatsApp (two-option toggle, not a dropdown).
+- Above the form fields: "Tell us what's going on — we'll get back to you within 24 hours to set up a discovery call."
+- Submit button (Session 17, supersedes "Send My Enquiry"): "Start the Conversation".
+- Success copy (Session 17, supersedes the original "Thanks for getting in touch..." line): "Thanks — we'll be in touch within 24 hours." Shown inline in place of the form, not via a `/thank-you` redirect — the `/thank-you` route hasn't been built as part of this flow.
+- Also place a compact CTA (button only, no full form) after the homepage's Services section and after its Demo Showcase section, linking to the full form.
+- Show success only after a confirmed submission. A click, timeout or unconfigured integration must never produce a fake success. As of Session 17 no backend is wired (`src/lib/enquiry.ts` always throws `EnquiryNotConfiguredError`, by design) — the form shows an explicit "not connected yet" notice instead of the success state when submitted. See that file for exactly where to wire a real endpoint.
+- Validate on the server and client; trim inputs, bound lengths, validate email and reject unexpected fields. Add suitable spam protection and request throttling. A client-side honeypot field is in place (Session 17); real server-side throttling still needs a backend to land on.
 - Provide loading, error and retry states; preserve input on failure. Prevent duplicate submissions, including retries after uncertain responses.
 - Prefer a validated server endpoint for writes; block public reads/updates/deletes with RLS and appropriate permissions. Do not expose private enquiries to browsers.
 - Keep privileged database keys server-only. Do not log form contents or commit secrets to GitHub.
 - Preserve existing data; use reviewed migrations and never reset production data to make development easier.
 - If credentials are missing, finish the UI and document configuration; clearly state submission is unconfigured in development.
-- Redirect to `/thank-you` only after success. A direct visit to that page must not claim an enquiry was received.
+- If a `/thank-you` route is built later, redirect to it only after success, and a direct visit to that page must not claim an enquiry was received.
 - No customer authentication is needed. Joshua can use the existing Supabase dashboard; do not build a new admin portal by default.
 
 ## PostHog and privacy
