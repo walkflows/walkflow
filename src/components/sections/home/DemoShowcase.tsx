@@ -13,7 +13,7 @@ export function DemoShowcase() {
           overflow-hidden, never intercepts pointer events or reading order. */}
       <p
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-heading text-[26vw] leading-none text-white/[0.035] sm:text-[20vw]"
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-heading text-[30vw] font-medium leading-none tracking-wide text-white/[0.05] sm:text-[23vw]"
       >
         DEMO
       </p>

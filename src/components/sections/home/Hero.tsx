@@ -23,7 +23,7 @@ export function Hero() {
           events or reading order. */}
       <p
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-16 -z-10 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[26vw] leading-none text-white/[0.035] sm:top-20 sm:text-[20vw]"
+        className="pointer-events-none absolute left-1/2 top-16 -z-10 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[30vw] font-medium leading-none tracking-wide text-white/[0.05] sm:top-20 sm:text-[23vw]"
       >
         {site.name}
       </p>

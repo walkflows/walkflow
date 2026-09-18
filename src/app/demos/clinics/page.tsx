@@ -22,13 +22,8 @@ export default function ClinicsDemoPage() {
   return (
     <>
       <DemoHero {...content.hero} />
-      <DemoProblem heading={content.problem.heading} points={content.problem.points} image={content.problem.image} />
-      <DemoSolution
-        heading={content.solution.heading}
-        body={content.solution.body}
-        components={content.solution.components}
-        image={content.solution.image}
-      />
+      <DemoProblem heading={content.problem.heading} points={content.problem.points} />
+      <DemoSolution heading={content.solution.heading} body={content.solution.body} components={content.solution.components} />
       <DemoSteps heading={content.steps.heading} items={content.steps.items} />
       <section className="border-t border-white/10 bg-navy-deep py-20 sm:py-28">
         <Container>

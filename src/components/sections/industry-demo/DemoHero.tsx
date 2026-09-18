@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -29,7 +28,6 @@ export function DemoHero({
   primaryCta,
   secondaryCta,
   notice,
-  image,
 }: {
   eyebrow: string;
   heading: string;
@@ -37,7 +35,6 @@ export function DemoHero({
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
   notice: string;
-  image: string;
 }) {
   const reduceMotion = useReducedMotion();
   const d = (i: number) => (reduceMotion ? 0 : sequence[i]);
@@ -48,7 +45,7 @@ export function DemoHero({
           purely decorative and clipped by the section's own overflow-hidden. */}
       <p
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-16 -z-10 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[26vw] leading-none text-white/[0.035] sm:top-20 sm:text-[20vw]"
+        className="pointer-events-none absolute left-1/2 top-16 -z-10 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[30vw] font-medium leading-none tracking-wide text-white/[0.05] sm:top-20 sm:text-[23vw]"
       >
         {heading}
       </p>
@@ -113,23 +110,6 @@ export function DemoHero({
           {notice}
         </motion.p>
       </Container>
-
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: reduceMotion ? 0 : 0.7, delay: d(3) + (reduceMotion ? 0 : 0.2) }}
-        className="relative mt-12 sm:mt-14"
-      >
-        <Container className="max-w-4xl">
-          <div className="relative aspect-[21/9] overflow-hidden rounded-3xl border border-white/10">
-            <Image src={image} alt="" fill priority sizes="(max-width: 1024px) 100vw, 896px" className="object-cover" />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-deep/70 via-transparent to-transparent"
-            />
-          </div>
-        </Container>
-      </motion.div>
     </section>
   );
 }

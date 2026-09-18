@@ -183,13 +183,13 @@ export function PlatformsAndTools() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <motion.p
           style={{ y: typographyYFar }}
-          className="absolute -top-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[19vw] leading-none text-white/[0.035] motion-reduce:!transform-none"
+          className="absolute -top-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[22vw] font-medium leading-none tracking-wide text-white/[0.05] motion-reduce:!transform-none"
         >
           PLATFORMS
         </motion.p>
         <motion.p
           style={{ y: typographyYNear }}
-          className="absolute top-[60%] left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[15vw] leading-none text-white/[0.03] motion-reduce:!transform-none"
+          className="absolute top-[60%] left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[17vw] font-medium leading-none tracking-wide text-white/[0.045] motion-reduce:!transform-none"
         >
           EXPERIENCE
         </motion.p>
