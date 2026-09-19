@@ -4,16 +4,20 @@ export const site = {
   footerDescription:
     "Websites that help customers take the next step. Practical automation that helps your team follow through.",
   /**
-   * UNVERIFIED PLACEHOLDER — dummy contact details added for the footer
-   * "Connect with Us" layout, not real business information. Do not publish
-   * without replacing with Joshua's actual email, phone and address; see
-   * CLAUDE.md's rule against inventing/publishing unverified business
-   * details, and SESSION-NOTES.md for when this was added.
+   * `confirmed: true` (Session 22) — Joshua explicitly confirmed these
+   * exact email/phone/address values for display on the Contact page hero
+   * (ContactHero.tsx gates its phone/address/email cards on this flag).
+   * Originally added as unverified placeholder dummy data for the footer
+   * layout only; now approved for real use by explicit instruction. `hours`
+   * stays `null` — no opening-hours copy has been supplied yet, so that
+   * card is still omitted (see ContactHero.tsx).
    */
   contact: {
     email: "hello@walkflow.com",
     phone: "+1 (555) 123-4567",
     address: "123 Business Ave, Suite 100, Springfield, ST 00000",
+    hours: null as string[] | null,
+    confirmed: true,
   },
   /**
    * Placeholder destinations — real profile URLs aren't set up yet. Kept as

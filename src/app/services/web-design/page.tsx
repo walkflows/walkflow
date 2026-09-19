@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { servicePages } from "@/content/services";
 import { ServiceHero } from "@/components/sections/services/ServiceHero";
-import { ServiceProblem } from "@/components/sections/services/ServiceProblem";
-import { ServiceDeliver } from "@/components/sections/services/ServiceDeliver";
+import { ServiceBenefits } from "@/components/sections/services/ServiceBenefits";
+import { ServiceWhatWeDo } from "@/components/sections/services/ServiceWhatWeDo";
+import { ServiceWhyWalkflow } from "@/components/sections/services/ServiceWhyWalkflow";
 import { ServiceProjects } from "@/components/sections/services/ServiceProjects";
-import { ServiceVideo } from "@/components/sections/services/ServiceVideo";
-import { ServiceWorkflow } from "@/components/sections/services/ServiceWorkflow";
+import { ServiceProcess } from "@/components/sections/services/ServiceProcess";
 import { ServiceReviews } from "@/components/sections/services/ServiceReviews";
 import { ServiceFAQ } from "@/components/sections/services/ServiceFAQ";
 import { ServiceFinalCta } from "@/components/sections/services/ServiceFinalCta";
@@ -21,14 +21,14 @@ export default function WebDesignPage() {
   return (
     <>
       <ServiceHero {...content.hero} />
-      <ServiceProblem heading={content.problem.heading} body={content.problem.body} points={content.problem.points} />
-      <ServiceDeliver heading={content.deliver.heading} items={content.deliver.items} />
-      <ServiceProjects heading={content.projects.heading} items={content.projects.items} />
-      <ServiceVideo {...content.video} />
-      <ServiceWorkflow heading={content.workflow.heading} steps={content.workflow.steps} />
-      <ServiceReviews />
+      <ServiceBenefits {...content.benefits} />
+      <ServiceWhatWeDo {...content.whatWeDo} />
+      <ServiceWhyWalkflow {...content.whyWalkflow} />
+      <ServiceProjects {...content.projects} serviceSlug={content.slug} />
+      <ServiceProcess {...content.process} />
+      <ServiceReviews reviews={content.reviews} />
       <ServiceFAQ items={content.faqs} />
-      <ServiceFinalCta heading={content.finalCta.heading} body={content.finalCta.body} cta={content.finalCta.cta} />
+      <ServiceFinalCta {...content.finalCta} />
     </>
   );
 }

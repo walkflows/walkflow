@@ -1,7 +1,9 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { contactForm, contactMethodOptions } from "@/content/contact";
+import { useSearchParams } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { contactForm, contactMethodOptions, contactPage, contactServiceOptions } from "@/content/contact";
 import { ButtonEl } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { cx } from "@/lib/utils";
@@ -11,10 +13,12 @@ type Values = {
   name: string;
   email: string;
   company: string;
+  service: string;
   message: string;
   role: string;
   website: string;
   method: EnquiryPayload["method"];
+  whatsappNumber: string;
   /** Honeypot — left blank by humans, often filled by bots. Never shown, never validated as a real field. */
   hpField: string;
 };
@@ -23,28 +27,70 @@ const initialValues: Values = {
   name: "",
   email: "",
   company: "",
+  service: "",
   message: "",
   role: "",
   website: "",
   method: "email",
+  whatsappNumber: "",
   hpField: "",
 };
 
-type FieldErrors = Partial<Record<"name" | "email" | "company" | "message", string>>;
+type FieldErrors = Partial<Record<"name" | "email" | "company" | "service" | "message" | "whatsappNumber", string>>;
 
 type Status = "idle" | "submitting" | "success" | "error" | "unconfigured";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Sensible international phone check: an optional leading +, then 7–15 digits (E.164's max length),
+// with spaces/dashes/parentheses allowed for readability but stripped before counting.
+const PHONE_RE = /^\+?[0-9\s().-]{7,20}$/;
 
 const fieldClass =
   "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-[border-color,box-shadow] duration-200 ease-out focus:border-orange/60 focus:outline-none focus:shadow-[0_0_0_4px_rgba(255,153,28,0.15)] aria-[invalid=true]:border-red-400/60";
 const labelClass = "block text-sm font-semibold text-white/80";
+const helperClass = "mt-1.5 text-sm text-white/50";
+
+/** Small triangle-exclamation mark shown beside every error, so the error is never signalled by colour alone. */
+function ErrorIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="mt-0.5 flex-none">
+      <path
+        d="M7 1.3 13 12H1L7 1.3Z"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinejoin="round"
+      />
+      <path d="M7 5.5v3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      <circle cx="7" cy="10.3" r="0.75" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ErrorText({ id, children }: { id: string; children: string }) {
+  return (
+    <p id={id} role="alert" className="mt-1.5 flex items-start gap-1.5 text-sm text-red-400">
+      <ErrorIcon />
+      <span>{children}</span>
+    </p>
+  );
+}
 
 export function ContactForm() {
-  const [values, setValues] = useState<Values>(initialValues);
+  // Preselects the service dropdown when arriving via a "Request a Call"
+  // link that names a service (e.g. /contact?service=web-design), such as
+  // the ones on each Services page. Falls back to unselected for an
+  // unrecognised or missing value rather than guessing.
+  const searchParams = useSearchParams();
+  const preselectedService = (() => {
+    const param = searchParams.get("service");
+    return contactServiceOptions.some((option) => option.value === param) ? (param as string) : "";
+  })();
+
+  const [values, setValues] = useState<Values>(() => ({ ...initialValues, service: preselectedService }));
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
   const idPrefix = useId();
+  const reduceMotion = useReducedMotion();
 
   function update<K extends keyof Values>(key: K, value: Values[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -53,11 +99,25 @@ export function ContactForm() {
   function validate(v: Values): FieldErrors {
     const next: FieldErrors = {};
     if (!v.name.trim()) next.name = "Please enter your name.";
-    if (!v.email.trim()) next.email = "Please enter your business email.";
+    if (!v.email.trim()) next.email = "Please enter your email address.";
     else if (!EMAIL_RE.test(v.email.trim())) next.email = "Please enter a valid email address.";
     if (!v.company.trim()) next.company = "Please enter your company name.";
+    if (!v.service.trim()) next.service = "Please select a service.";
     if (!v.message.trim()) next.message = "Let us know what's slowing your business down.";
+    if (v.method === "whatsapp") {
+      const digitsOnly = v.whatsappNumber.replace(/[^0-9]/g, "");
+      if (!v.whatsappNumber.trim()) next.whatsappNumber = "Please enter your WhatsApp number.";
+      else if (!PHONE_RE.test(v.whatsappNumber.trim()) || digitsOnly.length < 7 || digitsOnly.length > 15) {
+        next.whatsappNumber = "Please enter a valid phone number, including your country code.";
+      }
+    }
     return next;
+  }
+
+  function handleMethodChange(method: EnquiryPayload["method"]) {
+    setValues((v) => ({ ...v, method, whatsappNumber: method === "whatsapp" ? v.whatsappNumber : "" }));
+    // Clear a stale WhatsApp-number error the moment the field is hidden again.
+    setErrors((e) => (method === "whatsapp" ? e : { ...e, whatsappNumber: undefined }));
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -76,10 +136,12 @@ export function ContactForm() {
         name: values.name.trim(),
         email: values.email.trim(),
         company: values.company.trim(),
+        service: values.service,
         message: values.message.trim(),
         role: values.role.trim(),
         website: values.website.trim(),
         method: values.method,
+        ...(values.method === "whatsapp" ? { whatsappNumber: values.whatsappNumber.trim() } : {}),
       });
       setStatus("success");
       setValues(initialValues);
@@ -104,6 +166,8 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+      <p className="text-sm text-white/50">{contactPage.requiredNote}</p>
+
       {/* Honeypot field — hidden from sighted and screen-reader users alike, never a real form field. */}
       <div aria-hidden className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
         <label htmlFor={`${idPrefix}-hp`}>Leave this field empty</label>
@@ -133,6 +197,7 @@ export function ContactForm() {
         id={`${idPrefix}-email`}
         label={contactForm.fields.email.label}
         placeholder={contactForm.fields.email.placeholder}
+        helperText={contactForm.fields.email.helperText}
         value={values.email}
         onChange={(v) => update("email", v)}
         error={errors.email}
@@ -153,8 +218,45 @@ export function ContactForm() {
       />
 
       <div>
+        <label className={labelClass} htmlFor={`${idPrefix}-service`}>
+          {contactForm.fields.service.label} <span aria-hidden="true" className="text-orange">*</span>
+        </label>
+        <div className="relative mt-2">
+          <select
+            id={`${idPrefix}-service`}
+            name="service"
+            required
+            value={values.service}
+            onChange={(e) => update("service", e.target.value)}
+            aria-invalid={Boolean(errors.service)}
+            aria-describedby={errors.service ? `${idPrefix}-service-error` : undefined}
+            className={cx(fieldClass, "appearance-none pr-10", values.service === "" && "text-white/35")}
+          >
+            <option value="" disabled>
+              {contactForm.fields.service.placeholder}
+            </option>
+            {contactServiceOptions.map((option) => (
+              <option key={option.value} value={option.value} className="text-navy-deep">
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <svg
+            width="12"
+            height="8"
+            viewBox="0 0 12 8"
+            aria-hidden="true"
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/50"
+          >
+            <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        {errors.service && <ErrorText id={`${idPrefix}-service-error`}>{errors.service}</ErrorText>}
+      </div>
+
+      <div>
         <label className={labelClass} htmlFor={`${idPrefix}-message`}>
-          {contactForm.fields.message.label}
+          {contactForm.fields.message.label} <span aria-hidden="true" className="text-orange">*</span>
         </label>
         <textarea
           id={`${idPrefix}-message`}
@@ -169,11 +271,7 @@ export function ContactForm() {
           aria-describedby={errors.message ? `${idPrefix}-message-error` : undefined}
           className={cx(fieldClass, "mt-2 resize-y")}
         />
-        {errors.message && (
-          <p id={`${idPrefix}-message-error`} className="mt-1.5 text-sm text-red-400">
-            {errors.message}
-          </p>
-        )}
+        {errors.message && <ErrorText id={`${idPrefix}-message-error`}>{errors.message}</ErrorText>}
       </div>
 
       <Field
@@ -212,7 +310,7 @@ export function ContactForm() {
                   name="method"
                   value={option.value}
                   checked={checked}
-                  onChange={() => update("method", option.value)}
+                  onChange={() => handleMethodChange(option.value)}
                   className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 />
                 {option.label}
@@ -220,6 +318,46 @@ export function ContactForm() {
             );
           })}
         </div>
+
+        <AnimatePresence initial={false}>
+          {values.method === "whatsapp" && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.25, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <div className="pt-4">
+                <label className={labelClass} htmlFor={`${idPrefix}-whatsapp`}>
+                  {contactForm.fields.whatsappNumber.label} <span aria-hidden="true" className="text-orange">*</span>
+                </label>
+                <input
+                  id={`${idPrefix}-whatsapp`}
+                  name="whatsappNumber"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  required
+                  placeholder={contactForm.fields.whatsappNumber.placeholder}
+                  value={values.whatsappNumber}
+                  onChange={(e) => update("whatsappNumber", e.target.value)}
+                  aria-invalid={Boolean(errors.whatsappNumber)}
+                  aria-describedby={cx(
+                    `${idPrefix}-whatsapp-helper`,
+                    errors.whatsappNumber && `${idPrefix}-whatsapp-error`,
+                  )}
+                  maxLength={24}
+                  className={cx(fieldClass, "mt-2")}
+                />
+                <p id={`${idPrefix}-whatsapp-helper`} className={helperClass}>
+                  {contactForm.fields.whatsappNumber.helperText}
+                </p>
+                {errors.whatsappNumber && <ErrorText id={`${idPrefix}-whatsapp-error`}>{errors.whatsappNumber}</ErrorText>}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </fieldset>
 
       {status === "unconfigured" && (
@@ -244,6 +382,7 @@ function Field({
   id,
   label,
   placeholder,
+  helperText,
   value,
   onChange,
   error,
@@ -254,6 +393,7 @@ function Field({
   id: string;
   label: string;
   placeholder?: string;
+  helperText?: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
@@ -261,10 +401,12 @@ function Field({
   type?: string;
   autoComplete?: string;
 }) {
+  const helperId = helperText ? `${id}-helper` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
   return (
     <div>
       <label className={labelClass} htmlFor={id}>
-        {label}
+        {label} {required && <span aria-hidden="true" className="text-orange">*</span>}
       </label>
       <input
         id={id}
@@ -274,16 +416,17 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={cx(helperId, errorId) || undefined}
         autoComplete={autoComplete}
         maxLength={300}
         className={cx(fieldClass, "mt-2")}
       />
-      {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-400">
-          {error}
+      {helperText && (
+        <p id={helperId} className={helperClass}>
+          {helperText}
         </p>
       )}
+      {error && <ErrorText id={errorId!}>{error}</ErrorText>}
     </div>
   );
 }

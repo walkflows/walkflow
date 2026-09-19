@@ -1,28 +1,22 @@
 export type ServiceSlug = "business-automation-crm" | "email-marketing" | "web-design" | "mobile-app-development";
 
-/**
- * PLACEHOLDER — REPLACE BEFORE PUBLISHING.
- *
- * Every `ProjectCard` below is temporary, concept-only project data, not
- * real client work — per explicit instruction. `devNote` carries the
- * required literal marker for anyone editing this file; the visible
- * "Concept Project" badge (rendered by ServiceProjectCard.tsx) is what
- * keeps visitors from mistaking these for real client projects, reusing
- * the same honesty convention already used for `demoShowcase` on the
- * homepage ("Concept demonstration"). `projectHref`/`videoHref` are `null`
- * until real links exist — ServiceProjectCard.tsx renders a disabled
- * "View Project" state instead of a dead or fake link.
- */
-export type ProjectCard = {
+export type TitleBody = { title: string; body: string };
+
+export type ProjectItem = {
+  slug: string;
   title: string;
   industry: string;
   description: string;
   tags: string[];
   image: { src: string; alt: string } | null;
-  projectHref: string | null;
-  videoHref: string | null;
+  features: string[];
+  videoSrc: string | null;
+  videoPoster: { src: string; alt: string } | null;
+  externalHref: string | null;
   devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING";
 };
+
+export type ReviewItem = { quote: string; name: string; role: string };
 
 export type ServicePageContent = {
   slug: ServiceSlug;
@@ -31,175 +25,184 @@ export type ServicePageContent = {
     eyebrow: string;
     heading: string;
     body: string;
+    image: { src: string; alt: string };
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
-  problem: { heading: string; body?: string; points: string[] };
-  deliver: { heading: string; items: string[] };
-  projects: { heading: string; items: ProjectCard[] };
-  video: {
-    heading: string;
-    body: string;
-    poster: { src: string; alt: string };
-    /** No real footage exists yet for any service page — kept `null` on purpose rather than pointing at a file that doesn't exist. See ServiceVideo.tsx for the coming-soon state this renders instead. */
-    videoSrc: string | null;
-  };
-  workflow: { heading: string; steps: string[] };
+  benefits: { heading: string; body: string; items: TitleBody[] };
+  whatWeDo: { heading: string; body: string; items: TitleBody[] };
+  whyWalkflow: { heading: string; items: TitleBody[] };
+  projects: { heading: string; body: string; items: ProjectItem[] };
+  process: { heading: string; steps: TitleBody[] };
+  /** Empty on every page for now — no verified reviews exist yet. ServiceReviews.tsx renders nothing when this is empty, per explicit instruction to hide (not fake-fill) the section until real reviews exist. */
+  reviews: ReviewItem[];
   faqs: { question: string; answer: string }[];
   finalCta: { heading: string; body: string; cta: { label: string; href: string } };
 };
 
 /**
- * Four Services pages (Session 21), built from a fully-specified content
- * brief. Section order: Hero, The Problem, What We Deliver, Selected
- * Projects, Project Video, How It Works, Reviews, FAQs, Final CTA. All
- * hero/problem/deliver/workflow/FAQ-question/CTA copy is transcribed
- * verbatim from the brief; FAQ answers are newly written (the brief
- * supplied only the questions), kept non-promissory — no guaranteed costs,
- * timelines or results. Project images are real photos chosen from the
- * `New image examples to use` folder, matched to each project's stated
- * industry — the same source folder used for the Industry Solutions hero
- * photos, picking different, previously-unused images from each industry's
- * set. One project (Oak & Field Store, e-commerce) has no matching photo in
- * that folder — its `image` is `null` rather than substituting an unrelated
- * picture, and ServiceProjectCard.tsx renders a plain placeholder panel
- * instead of leaving a broken image.
+ * Four Services pages (Session 23 rebuild), replacing Session 21's version
+ * end to end from a fully-specified content file
+ * (`WALKFLOW-services-content.md`, kept in the repo root as the copy source
+ * of record) and two layout reference screenshots. New section order: Hero,
+ * Benefits, What We Do, Why WALKFLOW, Projects, Four-Step Process, Reviews,
+ * FAQs, Final CTA — the Session 21 structure's "The Problem" and "Project
+ * Video" sections are gone; "Benefits" and "Why WALKFLOW" are new. All hero/
+ * benefits/what-we-do/why-WALKFLOW/projects/process/FAQ copy is transcribed
+ * verbatim from that file. `reviews` is empty on every page — the source
+ * file's own reviews sections are editorial placeholders ("[Insert genuine
+ * reviews relevant to ...]"), and per explicit instruction those must never
+ * be displayed as if they were real testimonials; the section is built and
+ * ready (ServiceReviews.tsx) but renders nothing until real reviews exist.
+ *
+ * Hero and project images are real photos from the `New image examples to
+ * use` folder (the same source used for the Industry Solutions pages).
+ * Project imagery mostly reuses the Session 21 selections, since this brief
+ * keeps nearly the same project roster; only Email Marketing's fourth
+ * project changed (was "ClinicConnect Patient Emails", now "NextStep —
+ * Consulting Firms"), so that one has a newly-copied image. Hero images
+ * are new choices — the source folder is organised by industry, not by
+ * service, so each was picked for a reasonable thematic fit (e.g. an
+ * electrical/control-panel photo for Business Automation & CRM) rather than
+ * a literal match; flagged in the session notes as a reasonable judgement
+ * call, not a verified brief.
  */
 export const servicePages: Record<ServiceSlug, ServicePageContent> = {
   "business-automation-crm": {
     slug: "business-automation-crm",
     seo: {
       title: "Business Automation & CRM",
-      description:
-        "Stop losing enquiries between messages, spreadsheets and follow-ups. WALKFLOW connects your customer journey so nothing gets missed.",
+      description: "Less chasing. More getting things done. WALKFLOW connects your forms, customer records and follow-ups so your team can keep work moving.",
     },
     hero: {
       eyebrow: "Business Automation & CRM",
-      heading: "Stop losing enquiries between messages, spreadsheets and follow-ups.",
-      body: "WALKFLOW connects the important parts of your customer journey so enquiries are captured, organised and followed up without your team manually chasing every detail.",
-      primaryCta: { label: "Explore Business Automation", href: "#deliver" },
-      secondaryCta: { label: "Request a Call", href: "/contact" },
+      heading: "Less chasing. More getting things done.",
+      body: "An enquiry comes in. Who picks it up? What happens next? We connect your forms, customer records and follow-ups so your team can keep work moving without checking five different places.",
+      image: { src: "/images/projects/hero-business-automation-crm.jpg", alt: "A technician connecting wiring inside a control panel" },
+      primaryCta: { label: "Request a Call", href: "/contact?service=business-automation-crm" },
+      secondaryCta: { label: "View Projects", href: "#projects" },
     },
-    problem: {
-      heading: "When your tools do not work together, your team carries the work.",
-      body: "Customer details can arrive through forms, email, social media, calls and spreadsheets. Without a clear process, useful information gets lost, follow-ups are forgotten and staff spend valuable time moving details from one place to another.",
-      points: [
-        "Enquiries arrive from too many places",
-        "Customer information is incomplete",
-        "Follow-ups are forgotten",
-        "Staff repeat the same admin",
-        "Internal handoffs are unclear",
-        "Teams cannot see what needs attention next",
+    benefits: {
+      heading: "Your team shouldn't have to remember everything.",
+      body: "Copying customer details, checking who replied and chasing the next step all take time. A clear system gives those tasks a place to go—and your team fewer things to keep in their heads.",
+      items: [
+        { title: "Keep enquiries together", body: "Bring new requests into one organised system, with the details your team needs to respond." },
+        { title: "Know who handles what", body: "Assign enquiries and tasks so the next person knows when it's their turn." },
+        { title: "Follow up without starting over", body: "Set up reminders and agreed messages for enquiries, estimates and proposals that need another conversation." },
+        { title: "Enter information once", body: "Connect supported tools so your team spends less time copying the same details between them." },
+        { title: "See what needs attention", body: "Keep track of new leads, open conversations and work waiting on a decision." },
+        { title: "Give customers a clearer response", body: "Acknowledge requests, explain the next step and pass questions to your team when personal help is needed." },
       ],
     },
-    deliver: {
-      heading: "A clearer system for the work that keeps repeating.",
+    whatWeDo: {
+      heading: "Connect the tasks that keep your business moving.",
+      body: "Start with one process that causes delays. We'll work out which steps can run automatically and where your team should stay involved.",
       items: [
-        "CRM setup and organisation",
-        "Enquiry capture systems",
-        "Lead qualification",
-        "Automated follow-ups",
-        "Appointment workflows",
-        "Internal notifications",
-        "AI chat assistants",
-        "Voice agents",
-        "Team handoff systems",
-        "Pipeline visibility",
+        { title: "CRM setup", body: "Organise contacts, conversation history, deal stages and responsibilities." },
+        { title: "Enquiry capture", body: "Collect useful information from your website and other supported channels." },
+        { title: "Follow-up workflows", body: "Set up reminders, message sequences and stopping rules when a customer replies." },
+        { title: "Bookings and reminders", body: "Connect appointment requests, calendars and staff notifications." },
+        { title: "Tool integrations", body: "Move information between the systems your business uses." },
+        { title: "AI assistants", body: "Help answer approved questions, collect details and hand conversations to a person." },
+      ],
+    },
+    whyWalkflow: {
+      heading: "Built around how your team actually works.",
+      items: [
+        { title: "Start with the real bottleneck", body: "We look at where work stalls before deciding what to automate." },
+        { title: "Know what you're paying for", body: "Your scope includes the agreed workflows, integrations and any ongoing platform costs." },
+        { title: "Keep people in control", body: "Approvals and handoffs stay in place where a task needs human judgement." },
+        { title: "Test the awkward situations", body: "Missing details, duplicate enquiries and failed connections are part of the review." },
+        { title: "Learn how to use it", body: "We walk your team through the system and the tasks they'll manage." },
+        { title: "Add more when it makes sense", body: "Begin with a useful workflow and expand around the way your business develops." },
       ],
     },
     projects: {
-      heading: "Automation built around real business tasks.",
+      heading: "See what a better process could look like.",
+      body: "Explore these concept projects to see how everyday requests can become organised, manageable work.",
       items: [
         {
-          title: "LeadFlow CRM Setup",
+          slug: "leadflow",
+          title: "LeadFlow",
           industry: "Real Estate",
-          description:
-            "A concept CRM workflow for capturing property enquiries, assigning leads and organising viewing follow-ups.",
-          tags: ["CRM", "Lead Capture", "Follow-Up"],
+          description: "Property enquiries collected with buyer requirements, assigned to an agent and tracked through viewing follow-up.",
+          tags: ["CRM", "Enquiry Routing"],
           image: { src: "/images/projects/leadflow-crm-setup.jpg", alt: "Real-estate agents reviewing a property enquiry" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Buyer requirement capture", "Automatic agent assignment", "Viewing follow-up reminders"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "ServiceDesk Request Workflow",
+          slug: "servicedesk",
+          title: "ServiceDesk",
           industry: "Home Services",
-          description:
-            "A concept workflow for collecting job details, routing service requests and keeping estimate follow-ups visible.",
-          tags: ["Enquiry Routing", "Notifications", "CRM"],
+          description: "Job requests organised by service type, with staff notifications and reminders to follow up on estimates.",
+          tags: ["Service Requests", "Follow-Up"],
           image: { src: "/images/projects/servicedesk-request-workflow.jpg", alt: "A technician working on a plumbing repair" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Requests sorted by service type", "Staff notifications", "Estimate follow-up reminders"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "ClinicConnect Enquiry System",
+          slug: "clinicconnect",
+          title: "ClinicConnect",
           industry: "Clinics",
-          description: "A concept enquiry and appointment workflow for organising service requests and staff notifications.",
-          tags: ["Appointment Requests", "CRM", "Reminders"],
+          description: "Appointment requests passed to reception with the details needed to respond and confirm the next step.",
+          tags: ["Appointment Requests", "Staff Notifications"],
           image: { src: "/images/projects/clinicconnect-enquiry-system.jpg", alt: "A clinic reception and administrative area" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Structured appointment requests", "Reception notifications", "Confirmation follow-up"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "ConsultTrack Pipeline",
-          industry: "Consulting",
-          description: "A concept pipeline for organising discovery calls, proposal follow-ups and client onboarding tasks.",
-          tags: ["Lead Qualification", "Pipeline", "Onboarding"],
+          slug: "consulttrack",
+          title: "ConsultTrack",
+          industry: "Consulting Firms",
+          description: "Discovery enquiries, proposals and onboarding tasks brought into one pipeline.",
+          tags: ["Sales Pipeline", "Onboarding"],
           image: { src: "/images/projects/consulttrack-pipeline.jpg", alt: "A consulting team reviewing a pipeline of opportunities" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Discovery enquiry intake", "Proposal tracking", "Onboarding task checklist"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
       ],
     },
-    video: {
-      heading: "See how an enquiry moves through the system.",
-      body: "Watch a short walkthrough of how information can be captured, organised and passed to the right person.",
-      poster: { src: "/images/projects/leadflow-crm-setup.jpg", alt: "A preview of the enquiry-to-CRM workflow walkthrough" },
-      videoSrc: null,
-    },
-    workflow: {
-      heading: "Start with one task that slows your team down.",
+    process: {
+      heading: "From a repeated task to a working system.",
       steps: [
-        "Map the current process",
-        "Choose the first useful improvement",
-        "Build the workflow",
-        "Test it with the team",
-        "Improve it as the business grows",
+        { title: "Show us the process", body: "Walk us through what happens today, which tools you use and where your team gets stuck." },
+        { title: "Agree on the workflow", body: "We map the steps, responsibilities and exceptions, then confirm the scope and cost." },
+        { title: "Build and test", body: "We connect the agreed tools and test typical requests alongside situations that could go wrong." },
+        { title: "Put it to work", body: "We help your team get started and explain how to monitor the workflow and handle exceptions." },
       ],
     },
+    reviews: [],
     faqs: [
       {
-        question: "Can you connect the tools we already use?",
-        answer: "In most cases, yes. We review what you're already using during scoping and connect it where practical, rather than asking you to replace tools that work.",
+        question: "Can you work with the tools we already use?",
+        answer: "We'll check their integration options first. If a connection needs a paid plan or a different approach, we'll explain that before work begins.",
       },
       {
-        question: "Can we start with one workflow?",
-        answer: "Yes. Most automation projects start with a single workflow — the one causing the most friction — and expand once it's proven useful.",
+        question: "Do we need to automate everything?",
+        answer: "No. You can start with one task, such as organising new enquiries or following up on estimates.",
       },
       {
-        question: "Can you set up a CRM from the beginning?",
-        answer: "Yes. If you don't have a CRM yet, we can help you choose and set one up as part of the project, scoped to what your team actually needs.",
-      },
-      {
-        question: "Can we add AI chat or voice assistants later?",
-        answer: "Yes. These are commonly added once the core enquiry and follow-up workflow is working, not required from day one.",
-      },
-      {
-        question: "Will our team receive training?",
-        answer: "Yes. We walk your team through any new system before launch, and are available to answer questions as you start using it.",
-      },
-      {
-        question: "How much will the automation project cost?",
-        answer: "It depends on scope — a single automated workflow is priced differently to a full CRM and notification system. We give a clear quote after the discovery call.",
+        question: "What happens if an automation fails?",
+        answer: "We agree on suitable alerts, checks and recovery steps as part of the project. Ongoing monitoring and maintenance can be scoped separately.",
       },
     ],
     finalCta: {
-      heading: "Make the work behind every enquiry easier to manage.",
-      body: "Tell us where customer information gets lost or where your team spends too much time repeating the same task.",
-      cta: { label: "Request a Call", href: "/contact" },
+      heading: "Which task would you like to stop chasing?",
+      body: "Tell us what your team keeps copying, checking or following up. We'll help you work out a useful place to start.",
+      cta: { label: "Request a Call", href: "/contact?service=business-automation-crm" },
     },
   },
 
@@ -207,134 +210,137 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "email-marketing",
     seo: {
       title: "Email Marketing",
-      description: "Stay useful after the first enquiry. WALKFLOW builds timely email sequences that keep conversations moving.",
+      description: "Give interested customers a reason to come back. WALKFLOW writes, designs and sets up emails that answer questions and keep your business in mind.",
     },
     hero: {
       eyebrow: "Email Marketing",
-      heading: "Stay useful after the first enquiry.",
-      body: "WALKFLOW helps businesses send timely emails that welcome new contacts, answer common questions, support buying decisions and bring customers back when they are ready.",
-      primaryCta: { label: "Explore Email Marketing", href: "#deliver" },
-      secondaryCta: { label: "Request a Call", href: "/contact" },
+      heading: "Give interested customers a reason to come back.",
+      body: "Some people need more time before they buy. We write, design and set up emails that answer their questions, explain your offer and keep your business in mind.",
+      image: { src: "/images/projects/hero-email-marketing.jpg", alt: "A professional reviewing information on a laptop" },
+      primaryCta: { label: "Request a Call", href: "/contact?service=email-marketing" },
+      secondaryCta: { label: "View Projects", href: "#projects" },
     },
-    problem: {
-      heading: "A customer who hears nothing may assume you are no longer interested.",
-      body: "When follow-up depends on memory, new enquiries go cold, past customers are forgotten and every campaign becomes another manual task for your team.",
-      points: [
-        "New enquiries receive no follow-up",
-        "Customers forget about the business",
-        "Every email is sent manually",
-        "Past customers are not re-engaged",
-        "Campaigns are inconsistent",
-        "Messages are not tailored to customer needs",
+    benefits: {
+      heading: "The first visit doesn't have to be the last conversation.",
+      body: "Someone joins your list, asks about a service or buys from you once. A useful email gives you a way to continue that relationship without writing every message from scratch.",
+      items: [
+        { title: "Welcome new subscribers", body: "Introduce your business and help people find the information they signed up for." },
+        { title: "Answer questions before they become doubts", body: "Explain your services, process and next steps while someone is considering their options." },
+        { title: "Stay in touch consistently", body: "Plan a realistic email schedule that your business can maintain." },
+        { title: "Make messages more relevant", body: "Group contacts by their interests or actions so everyone doesn't receive the same email." },
+        { title: "Invite customers back", body: "Share useful updates, relevant offers and reminders with people who have agreed to hear from you." },
+        { title: "Understand what gets a response", body: "Review clicks, enquiries and purchases where tracking is available, then use those findings to improve." },
       ],
     },
-    deliver: {
-      heading: "Email that keeps the right conversation moving.",
+    whatWeDo: {
+      heading: "The message, the design and the setup.",
+      body: "Whether you need your first welcome email or a complete campaign, we help turn a contact list into a planned conversation.",
       items: [
-        "Welcome email sequences",
-        "Lead-nurture campaigns",
-        "Appointment reminders",
-        "Estimate and proposal follow-ups",
-        "Customer reactivation campaigns",
-        "Promotional campaigns",
-        "Newsletters",
-        "Audience segmentation",
-        "Email templates",
-        "Campaign reporting",
+        { title: "Email planning", body: "Define the audience, purpose and action for each message." },
+        { title: "Copywriting and design", body: "Create readable emails with a clear reason to click." },
+        { title: "Welcome sequences", body: "Introduce your business when someone subscribes." },
+        { title: "Lead follow-up sequences", body: "Share answers and useful information with interested prospects." },
+        { title: "Newsletters and promotions", body: "Keep subscribers informed about updates and relevant offers." },
+        { title: "Campaign setup and reporting", body: "Configure audiences, timing, links and tracking within your chosen platform." },
+      ],
+    },
+    whyWalkflow: {
+      heading: "Emails your customers can understand and act on.",
+      items: [
+        { title: "One clear purpose", body: "Each email has a specific job, whether that's explaining a service or inviting a booking." },
+        { title: "Your voice comes through", body: "We use your offer, examples and language to make the messages sound like your business." },
+        { title: "Readable on a phone", body: "Copy and layouts are designed for people checking their inbox on the move." },
+        { title: "Timing with a reason", body: "Sequences follow the customer's situation, with agreed rules for when messages start and stop." },
+        { title: "Care with your contact list", body: "We account for permission, unsubscribes and duplicate contacts during setup." },
+        { title: "Useful reporting", body: "We focus on the actions that matter to your campaign and explain what the available data shows." },
       ],
     },
     projects: {
-      heading: "Email sequences built around real customer moments.",
+      heading: "See how an email sequence comes together.",
+      body: "These concept projects show the message, design and follow-up behind different customer journeys.",
       items: [
         {
-          title: "WelcomeFlow Campaign",
+          slug: "welcomeflow",
+          title: "WelcomeFlow",
           industry: "Professional Services",
-          description:
-            "A concept welcome sequence for introducing a business and guiding new enquiries towards a consultation.",
-          tags: ["Welcome Sequence", "Lead Nurture"],
+          description: "A welcome sequence that introduces the business, answers common questions and invites a consultation.",
+          tags: ["Welcome Emails", "Consultation Enquiries"],
           image: { src: "/images/projects/welcomeflow-campaign.jpg", alt: "Two professionals discussing a new client engagement" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Welcome message sequence", "Common-question follow-ups", "Consultation call invite"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "RepeatCare Email System",
+          slug: "repeatcare",
+          title: "RepeatCare",
           industry: "Home Services",
-          description: "A concept maintenance reminder and follow-up campaign for reconnecting with previous customers.",
+          description: "A customer email sequence built around seasonal maintenance information and service reminders.",
           tags: ["Customer Retention", "Reminders"],
           image: { src: "/images/projects/repeatcare-email-system.jpg", alt: "A technician performing routine home maintenance" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Seasonal maintenance tips", "Service reminder emails", "Re-engagement messages"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "PropertyAlert Campaign",
+          slug: "propertyalert",
+          title: "PropertyAlert",
           industry: "Real Estate",
-          description: "A concept email system for sharing property updates and following up with interested buyers.",
-          tags: ["Property Updates", "Segmentation"],
+          description: "Property updates organised around subscriber preferences, with a clear route to request a viewing.",
+          tags: ["Property Updates", "Audience Segmentation"],
           image: { src: "/images/projects/propertyalert-campaign.jpg", alt: "An agent walking buyers through a property" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Preference-based segmentation", "New listing alerts", "Viewing request link"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "ClinicConnect Patient Emails",
-          industry: "Clinics",
-          description: "A concept communication sequence for appointment reminders and approved patient information.",
-          tags: ["Reminders", "Email Sequence"],
-          image: { src: "/images/projects/clinicconnect-patient-emails.jpg", alt: "A clinician preparing patient communication" },
-          projectHref: null,
-          videoHref: null,
+          slug: "nextstep",
+          title: "NextStep",
+          industry: "Consulting Firms",
+          description: "An email sequence that shares useful guidance and explains what to expect from a discovery call.",
+          tags: ["Lead Nurture", "Discovery Calls"],
+          image: { src: "/images/projects/nextstep-campaign.jpg", alt: "Consultants reviewing project data together" },
+          features: ["Useful-guidance sequence", "Discovery-call expectations", "Lead nurture follow-up"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
       ],
     },
-    video: {
-      heading: "See how a simple email sequence keeps working.",
-      body: "Watch a short walkthrough of how a new contact can receive the right message at the right stage.",
-      poster: { src: "/images/projects/welcomeflow-campaign.jpg", alt: "A preview of the welcome-sequence walkthrough" },
-      videoSrc: null,
-    },
-    workflow: {
-      heading: "From a new contact to a consistent follow-up.",
+    process: {
+      heading: "From “we should send an email” to a clear plan.",
       steps: [
-        "Understand the audience",
-        "Plan the message sequence",
-        "Write and design the emails",
-        "Test the links and timing",
-        "Track and improve the campaign",
+        { title: "Get to know your audience", body: "We review your offer, your contact list and what people need to know before taking action." },
+        { title: "Plan the conversation", body: "We agree on the emails, their timing and where each link should take the reader." },
+        { title: "Write, design and test", body: "You review the content before we check layouts, links, personalisation and sequence settings." },
+        { title: "Launch and review", body: "We launch the agreed campaign and review the available results. Continuing campaign management can be arranged separately." },
       ],
     },
+    reviews: [],
     faqs: [
       {
-        question: "Can you work with our existing email platform?",
-        answer: "In most cases, yes. We review the platform you're using during scoping and build within it where practical.",
+        question: "Can you write the emails and build them in our platform?",
+        answer: "Yes. The project can cover planning, copy, design and setup, depending on what you need.",
       },
       {
-        question: "Can you write the emails as well as build the campaigns?",
-        answer: "Yes. We can write the email copy, design the sequence and set up the automation, or work from copy your team already has.",
+        question: "Can we start without a mailing list?",
+        answer: "Yes. We can help plan a signup form and welcome sequence so you're ready when people subscribe.",
       },
       {
-        question: "Can you create welcome and follow-up sequences?",
-        answer: "Yes — welcome sequences and follow-up campaigns are among the most common projects we build.",
-      },
-      {
-        question: "Can emails be connected to our website or CRM?",
-        answer: "Where practical, yes. We review your website and CRM setup during scoping and connect them so emails trigger from real activity, not manual lists.",
-      },
-      {
-        question: "How often should we send campaigns?",
-        answer: "It depends on your audience and offer — we'll recommend a realistic sending cadence during scoping rather than a generic one-size-fits-all schedule.",
-      },
-      {
-        question: "How much will the email marketing setup cost?",
-        answer: "It depends on scope — a single welcome sequence is priced differently to a full nurture and reactivation system. We give a clear quote after the discovery call.",
+        question: "Does the service include ongoing campaigns?",
+        answer: "It can. A one-time setup and ongoing campaign management are separate options, with the scope agreed upfront.",
       },
     ],
     finalCta: {
-      heading: "Give every enquiry a reason to keep moving.",
-      body: "Tell us what happens after someone joins your list, requests information or makes a purchase. We'll help you create a clearer follow-up path.",
-      cta: { label: "Request a Call", href: "/contact" },
+      heading: "What should customers hear from you next?",
+      body: "Share your offer and what you want people to do. We'll help you plan the emails that move the conversation forward.",
+      cta: { label: "Request a Call", href: "/contact?service=email-marketing" },
     },
   },
 
@@ -342,158 +348,164 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "web-design",
     seo: {
       title: "Web Design",
-      description: "Build a website that makes the next step obvious. WALKFLOW designs sites that explain your offer and build trust quickly.",
+      description: "Make your website a reason to choose you. WALKFLOW builds websites that show the value of your work and make it easy to enquire, book or buy.",
     },
     hero: {
       eyebrow: "Web Design",
-      heading: "Build a website that makes the next step obvious.",
-      body: "WALKFLOW creates websites that explain your offer clearly, build trust quickly and help visitors enquire, book or buy with confidence.",
-      primaryCta: { label: "Explore Web Design", href: "#deliver" },
-      secondaryCta: { label: "Request a Call", href: "/contact" },
+      heading: "Make your website a reason to choose you.",
+      body: "People should understand what you offer without having to piece it together. We build websites that show the value of your work and make it easy to enquire, book or buy.",
+      image: { src: "/images/projects/hero-web-design.jpg", alt: "Hands working on a laptop beside project documents" },
+      primaryCta: { label: "Request a Call", href: "/contact?service=web-design" },
+      secondaryCta: { label: "View Projects", href: "#projects" },
     },
-    problem: {
-      heading: "A website should not make customers work to understand you.",
-      points: [
-        "Visitors do not understand the offer",
-        "The website looks outdated",
-        "Important information is difficult to find",
-        "Mobile users struggle to take action",
-        "Enquiry forms are unclear",
-        "The website is disconnected from the rest of the business",
+    benefits: {
+      heading: "You've worked hard on your business. Your website should show it.",
+      body: "If your site feels outdated, hides important details or is difficult to use on a phone, visitors may leave with the wrong impression. We help you give them a clearer picture.",
+      items: [
+        { title: "Explain your offer quickly", body: "Help visitors understand what you do, who it's for and why it matters to them." },
+        { title: "Show the quality of your work", body: "Give your projects, photographs and genuine customer feedback the space they deserve." },
+        { title: "Make mobile visits easier", body: "Keep text readable, navigation simple and forms practical on smaller screens." },
+        { title: "Guide the next step", body: "Place enquiry, booking and purchase options where visitors need them." },
+        { title: "Help customers find answers", body: "Organise services, pricing information and common questions into a sensible page structure." },
+        { title: "Put enquiries to work", body: "Connect forms to an agreed destination so your team can respond with the right information." },
       ],
     },
-    deliver: {
-      heading: "A website built around what your customers need to do.",
+    whatWeDo: {
+      heading: "Everything your website needs to tell the right story.",
+      body: "We plan the pages around your customers, then bring the content, visuals and functionality together.",
       items: [
-        "Business websites",
-        "Landing pages",
-        "Service websites",
-        "E-commerce websites",
-        "Website redesigns",
-        "Conversion-focused page layouts",
-        "Responsive mobile design",
-        "Enquiry and booking forms",
-        "CRM and automation connections",
-        "Content structure and calls to action",
+        { title: "Business websites", body: "Present your services, experience and contact options clearly." },
+        { title: "Website redesigns", body: "Improve the structure and experience of an existing site." },
+        { title: "Landing pages", body: "Build a focused destination for an offer or advertising campaign." },
+        { title: "Online stores", body: "Organise products, product information and the buying journey." },
+        { title: "Forms and integrations", body: "Connect enquiries, bookings and other agreed actions." },
+        { title: "Launch essentials", body: "Check mobile layouts, page titles, links, forms and performance before launch." },
+      ],
+    },
+    whyWalkflow: {
+      heading: "A website you can feel confident sending people to.",
+      items: [
+        { title: "Built around your customers", body: "We plan what visitors need to know and what they should be able to do." },
+        { title: "Your work takes centre stage", body: "Real projects, images and examples help people understand what makes your business worth considering." },
+        { title: "A clear scope", body: "You know the agreed pages, features, cost and responsibilities before the build starts." },
+        { title: "Room for your feedback", body: "You review the design and content at agreed stages as the website takes shape." },
+        { title: "Care beyond the desktop", body: "We check how the layout and key actions work across screen sizes." },
+        { title: "A practical handover", body: "We explain the updates you can make and the options for future support." },
       ],
     },
     projects: {
-      heading: "Websites built around real customer journeys.",
+      heading: "Explore the details behind each design.",
+      body: "Browse these concept websites to see how different businesses can present their work and guide their customers.",
       items: [
         {
+          slug: "northline",
           title: "Northline Property Group",
           industry: "Real Estate",
-          description: "A concept property website designed to make listings easier to browse and viewing enquiries easier to submit.",
-          tags: ["Business Website", "Property", "Enquiry Flow"],
+          description: "A property website with clear listing information and a straightforward way to request a viewing.",
+          tags: ["Property Website", "Viewing Enquiries"],
           image: { src: "/images/projects/northline-property-group.jpg", alt: "An agent showing a property to prospective buyers" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Clear listing pages", "Viewing request form", "Mobile-friendly browsing"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
+          slug: "clearair",
           title: "ClearAir Mechanical",
           industry: "HVAC",
-          description: "A concept service website helping customers understand HVAC services and request an estimate.",
-          tags: ["Service Website", "Lead Generation"],
+          description: "A service website that explains installation and maintenance options and guides customers towards an estimate request.",
+          tags: ["Service Website", "Estimate Requests"],
           image: { src: "/images/projects/clearair-mechanical.jpg", alt: "A technician servicing a home heating system" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Service explainer pages", "Estimate request form", "Maintenance plan overview"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
+          slug: "flowfix",
           title: "FlowFix Plumbing",
           industry: "Plumbing",
-          description: "A concept mobile-first website for collecting clearer plumbing requests and emergency enquiries.",
-          tags: ["Mobile Design", "Service Website"],
+          description: "A website designed for customers on their phones, with visible contact options and a simple job enquiry form.",
+          tags: ["Mobile Design", "Job Enquiries"],
           image: { src: "/images/projects/flowfix-plumbing.jpg", alt: "A plumber assembling fittings in a bathroom" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Mobile-first layout", "Simple job enquiry form", "Visible contact options"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
+          slug: "harbour-dental",
           title: "Harbour Dental Clinic",
-          industry: "Clinic",
-          description: "A concept clinic website designed to explain treatments and guide visitors towards appointment requests.",
-          tags: ["Clinic Website", "Booking Flow"],
+          industry: "Clinics",
+          description: "A clinic website that explains services, introduces the team and makes appointment requests easy to find.",
+          tags: ["Clinic Website", "Appointment Requests"],
           image: { src: "/images/projects/harbour-dental-clinic.jpg", alt: "A dental clinician treating a patient" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Treatment explainer pages", "Team introduction", "Appointment request form"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
+          slug: "meridian",
           title: "Meridian Advisory",
-          industry: "Consulting",
-          description:
-            "A concept consulting website that presents expertise clearly and encourages qualified prospects to book a discovery call.",
-          tags: ["Consulting Website", "Lead Generation"],
+          industry: "Consulting Firms",
+          description: "A consulting website that presents expertise, explains engagements and invites prospects to discuss their needs.",
+          tags: ["Consulting Website", "Discovery Calls"],
           image: { src: "/images/projects/meridian-advisory.jpg", alt: "A consultant reviewing a proposal document with a client" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Expertise-led pages", "Engagement overview", "Discovery-call booking link"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "Oak & Field Store",
-          industry: "E-commerce",
-          description: "A concept online store focused on clear product pages, simple navigation and a smoother checkout journey.",
+          slug: "oak-field",
+          title: "Oak & Field",
+          industry: "Online Retail",
+          description: "An online store with organised collections, informative product pages and clear shopping navigation.",
           tags: ["E-commerce", "Product Pages"],
-          // No matching real photo in the supplied image folder for this one — left null
-          // rather than substituting an unrelated picture. ServiceProjectCard.tsx renders
-          // a plain placeholder panel here instead of a broken or misleading image.
+          // No matching real photo in the supplied image folder — left null rather than substituting an unrelated picture.
           image: null,
-          projectHref: null,
-          videoHref: null,
+          features: ["Organised collections", "Informative product pages", "Clear checkout navigation"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
       ],
     },
-    video: {
-      heading: "See how a clearer website changes the customer journey.",
-      body: "Watch a short walkthrough of a website experience designed to help visitors understand, trust and take action.",
-      poster: { src: "/images/projects/northline-property-group.jpg", alt: "A preview of the website-experience walkthrough" },
-      videoSrc: null,
-    },
-    workflow: {
-      heading: "From a business to a customer-ready website.",
+    process: {
+      heading: "A clear route from your ideas to launch.",
       steps: [
-        "Understand the business and audience",
-        "Plan the page structure",
-        "Design the customer experience",
-        "Build and review the website",
-        "Test on real devices",
-        "Launch and hand over the project",
+        { title: "Understand the business", body: "We discuss your customers, your current website and what the new site needs to achieve." },
+        { title: "Plan and design", body: "We organise the pages and content, then create a visual direction for you to review." },
+        { title: "Build and refine", body: "We build the agreed pages, add your content and work through feedback at planned review stages." },
+        { title: "Test and launch", body: "We check the important journeys, launch when approved and show you how to manage agreed updates." },
       ],
     },
+    reviews: [],
     faqs: [
       {
-        question: "Can you improve our existing website?",
-        answer: "Yes. We can redesign or improve specific pages on your current site, or build a new one if that's the more practical option.",
+        question: "Can you improve my existing website?",
+        answer: "Yes. We'll review it and explain whether focused changes or a rebuild would better suit your needs.",
       },
       {
-        question: "Can you build an online store?",
-        answer: "Yes. We build e-commerce websites focused on clear product pages and a simpler checkout journey.",
+        question: "Can I supply my own images and copy?",
+        answer: "Yes. Your own work and photographs help make the site personal to your business. We can also help organise or refine the content.",
       },
       {
-        question: "Will the website work on mobile?",
-        answer: "Yes — every website we build is designed and tested for mobile, tablet and desktop before launch.",
-      },
-      {
-        question: "Can you connect forms to our CRM?",
-        answer: "Where practical, yes. We review your CRM during scoping and connect enquiry or booking forms to it directly.",
-      },
-      {
-        question: "Can we provide our own images and content?",
-        answer: "Yes. We're happy to work with content and images you already have, or help you source what's missing.",
-      },
-      {
-        question: "How much will the website cost?",
-        answer:
-          "It depends on scope — a single landing page is priced differently to a full multi-page business website or online store. We give a clear quote after the discovery call.",
+        question: "Can I update the website after launch?",
+        answer: "Yes. The editing process depends on the platform. We'll explain how updates work and agree on any handover or support you need.",
       },
     ],
     finalCta: {
-      heading: "Make your website easier to understand and easier to act on.",
-      body: "Tell us what your current website is missing or what you want customers to do next.",
-      cta: { label: "Request a Call", href: "/contact" },
+      heading: "Ready for a website that reflects your business?",
+      body: "Send us your current website or tell us what you're planning. We'll help you work out the pages and features you need.",
+      cta: { label: "Request a Call", href: "/contact?service=web-design" },
     },
   },
 
@@ -501,149 +513,137 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "mobile-app-development",
     seo: {
       title: "Mobile App Development",
-      description: "Give customers and teams an easier way to get things done. WALKFLOW builds practical mobile experiences for booking, service and access.",
+      description: "Turn your app idea into something people can use. WALKFLOW plans and builds mobile apps around the tasks people need to complete.",
     },
     hero: {
       eyebrow: "Mobile App Development",
-      heading: "Give customers and teams an easier way to get things done.",
-      body: "WALKFLOW helps turn useful app ideas into practical mobile experiences for booking, shopping, communication, customer access and internal operations.",
-      primaryCta: { label: "Explore Mobile App Development", href: "#deliver" },
-      secondaryCta: { label: "Request a Call", href: "/contact" },
+      heading: "Turn your app idea into something people can use.",
+      body: "Give customers a simpler way to book, order or stay updated—or help your team get work done away from a desk. We plan and build mobile apps around the tasks people need to complete.",
+      image: { src: "/images/projects/hero-mobile-app-development.jpg", alt: "A tradesperson working on-site away from an office" },
+      primaryCta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
+      secondaryCta: { label: "View Projects", href: "#projects" },
     },
-    problem: {
-      heading: "Some customer journeys need more than a website.",
-      points: [
-        "Customers repeat the same actions manually",
-        "Teams need access to information away from the office",
-        "Important tasks are difficult to complete",
-        "Frequent users need a faster experience",
-        "The business has an app idea but no clear starting point",
+    benefits: {
+      heading: "Make the tasks people repeat easier to complete.",
+      body: "An app earns its place on someone's phone by being useful. We help you identify the actions worth building around and keep the first version focused on them.",
+      items: [
+        { title: "Make repeat visits simpler", body: "Let customers return to their account, saved items or requests without starting again." },
+        { title: "Keep useful information close", body: "Give people access to the details they need while they're away from a computer." },
+        { title: "Reduce back-and-forth", body: "Bring requests, updates and agreed information into one accessible place." },
+        { title: "Keep users informed", body: "Use relevant notifications to let people know when something needs their attention." },
+        { title: "Support work on the move", body: "Help staff view assignments, submit updates or collect information from their phones." },
+        { title: "Start with the essentials", body: "Build a focused first version so you can learn from use before investing in more features." },
       ],
     },
-    deliver: {
-      heading: "Mobile experiences built around useful actions.",
+    whatWeDo: {
+      heading: "From the first screens to the working app.",
+      body: "We help define what your app should do, design the experience and build the features agreed for your first release.",
       items: [
-        "Customer booking apps",
-        "Property-search apps",
-        "Service-request apps",
-        "Client portals",
-        "E-commerce mobile apps",
-        "Appointment and reminder apps",
-        "Internal team apps",
-        "Push notifications",
-        "Account and profile features",
-        "App store preparation and launch support",
+        { title: "App planning", body: "Clarify the audience, main tasks and essential features." },
+        { title: "Screen design", body: "Map the journey and create layouts you can review before development." },
+        { title: "Customer apps", body: "Support actions such as booking, browsing, ordering and checking updates." },
+        { title: "Team apps", body: "Help staff manage agreed tasks and information on the move." },
+        { title: "Connected features", body: "Add accounts, notifications and integrations where the project requires them." },
+        { title: "Testing and release support", body: "Test the agreed devices and help prepare for the chosen distribution route." },
+      ],
+    },
+    whyWalkflow: {
+      heading: "Keep the idea clear as the build gets bigger.",
+      items: [
+        { title: "A useful first version", body: "We help separate essential features from ideas that can wait." },
+        { title: "Review the journey early", body: "See how users move through the screens before the full build." },
+        { title: "Choose the right approach", body: "We discuss the platform, integrations and maintenance needs before committing." },
+        { title: "Know the ongoing costs", body: "Hosting, third-party services and app-store fees are outlined where applicable." },
+        { title: "Test real tasks", body: "We check whether users can complete the actions the app was built for." },
+        { title: "Plan beyond release", body: "We explain what future updates and support will involve." },
       ],
     },
     projects: {
-      heading: "Mobile experiences built around real use cases.",
+      heading: "Explore the app experiences we're planning around.",
+      body: "These concept projects show how a focused mobile app could help customers and teams complete everyday tasks.",
       items: [
         {
-          title: "ViewPoint Property App",
+          slug: "viewpoint",
+          title: "ViewPoint",
           industry: "Real Estate",
-          description: "A concept mobile experience for browsing properties, saving favourites and requesting viewings.",
-          tags: ["Mobile App", "Property Search"],
+          description: "A property app for browsing listings, saving favourites and sending viewing requests.",
+          tags: ["Property Search", "Saved Listings"],
           image: { src: "/images/projects/viewpoint-property-app.jpg", alt: "An aerial view of a residential neighbourhood" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Listing search and filters", "Saved favourites", "Viewing request flow"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "QuickServe Home App",
+          slug: "quickserve",
+          title: "QuickServe",
           industry: "Home Services",
-          description: "A concept app for requesting service, sharing job details and tracking appointment updates.",
-          tags: ["Mobile App", "Service Requests"],
+          description: "A service app for sharing job details, requesting appointments and checking request updates.",
+          tags: ["Service Requests", "Customer Updates"],
           image: { src: "/images/projects/quickserve-home-app.jpg", alt: "A technician carrying out a home repair" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Job-detail submission", "Appointment requests", "Status updates"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "BookWell Clinic App",
+          slug: "bookwell",
+          title: "BookWell",
           industry: "Clinics",
-          description: "A concept patient app for viewing services, requesting appointments and receiving reminders.",
-          tags: ["Mobile App", "Booking"],
+          description: "An appointment app for browsing services, submitting booking requests and viewing confirmed appointment details.",
+          tags: ["Appointment Requests", "Reminders"],
           image: { src: "/images/projects/bookwell-clinic-app.jpg", alt: "A patient during a clinic appointment" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Service browsing", "Booking requests", "Appointment reminders"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          title: "ClientDesk Consulting App",
-          industry: "Consulting",
-          description: "A concept client app for accessing project updates, resources and onboarding tasks.",
-          tags: ["Mobile App", "Client Access"],
+          slug: "clientdesk",
+          title: "ClientDesk",
+          industry: "Consulting Firms",
+          description: "A client app that brings project updates, shared resources and onboarding tasks together.",
+          tags: ["Client Access", "Project Updates"],
           image: { src: "/images/projects/clientdesk-consulting-app.jpg", alt: "Consultants reviewing project data together" },
-          projectHref: null,
-          videoHref: null,
+          features: ["Project update feed", "Shared resource library", "Onboarding checklist"],
+          videoSrc: null,
+          videoPoster: null,
+          externalHref: null,
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
       ],
     },
-    video: {
-      heading: "See how the app experience could work.",
-      body: "Watch a short walkthrough of a mobile experience designed around the actions customers or teams repeat most often.",
-      poster: { src: "/images/projects/viewpoint-property-app.jpg", alt: "A preview of the mobile app experience walkthrough" },
-      videoSrc: null,
-    },
-    workflow: {
-      heading: "From an app idea to a working first version.",
+    process: {
+      heading: "Build the first version with a clear purpose.",
       steps: [
-        "Define the main use case",
-        "Plan the essential screens",
-        "Build the first version",
-        "Test the experience",
-        "Prepare for launch",
-        "Improve based on real use",
+        { title: "Define the main task", body: "We discuss who will use the app and what they need to accomplish." },
+        { title: "Plan the screens", body: "We map the user journey, agree on the first-release features and design the key screens." },
+        { title: "Build and test", body: "We develop the app and integrations, then test the agreed journeys and devices." },
+        { title: "Prepare for release", body: "We help with the agreed release process and outline the next steps for maintenance and improvements." },
       ],
     },
+    reviews: [],
     faqs: [
       {
-        question: "Can you help us decide whether we need an app?",
-        answer:
-          "Yes. On the discovery call, we'll look at what you're trying to solve and tell you honestly whether an app is the right fit, or whether a website feature would do the job.",
+        question: "How do I know whether I need an app?",
+        answer: "Tell us what users need to do and how often. We'll help you assess whether an app or an improved website is the better fit.",
       },
       {
-        question: "Can the app connect to our website or CRM?",
-        answer: "Where practical, yes. We review your existing tools during scoping and connect the app to them rather than duplicating data.",
+        question: "Can the app work on iPhone and Android?",
+        answer: "We can scope a project for both. The approach depends on the features, budget and device requirements.",
       },
       {
-        question: "Can you build for iPhone and Android?",
-        answer: "Yes. Depending on scope, we build for both platforms from a single codebase where practical.",
-      },
-      {
-        question: "Can we start with a smaller first version?",
-        answer: "Yes. Most app projects start with one core use case and add features once the first version is in use.",
-      },
-      {
-        question: "Who handles app-store submission?",
-        answer: "We prepare and support the app-store submission process as part of the project.",
-      },
-      {
-        question: "How much will the app project cost?",
-        answer: "It depends on scope — a simple booking app is priced differently to a full client portal. We give a clear quote after the discovery call.",
+        question: "Are app-store fees and maintenance included?",
+        answer: "We'll list what the quote covers. Store accounts, external subscriptions and ongoing maintenance are explained separately, and store approval remains with Apple or Google.",
       },
     ],
     finalCta: {
-      heading: "Have an app idea that should be easier to use?",
-      body: "Tell us what customers or staff need to do repeatedly. We'll help you decide whether a mobile app is the right next step.",
-      cta: { label: "Request a Call", href: "/contact" },
+      heading: "What would your app help someone do?",
+      body: "Tell us the idea, who it's for and the task it should make easier. We'll help you define a sensible first version.",
+      cta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
     },
   },
-};
-
-/**
- * REVIEWS PLACEHOLDER — REPLACE BEFORE PUBLISHING.
- *
- * There are no verified client reviews anywhere in this project yet
- * (checked every content file and brand_assets/website-content.md, which
- * explicitly rules out invented testimonials). Shown as an honest
- * not-yet-available notice instead of fabricated quotes — see
- * ServiceReviews.tsx. Replace with real, permissioned reviews as soon as
- * they exist.
- */
-export const serviceReviewsNotice = {
-  heading: "What clients say about working with WALKFLOW.",
-  notice:
-    "We don't have published client reviews to share on this page yet. We'll add real feedback here as soon as we have it to share — we don't invent testimonials.",
 };

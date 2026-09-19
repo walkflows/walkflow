@@ -2,10 +2,18 @@ export type EnquiryPayload = {
   name: string;
   email: string;
   company: string;
+  /** One of `contactServiceOptions`' values (content/contact.ts) — always required. */
+  service: string;
   message: string;
   role: string;
   website: string;
   method: "email" | "whatsapp";
+  /**
+   * Only ever populated when `method === "whatsapp"` (Session 22) — the form
+   * clears and hides this field the moment another contact method is
+   * selected, so an "email" submission never carries a stray number.
+   */
+  whatsappNumber?: string;
 };
 
 /** Thrown when no real submission backend is configured yet — see submitEnquiry below. */

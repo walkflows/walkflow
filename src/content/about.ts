@@ -64,9 +64,16 @@ export const aboutHero = {
   name: "Joshua Ayomide",
   tags: ["Mech Engineering Grad", "Content Writer", "Certified Web Designer", "AI Automation Consultant"],
   cta: { label: "Request a Call", href: "/contact" },
+  /**
+   * Session 22: swapped to the "walkflow founder" asset (a branded-tee
+   * headshot Joshua added to `about us/`) in place of the earlier casual
+   * business photo. Its native size (1122×1402) is already a 4:5 ratio,
+   * matching AboutHero.tsx's photo frame exactly, so `object-cover` needs
+   * no real cropping and the face/composition renders unchanged.
+   */
   photo: {
-    src: "/about/founder-business.png",
-    alt: "Joshua Ayomide, founder of WALKFLOW",
+    src: "/about/founder-walkflow.png",
+    alt: "Joshua Ayomide, founder of WALKFLOW, wearing a WALKFLOW-branded t-shirt",
   },
 };
 

@@ -1,33 +1,33 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
 import { IconArrowRight } from "@/components/ui/icons";
 
 const sequence = [0, 0.08, 0.16, 0.24];
 
 /**
- * Plain centered-text hero, matching the homepage/DemoHero treatment — no
- * photo, since the brief gives no service-specific hero image (project
- * photos are used later, in Selected Projects).
- *
- * `primaryCta` ("Explore <Service>") renders first but styled as the
- * outline button; `secondaryCta` ("Request a Call") renders second but
- * styled solid — CLAUDE.md designates "Request a Call" the site's one
- * main conversion action, so it keeps the prominent solid treatment here
- * even though the brief lists "Explore <Service>" first in the button order.
+ * Centered hero: eyebrow/heading/body/buttons stacked and centered, with a
+ * large rounded landscape image beneath — following the supplied reference
+ * layout, re-created with the site's own background treatment (oversized
+ * wordmark + grid texture + orange glow, same as the homepage/DemoHero/
+ * IndustryHero) rather than the reference's own decorative background.
  */
 export function ServiceHero({
   eyebrow,
   heading,
   body,
+  image,
   primaryCta,
   secondaryCta,
 }: {
   eyebrow: string;
   heading: string;
   body: string;
+  image: { src: string; alt: string };
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
 }) {
@@ -85,14 +85,20 @@ export function ServiceHero({
           transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(3) }}
           className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
         >
-          <Button href={primaryCta.href} variant="secondary-on-dark">
+          <Button href={primaryCta.href}>
             {primaryCta.label}
-          </Button>
-          <Button href={secondaryCta.href}>
-            {secondaryCta.label}
             <IconArrowRight />
           </Button>
+          <Button href={secondaryCta.href} variant="secondary-on-dark">
+            {secondaryCta.label}
+          </Button>
         </motion.div>
+
+        <Reveal delay={0.3} y={32} className="mt-12 w-full max-w-4xl sm:mt-16">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[2rem] border border-white/10">
+            <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 896px, 92vw" className="object-cover" priority />
+          </div>
+        </Reveal>
       </Container>
     </section>
   );
