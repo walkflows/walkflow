@@ -2,6 +2,9 @@ export type ServiceSlug = "business-automation-crm" | "email-marketing" | "web-d
 
 export type TitleBody = { title: string; body: string };
 
+/** `width`/`height` are the image's real pixel dimensions (not display size) — used to reserve layout space and avoid a jump while each tall design image loads. */
+export type EmailDesign = { src: string; alt: string; title: string; description: string; width: number; height: number };
+
 export type ProjectItem = {
   slug: string;
   title: string;
@@ -14,6 +17,31 @@ export type ProjectItem = {
   videoPoster: { src: string; alt: string } | null;
   externalHref: string | null;
   devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING";
+  /**
+   * Overrides the card/detail badge that otherwise defaults to "Concept
+   * Project" (Session 24) — e.g. "Independent design concept" for the Email
+   * Marketing gallery's real brand work, which isn't a fictional concept
+   * placeholder in the same sense as the other services' example projects,
+   * but also isn't a paid client commission as far as this project's
+   * records show. Never invent a classification not supplied.
+   */
+  classification?: string;
+  /**
+   * Full, uncropped design images for a project that has more than one
+   * real deliverable to show (Session 24 — used by the Email Marketing
+   * gallery). When present, ProjectDetail.tsx shows these instead of the
+   * single `image` + `features` block used by every other service's
+   * concept projects, so this is fully backward-compatible — projects
+   * without `designs` render exactly as before.
+   */
+  designs?: EmailDesign[];
+  /**
+   * Longer detail-page introduction, shown only when present (Session 24).
+   * Separate from the short `description` used on the gallery card, since
+   * the Email Marketing gallery's cards should show just a project name —
+   * see ServiceProjectCard.tsx's `showSummary` prop.
+   */
+  intro?: string;
 };
 
 export type ReviewItem = { quote: string; name: string; role: string };
@@ -25,7 +53,8 @@ export type ServicePageContent = {
     eyebrow: string;
     heading: string;
     body: string;
-    image: { src: string; alt: string };
+    /** Optional (Session 24) — Email Marketing's hero has no image, per explicit instruction; every other service still supplies one. */
+    image?: { src: string; alt: string };
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
@@ -216,7 +245,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       eyebrow: "Email Marketing",
       heading: "Give interested customers a reason to come back.",
       body: "Some people need more time before they buy. We write, design and set up emails that answer their questions, explain your offer and keep your business in mind.",
-      image: { src: "/images/projects/hero-email-marketing.jpg", alt: "A professional reviewing information on a laptop" },
+      // Session 24: the hero image (a composite of the four brand designs) was tried, then explicitly removed per Joshua's feedback — no replacement image, by request. `image` is optional on ServiceHero.tsx precisely for this case.
       primaryCta: { label: "Request a Call", href: "/contact?service=email-marketing" },
       secondaryCta: { label: "View Projects", href: "#projects" },
     },
@@ -255,60 +284,158 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "Useful reporting", body: "We focus on the actions that matter to your campaign and explain what the available data shows." },
       ],
     },
+    /**
+     * Session 24: replaced the four fictional concept projects with four
+     * real email design projects, per an explicit content update. The
+     * source file this brief pointed to ("email marketing content.txt")
+     * exists but is empty — no per-project introduction copy, and no new
+     * FAQs, were supplied. `intro` and each design's `description` below
+     * are kept strictly factual (only what's visibly true from the artwork
+     * itself — subject, and what the email promotes), never a marketing
+     * claim, result or client relationship that wasn't supplied. Every
+     * project's `devNote` still flags PLACEHOLDER — REPLACE BEFORE
+     * PUBLISHING since a richer written introduction from Joshua is still
+     * pending; `description` (the short gallery-card line) is left empty on
+     * purpose — this gallery's cards show just a project name, per explicit
+     * instruction. `industry` holds each brand's actual category (visibly
+     * true from the artwork), not one of WALKFLOW's four target industries
+     * — these are real consumer brands, not industry-solution concept
+     * pieces.
+     */
     projects: {
-      heading: "See how an email sequence comes together.",
-      body: "These concept projects show the message, design and follow-up behind different customer journeys.",
+      heading: "Explore our email designs.",
+      body: "A selection of email designs that put the product, offer and next step front and centre.",
       items: [
         {
-          slug: "welcomeflow",
-          title: "WelcomeFlow",
-          industry: "Professional Services",
-          description: "A welcome sequence that introduces the business, answers common questions and invites a consultation.",
-          tags: ["Welcome Emails", "Consultation Enquiries"],
-          image: { src: "/images/projects/welcomeflow-campaign.jpg", alt: "Two professionals discussing a new client engagement" },
-          features: ["Welcome message sequence", "Common-question follow-ups", "Consultation call invite"],
+          slug: "suku-vitamins",
+          title: "SUKU Vitamins",
+          industry: "Wellness & Supplements",
+          description: "",
+          intro: "Two email designs for SUKU Vitamins, a gummy-vitamins and wellness brand: a welcome email for new subscribers and a product-focused routine email.",
+          tags: [],
+          image: { src: "/images/email-marketing/suku-vitamins-mockup.png", alt: "SUKU Vitamins email design showcase" },
+          features: [],
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
+          classification: "Independent design concept",
+          designs: [
+            {
+              src: "/images/email-marketing/suku-vitamins-welcome.png",
+              alt: "SUKU Vitamins welcome email design",
+              title: "Welcome to SUKU",
+              description: "A welcome email introducing new subscribers to SUKU's gummy vitamins, with a first-order discount.",
+              width: 724,
+              height: 2172,
+            },
+            {
+              src: "/images/email-marketing/suku-vitamins-feel-good-routine.png",
+              alt: "SUKU Vitamins “Find Your Daily Feel-Good Routine” email design",
+              title: "Find Your Daily Feel-Good Routine",
+              description: "A product email highlighting SUKU's bestselling gummies and the brand's wellness benefits.",
+              width: 724,
+              height: 2172,
+            },
+          ],
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          slug: "repeatcare",
-          title: "RepeatCare",
-          industry: "Home Services",
-          description: "A customer email sequence built around seasonal maintenance information and service reminders.",
-          tags: ["Customer Retention", "Reminders"],
-          image: { src: "/images/projects/repeatcare-email-system.jpg", alt: "A technician performing routine home maintenance" },
-          features: ["Seasonal maintenance tips", "Service reminder emails", "Re-engagement messages"],
+          slug: "skipjak",
+          title: "SKIPJAK",
+          industry: "Outdoor & Watersports",
+          description: "",
+          intro: "Two email designs for SKIPJAK, an outdoor kayaking and watersports gear brand: a product showcase and a follow-up adventure-gear email.",
+          tags: [],
+          image: { src: "/images/email-marketing/skipjak-mockup.png", alt: "SKIPJAK email design showcase" },
+          features: [],
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
+          classification: "Independent design concept",
+          designs: [
+            {
+              src: "/images/email-marketing/skipjak-pack-light-paddle-far.png",
+              alt: "SKIPJAK “Pack Light. Paddle Far.” email design",
+              title: "Pack Light. Paddle Far.",
+              description: "A product email showcasing SKIPJAK's kayaking and watersports gear for outdoor adventures.",
+              width: 887,
+              height: 1774,
+            },
+            {
+              src: "/images/email-marketing/skipjak-ready-for-next-adventure.png",
+              alt: "SKIPJAK “Ready for Your Next Water Adventure?” email design",
+              title: "Ready for Your Next Water Adventure?",
+              description: "A follow-up email highlighting SKIPJAK's outdoor essentials and adventure-ready gear.",
+              width: 724,
+              height: 2172,
+            },
+          ],
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          slug: "propertyalert",
-          title: "PropertyAlert",
-          industry: "Real Estate",
-          description: "Property updates organised around subscriber preferences, with a clear route to request a viewing.",
-          tags: ["Property Updates", "Audience Segmentation"],
-          image: { src: "/images/projects/propertyalert-campaign.jpg", alt: "An agent walking buyers through a property" },
-          features: ["Preference-based segmentation", "New listing alerts", "Viewing request link"],
+          slug: "basoni-kaffee",
+          title: "Basoni Kaffee",
+          industry: "Coffee & Beverage",
+          description: "",
+          intro: "Two email designs for Basoni Kaffee, a coffee brand: a home-brewing product email and a coffee-school promotion email.",
+          tags: [],
+          image: { src: "/images/email-marketing/basoni-kaffee-mockup.png", alt: "Basoni Kaffee email design showcase" },
+          features: [],
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
+          classification: "Independent design concept",
+          designs: [
+            {
+              src: "/images/email-marketing/basoni-espresso-genuss.png",
+              alt: "Basoni Kaffee “Espressogenuss für Zuhause” email design",
+              title: "Espressogenuss für Zuhause",
+              description: "An email introducing Basoni's coffee range for home espresso brewing.",
+              width: 935,
+              height: 1683,
+            },
+            {
+              src: "/images/email-marketing/basoni-kaffee-erleben.png",
+              alt: "Basoni Kaffee “Kaffee erleben. Wissen verschenken.” email design",
+              title: "Kaffee erleben. Wissen verschenken.",
+              description: "An email promoting Basoni's in-person coffee school and barista knowledge.",
+              width: 935,
+              height: 1683,
+            },
+          ],
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
         {
-          slug: "nextstep",
-          title: "NextStep",
-          industry: "Consulting Firms",
-          description: "An email sequence that shares useful guidance and explains what to expect from a discovery call.",
-          tags: ["Lead Nurture", "Discovery Calls"],
-          image: { src: "/images/projects/nextstep-campaign.jpg", alt: "Consultants reviewing project data together" },
-          features: ["Useful-guidance sequence", "Discovery-call expectations", "Lead nurture follow-up"],
+          slug: "psc",
+          title: "PSC",
+          industry: "Fashion & Accessories",
+          description: "",
+          intro: "Two email designs for PSC, a fashion and accessories brand: a men's essentials collection email and a women's handbag collection email.",
+          tags: [],
+          image: { src: "/images/email-marketing/psc-mockup.png", alt: "PSC email design showcase" },
+          features: [],
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
+          classification: "Independent design concept",
+          designs: [
+            {
+              src: "/images/email-marketing/psc-men-new-essentials.png",
+              alt: "PSC “Men's New Essentials” email design",
+              title: "Men's New Essentials",
+              description: "A men's apparel email featuring PSC's new-season essentials collection.",
+              width: 724,
+              height: 2172,
+            },
+            {
+              src: "/images/email-marketing/psc-women-bag-collection.png",
+              alt: "PSC “The Bag Edit” email design",
+              title: "The Bag Edit",
+              description: "A women's accessories email featuring PSC's handbag collection.",
+              width: 724,
+              height: 2172,
+            },
+          ],
           devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
         },
       ],

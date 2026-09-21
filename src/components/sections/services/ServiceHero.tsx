@@ -10,11 +10,14 @@ import { IconArrowRight } from "@/components/ui/icons";
 const sequence = [0, 0.08, 0.16, 0.24];
 
 /**
- * Centered hero: eyebrow/heading/body/buttons stacked and centered, with a
- * large rounded landscape image beneath — following the supplied reference
- * layout, re-created with the site's own background treatment (oversized
- * wordmark + grid texture + orange glow, same as the homepage/DemoHero/
- * IndustryHero) rather than the reference's own decorative background.
+ * Centered hero: eyebrow/heading/body/buttons stacked and centered, with an
+ * optional large rounded landscape image beneath — following the supplied
+ * reference layout, re-created with the site's own background treatment
+ * (oversized wordmark + grid texture + orange glow, same as the homepage/
+ * DemoHero/IndustryHero) rather than the reference's own decorative
+ * background. `image` is optional (Session 24) — Email Marketing's hero
+ * dropped its image per explicit instruction; every other service page
+ * still supplies one and renders exactly as before.
  */
 export function ServiceHero({
   eyebrow,
@@ -27,7 +30,7 @@ export function ServiceHero({
   eyebrow: string;
   heading: string;
   body: string;
-  image: { src: string; alt: string };
+  image?: { src: string; alt: string };
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
 }) {
@@ -94,11 +97,13 @@ export function ServiceHero({
           </Button>
         </motion.div>
 
-        <Reveal delay={0.3} y={32} className="mt-12 w-full max-w-4xl sm:mt-16">
-          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[2rem] border border-white/10">
-            <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 896px, 92vw" className="object-cover" priority />
-          </div>
-        </Reveal>
+        {image && (
+          <Reveal delay={0.3} y={32} className="mt-12 w-full max-w-4xl sm:mt-16">
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[2rem] border border-white/10">
+              <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 896px, 92vw" className="object-cover" priority />
+            </div>
+          </Reveal>
+        )}
       </Container>
     </section>
   );

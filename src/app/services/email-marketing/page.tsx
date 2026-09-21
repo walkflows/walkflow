@@ -6,6 +6,7 @@ import { ServiceWhatWeDo } from "@/components/sections/services/ServiceWhatWeDo"
 import { ServiceWhyWalkflow } from "@/components/sections/services/ServiceWhyWalkflow";
 import { ServiceProjects } from "@/components/sections/services/ServiceProjects";
 import { ServiceProcess } from "@/components/sections/services/ServiceProcess";
+import { ServiceEmailPlatforms } from "@/components/sections/services/ServiceEmailPlatforms";
 import { ServiceReviews } from "@/components/sections/services/ServiceReviews";
 import { ServiceFAQ } from "@/components/sections/services/ServiceFAQ";
 import { ServiceFinalCta } from "@/components/sections/services/ServiceFinalCta";
@@ -24,8 +25,10 @@ export default function EmailMarketingPage() {
       <ServiceBenefits {...content.benefits} />
       <ServiceWhatWeDo {...content.whatWeDo} />
       <ServiceWhyWalkflow {...content.whyWalkflow} />
-      <ServiceProjects {...content.projects} serviceSlug={content.slug} />
+      {/* Session 24: near-square tiles, name-only cards — see ServiceProjectCard.tsx. Every other service page omits these props and is unaffected. */}
+      <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="square" showSummary={false} />
       <ServiceProcess {...content.process} />
+      <ServiceEmailPlatforms />
       <ServiceReviews reviews={content.reviews} />
       <ServiceFAQ items={content.faqs} />
       <ServiceFinalCta {...content.finalCta} />

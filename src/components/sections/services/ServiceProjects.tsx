@@ -8,11 +8,16 @@ export function ServiceProjects({
   body,
   items,
   serviceSlug,
+  tileAspect,
+  showSummary,
 }: {
   heading: string;
   body: string;
   items: ProjectItem[];
   serviceSlug: ServiceSlug;
+  /** Session 24 — see ServiceProjectCard.tsx. Omitted by every page except Email Marketing, which renders exactly as before. */
+  tileAspect?: "4/3" | "square";
+  showSummary?: boolean;
 }) {
   return (
     <section id="projects" className="scroll-mt-24 border-t border-white/10 bg-navy-deep py-20 sm:py-28">
@@ -27,10 +32,10 @@ export function ServiceProjects({
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6">
           {items.map((project, i) => (
             <Reveal key={project.slug} delay={i * 0.08} y={24}>
-              <ServiceProjectCard project={project} serviceSlug={serviceSlug} />
+              <ServiceProjectCard project={project} serviceSlug={serviceSlug} tileAspect={tileAspect} showSummary={showSummary} />
             </Reveal>
           ))}
         </div>
