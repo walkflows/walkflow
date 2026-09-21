@@ -3,6 +3,12 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES**, as of this session. The folder is now a Git repository with local commits only (no remote, nothing pushed — see "Git checkpoints" below).
 
+## Session 25 (2026-09-21) — Email Marketing FAQs updated with real content
+
+Closed out the one open item from Session 24: replaced the Email Marketing page's placeholder 3-question FAQ set with the 10 real questions and answers Joshua supplied directly in chat (the "email marketing content.txt" file this was originally meant to come from was still empty when this arrived, so it came as a direct message instead — noted in `content/services.ts`'s comment for anyone wondering why the copy source doesn't match the file).
+
+**Verified**: `lint`/`typecheck`/`build` all clean (same 37 routes). Restarted the dev server before checking. Confirmed live: all 10 questions render in the given order with the exact supplied copy, the accordion opens/closes correctly on click, no horizontal overflow at 1440px or 390px.
+
 ## Session 24 (2026-09-20/21) — Email Marketing page: real brand projects, design lightbox, platforms section
 
 Replaced the Email Marketing page's four fictional concept projects (WelcomeFlow, RepeatCare, PropertyAlert, NextStep) with four real design projects — SUKU Vitamins, SKIPJAK, Basoni Kaffee, PSC — using real assets from a new `email marketing projects/` folder (hero composite, one gallery-mockup image and two full design images per brand, all copied into `public/images/email-marketing/`).

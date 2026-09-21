@@ -450,18 +450,57 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       ],
     },
     reviews: [],
+    // Session 25: replaced with the real FAQ content Joshua supplied, superseding the 3-question placeholder set (the "email marketing content.txt" file referenced in Session 24 was still empty when this was sent, so this arrived as a direct message instead).
     faqs: [
       {
-        question: "Can you write the emails and build them in our platform?",
-        answer: "Yes. The project can cover planning, copy, design and setup, depending on what you need.",
+        question: "Can you help if I'm new to email marketing?",
+        answer:
+          "Yes. WALKFLOW can help you choose an email platform, set up your account and create your first emails. We'll start with what your business needs and build from there.",
       },
       {
-        question: "Can we start without a mailing list?",
-        answer: "Yes. We can help plan a signup form and welcome sequence so you're ready when people subscribe.",
+        question: "What types of businesses do you work with?",
+        answer:
+          "We work with online stores and service businesses, including real estate businesses, home service providers, clinics and consulting firms. The emails we create depend on your audience and what you want them to do next.",
       },
       {
-        question: "Does the service include ongoing campaigns?",
-        answer: "It can. A one-time setup and ongoing campaign management are separate options, with the scope agreed upfront.",
+        question: "Do you write and design the emails?",
+        answer:
+          "Yes. We can handle the copy, design and setup, keeping everything consistent with your brand. You'll review and approve the emails before they go live.",
+      },
+      {
+        question: "Can you work with the email platform I already use?",
+        answer:
+          "Usually, yes. Tell us which platform you use, and we'll check what's possible with your setup. If you haven't chosen one, we can help you find an option that fits your needs and budget.",
+      },
+      {
+        question: "What's the difference between an email campaign and an automated email?",
+        answer:
+          "A campaign is a one-off message, such as a promotion, newsletter or announcement. Automated emails are triggered by an action, such as joining your list, making an enquiry or completing a purchase.",
+      },
+      {
+        question: "Can you set up welcome emails and automatic follow-ups?",
+        answer:
+          "Yes. Depending on your platform, we can set up welcome sequences, enquiry follow-ups, abandoned checkout reminders and emails that encourage previous customers to return. We'll recommend the sequences that make sense for your business.",
+      },
+      {
+        question: "What if I don't have an email list yet?",
+        answer:
+          "We can help you set up signup forms and give visitors a clear reason to subscribe. We focus on building a list of people who choose to hear from you, rather than using purchased contacts.",
+      },
+      {
+        question: "What do you need from me to get started?",
+        answer:
+          "We usually need access to your email platform, your brand assets and some information about your audience, offers and goals. If you already send emails, examples and past results will help us understand what to improve.",
+      },
+      {
+        question: "How much does it cost, and how long does it take?",
+        answer:
+          "That depends on the number of emails, the design work and the automation involved. WALKFLOW will confirm the scope, price and timeline before work begins, including any separate platform subscription costs.",
+      },
+      {
+        question: "How will I know whether my emails are working?",
+        answer:
+          "We agree on what success means for your business, then track relevant actions such as clicks, enquiries, bookings or purchases where tracking is available. Results help us identify what to improve; we don't promise a fixed number of sales.",
       },
     ],
     finalCta: {
