@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ServiceProjectCard } from "./ServiceProjectCard";
 
 export function ServiceProjects({
+  eyebrow = "Projects",
   heading,
   body,
   items,
@@ -11,12 +12,14 @@ export function ServiceProjects({
   tileAspect,
   showSummary,
 }: {
+  /** Session 26 — defaults to "Projects" so every page except App Development ("App Projects") renders exactly as before. */
+  eyebrow?: string;
   heading: string;
   body: string;
   items: ProjectItem[];
   serviceSlug: ServiceSlug;
-  /** Session 24 — see ServiceProjectCard.tsx. Omitted by every page except Email Marketing, which renders exactly as before. */
-  tileAspect?: "4/3" | "square";
+  /** Session 24, extended Session 26 — see ServiceProjectCard.tsx. Omitted by every page except Email Marketing and App Development, which render exactly as before. */
+  tileAspect?: "4/3" | "square" | "16/9";
   showSummary?: boolean;
 }) {
   return (
@@ -25,7 +28,7 @@ export function ServiceProjects({
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
-              Projects
+              {eyebrow}
             </span>
             <h2 className="mt-4 text-[clamp(1.75rem,3.6vw,2.5rem)] leading-[1.2] text-white">{heading}</h2>
             <p className="mt-4 leading-relaxed text-white/60">{body}</p>

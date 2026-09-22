@@ -20,11 +20,15 @@ import { cx } from "@/lib/utils";
  * on touch devices (where that media feature is absent) per explicit
  * instruction, so touch users are never required to hover to discover it.
  *
- * `tileAspect` (Session 24) lets a page ask for near-square tiles (the
- * Email Marketing gallery) instead of the default 4:3 — every other page
- * omits it and renders exactly as before. `showSummary` (default true)
- * hides the industry/description/tags block beneath the image when a page
- * wants just the project name under each tile (also Email Marketing).
+ * `tileAspect` (Session 24, extended Session 26) lets a page ask for
+ * near-square tiles (Email Marketing) or wide 16:9 tiles matching the
+ * App Development showcase images' real proportions, instead of the
+ * default 4:3 — every other page omits it and renders exactly as before.
+ * `showSummary` (default true) hides the industry/description/tags block
+ * beneath the image when a page wants a shorter card; when false, it now
+ * also shows `headline` (Session 26) — a one-line tagline — under the
+ * title when the project supplies one, so App Development's cards aren't
+ * just a bare title like Email Marketing's.
  */
 export function ServiceProjectCard({
   project,
@@ -34,7 +38,7 @@ export function ServiceProjectCard({
 }: {
   project: ProjectItem;
   serviceSlug: ServiceSlug;
-  tileAspect?: "4/3" | "square";
+  tileAspect?: "4/3" | "square" | "16/9";
   showSummary?: boolean;
 }) {
   return (
@@ -42,7 +46,12 @@ export function ServiceProjectCard({
       href={`/services/${serviceSlug}/projects/${project.slug}`}
       className="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] outline-none transition-all duration-[420ms] ease-out hover:-translate-y-1.5 hover:border-orange/30 hover:bg-white/[0.05] focus-visible:-translate-y-1.5 focus-visible:border-orange/30 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
     >
-      <div className={cx("relative w-full overflow-hidden bg-navy", tileAspect === "square" ? "aspect-square" : "aspect-[4/3]")}>
+      <div
+        className={cx(
+          "relative w-full overflow-hidden bg-navy",
+          tileAspect === "square" ? "aspect-square" : tileAspect === "16/9" ? "aspect-[16/9]" : "aspect-[4/3]",
+        )}
+      >
         {project.image ? (
           <Image
             src={project.image.src}
@@ -89,6 +98,7 @@ export function ServiceProjectCard({
       ) : (
         <div className="p-5 text-center">
           <h3 className="text-base font-semibold text-white">{project.title}</h3>
+          {project.headline && <p className="mt-1.5 leading-relaxed text-white/60">{project.headline}</p>}
         </div>
       )}
     </Link>

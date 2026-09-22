@@ -5,6 +5,9 @@ export type TitleBody = { title: string; body: string };
 /** `width`/`height` are the image's real pixel dimensions (not display size) — used to reserve layout space and avoid a jump while each tall design image loads. */
 export type EmailDesign = { src: string; alt: string; title: string; description: string; width: number; height: number };
 
+/** A single case-study/screenshot image for the App Development gallery (Session 26) — no per-image title/description, since none were supplied; order is the explicit array order, not filesystem order. */
+export type AppScreen = { src: string; alt: string; width: number; height: number };
+
 export type ProjectItem = {
   slug: string;
   title: string;
@@ -16,7 +19,8 @@ export type ProjectItem = {
   videoSrc: string | null;
   videoPoster: { src: string; alt: string } | null;
   externalHref: string | null;
-  devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING";
+  /** Optional (Session 26) — only the temporary/concept-placeholder projects need this marker; real projects (e.g. the App Development gallery) omit it. */
+  devNote?: "PLACEHOLDER — REPLACE BEFORE PUBLISHING";
   /**
    * Overrides the card/detail badge that otherwise defaults to "Concept
    * Project" (Session 24) — e.g. "Independent design concept" for the Email
@@ -42,6 +46,30 @@ export type ProjectItem = {
    * see ServiceProjectCard.tsx's `showSummary` prop.
    */
   intro?: string;
+  /**
+   * App Development gallery additions (Session 26). `screens` is the
+   * ordered set of inner case-study/screenshot images shown on the detail
+   * page via `AppScreenGallery.tsx` — when present, this replaces the
+   * single `image` + `features` block, the same way `designs` does for
+   * Email Marketing, so every other page's projects are unaffected.
+   * `technology`/`technologyLabel` render a labelled line (the brief uses
+   * different labels per project — "Technology" vs "Project scope" — hence
+   * the label being data, not hardcoded). `videoLabel` is the custom
+   * scroll-to-video button text (e.g. "Watch App Walkthrough"); only
+   * rendered when a real `videoSrc` also exists. `featuresHeading`
+   * overrides the default "What this concept covers" heading — these are
+   * real projects, not fictional concept placeholders, so it reads "Key
+   * Features" instead.
+   */
+  screens?: AppScreen[];
+  technology?: string;
+  technologyLabel?: string;
+  videoLabel?: string;
+  featuresHeading?: string;
+  /** Short tagline shown on the gallery card beneath the title, and again on the detail page (Session 26) — distinct from the longer `intro` paragraph. */
+  headline?: string;
+  /** Full detail-page H1 text (e.g. "GEVITI — TELEHEALTH APP"), overriding the plain `title` used everywhere else (gallery card, back-link, nav). Falls back to `title` when absent. */
+  detailTitle?: string;
 };
 
 export type ReviewItem = { quote: string; name: string; role: string };
@@ -61,12 +89,20 @@ export type ServicePageContent = {
   benefits: { heading: string; body: string; items: TitleBody[] };
   whatWeDo: { heading: string; body: string; items: TitleBody[] };
   whyWalkflow: { heading: string; items: TitleBody[] };
-  projects: { heading: string; body: string; items: ProjectItem[] };
+  projects: { eyebrow?: string; heading: string; body: string; items: ProjectItem[] };
   process: { heading: string; steps: TitleBody[] };
   /** Empty on every page for now — no verified reviews exist yet. ServiceReviews.tsx renders nothing when this is empty, per explicit instruction to hide (not fake-fill) the section until real reviews exist. */
   reviews: ReviewItem[];
   faqs: { question: string; answer: string }[];
   finalCta: { heading: string; body: string; cta: { label: string; href: string } };
+  /**
+   * Overrides every project-detail page's plain default closing CTA
+   * (Session 26 — used by the App Development gallery, where all four
+   * projects share one closing message rather than each getting a unique
+   * one). Every other service's project pages fall back to the existing
+   * bare "Request a Call" button.
+   */
+  projectClosingCta?: { heading: string; body: string; cta: { label: string; href: string } };
 };
 
 /**
@@ -685,7 +721,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       eyebrow: "Mobile App Development",
       heading: "Turn your app idea into something people can use.",
       body: "Give customers a simpler way to book, order or stay updated—or help your team get work done away from a desk. We plan and build mobile apps around the tasks people need to complete.",
-      image: { src: "/images/projects/hero-mobile-app-development.jpg", alt: "A tradesperson working on-site away from an office" },
+      // Session 26: hero image removed per explicit instruction (matches the same request on Email Marketing in Session 24) — no replacement image.
       primaryCta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
       secondaryCta: { label: "View Projects", href: "#projects" },
     },
@@ -724,61 +760,145 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "Plan beyond release", body: "We explain what future updates and support will involve." },
       ],
     },
+    /**
+     * Session 26: replaced the four fictional concept projects with four
+     * real app projects — Geviti, Nuborrow, Wrkout, Request IT — using real
+     * assets from a new "App Development/" folder (one showcase image, one
+     * or more ordered inner case-study images, and — Geviti only — a
+     * walkthrough video, all copied into `public/images/app-development/`
+     * and `public/videos/`). `classification: "App Development Project"`
+     * is used for all four rather than "Concept Project" or "Independent
+     * design concept" — it's lifted directly from a label already printed
+     * on the Geviti asset itself, and stays accurate without over- or
+     * under-stating WALKFLOW's role. Attribution varies by project: Geviti
+     * and Nuborrow's own supplied artwork explicitly credits WALKFLOW
+     * ("Built by WALKFLOW" / "WALKFLOW APP DEVELOPMENT" / "Our
+     * Capabilities"); Wrkout's case-study slides carry a WALKFLOW logo on
+     * every page; Request IT's supplied assets carry no WALKFLOW mark at
+     * all — flagged in the session's completion report rather than
+     * asserting a contribution the files don't confirm.
+     */
     projects: {
-      heading: "Explore the app experiences we're planning around.",
-      body: "These concept projects show how a focused mobile app could help customers and teams complete everyday tasks.",
+      eyebrow: "App Projects",
+      heading: "Explore what these apps make possible.",
+      body: "From keeping health information together to finding the right freelancer, explore four different ways an app can make everyday tasks easier.",
       items: [
         {
-          slug: "viewpoint",
-          title: "ViewPoint",
-          industry: "Real Estate",
-          description: "A property app for browsing listings, saving favourites and sending viewing requests.",
-          tags: ["Property Search", "Saved Listings"],
-          image: { src: "/images/projects/viewpoint-property-app.jpg", alt: "An aerial view of a residential neighbourhood" },
-          features: ["Listing search and filters", "Saved favourites", "Viewing request flow"],
-          videoSrc: null,
-          videoPoster: null,
+          slug: "geviti",
+          title: "Geviti",
+          detailTitle: "GEVITI — TELEHEALTH APP",
+          headline: "Keep your care team close and your health information together.",
+          industry: "Telehealth",
+          description: "",
+          intro:
+            "Keeping up with your health shouldn't mean switching between messages, reports and appointments. Geviti brings wellness-team support, doctor-monitored care and health tracking into one app, with at-home health panels twice a year to help inform ongoing care.",
+          tags: [],
+          image: { src: "/images/app-development/geviti-showcase.png", alt: "Geviti telehealth app showcase" },
+          features: [
+            "Connect with your care team.",
+            "View health results and track changes over time.",
+            "Bring connected-device data into one place.",
+            "Keep track of your personalised care plan.",
+          ],
+          featuresHeading: "Key Features",
+          technology: "Flutter for the mobile app · Node.js for the backend.",
+          technologyLabel: "Technology",
+          videoSrc: "/videos/geviti-walkthrough.mp4",
+          videoPoster: { src: "/images/app-development/geviti-showcase.png", alt: "Geviti app walkthrough preview" },
+          videoLabel: "Watch App Walkthrough",
           externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
+          classification: "App Development Project",
+          screens: [
+            { src: "/images/app-development/geviti-inner-1.png", alt: "Geviti app screens — overview and highlights", width: 941, height: 1672 },
+            { src: "/images/app-development/geviti-inner-2.png", alt: "Geviti app case study — process and core features", width: 941, height: 1672 },
+          ],
         },
         {
-          slug: "quickserve",
-          title: "QuickServe",
-          industry: "Home Services",
-          description: "A service app for sharing job details, requesting appointments and checking request updates.",
-          tags: ["Service Requests", "Customer Updates"],
-          image: { src: "/images/projects/quickserve-home-app.jpg", alt: "A technician carrying out a home repair" },
-          features: ["Job-detail submission", "Appointment requests", "Status updates"],
+          slug: "nuborrow",
+          title: "Nuborrow",
+          detailTitle: "NUBORROW — MORTGAGE PLATFORM & COMPANION APP",
+          headline: "Keep your mortgage details close and your next step clear.",
+          industry: "Mortgage & Finance",
+          description: "",
+          intro:
+            "Mortgage financing comes with plenty to keep track of. Nuborrow's companion app brings your application, mortgage information and credit profile together on your iPhone or iPad, helping you stay informed and connected to the team supporting your financing.",
+          tags: [],
+          image: { src: "/images/app-development/nuborrow-showcase.png", alt: "Nuborrow mortgage platform app showcase" },
+          features: [
+            "Sync your mortgage application with the mobile app.",
+            "Access your mortgage information and credit profile in one place.",
+            "Stay connected to support when considering your mortgage and home equity options.",
+          ],
+          featuresHeading: "Key Features",
+          technology: "Platform and mobile app development · CRM development · Digital marketing funnels · Google Ads landing pages.",
+          technologyLabel: "Project Scope",
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
+          classification: "App Development Project",
+          screens: [
+            { src: "/images/app-development/nuborrow-inner-1.png", alt: "Nuborrow app case study — overview and capabilities", width: 941, height: 1672 },
+          ],
         },
         {
-          slug: "bookwell",
-          title: "BookWell",
-          industry: "Clinics",
-          description: "An appointment app for browsing services, submitting booking requests and viewing confirmed appointment details.",
-          tags: ["Appointment Requests", "Reminders"],
-          image: { src: "/images/projects/bookwell-clinic-app.jpg", alt: "A patient during a clinic appointment" },
-          features: ["Service browsing", "Booking requests", "Appointment reminders"],
+          slug: "wrkout",
+          title: "Wrkout",
+          detailTitle: "WRKOUT — FITNESS & WELLNESS PLATFORM",
+          headline: "Turn trusted recommendations into new opportunities.",
+          industry: "Fitness & Wellness",
+          description: "",
+          intro:
+            "Clients often ask their trainers which products to buy. Wrkout brings those recommendations into one place, helping fitness professionals share relevant products and earn commissions. Clients can discover products through someone who understands their goals, while brands reach customers through trusted fitness relationships.",
+          tags: [],
+          image: { src: "/images/app-development/wrkout-showcase.png", alt: "Wrkout fitness and wellness app showcase" },
+          features: [
+            "Personalised product recommendations from trainers and coaches.",
+            "Commission opportunities for fitness professionals.",
+            "Access to fitness and wellness products in one platform.",
+            "Connected web and mobile experiences for professionals and clients.",
+          ],
+          featuresHeading: "Key Features",
+          technology: "Next.js for the web app · Flutter for mobile · Firebase, NestJS and Neon for backend services and data · Vercel for deployment.",
+          technologyLabel: "Technology",
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
+          classification: "App Development Project",
+          screens: [
+            { src: "/images/app-development/wrkout-inner-1.png", alt: "Wrkout case study — overview and process", width: 941, height: 1672 },
+            { src: "/images/app-development/wrkout-inner-2.png", alt: "Wrkout case study — search and discover user flow", width: 941, height: 1672 },
+            { src: "/images/app-development/wrkout-inner-3.png", alt: "Wrkout case study — onboarding and home user flow", width: 941, height: 1672 },
+            { src: "/images/app-development/wrkout-inner-4.png", alt: "Wrkout case study — account and orders user flow", width: 941, height: 1672 },
+            { src: "/images/app-development/wrkout-inner-5.png", alt: "Wrkout case study — browse and library user flow", width: 941, height: 1672 },
+            { src: "/images/app-development/wrkout-inner-6.png", alt: "Wrkout case study — design outcome and key highlights", width: 941, height: 1672 },
+          ],
         },
         {
-          slug: "clientdesk",
-          title: "ClientDesk",
-          industry: "Consulting Firms",
-          description: "A client app that brings project updates, shared resources and onboarding tasks together.",
-          tags: ["Client Access", "Project Updates"],
-          image: { src: "/images/projects/clientdesk-consulting-app.jpg", alt: "Consultants reviewing project data together" },
-          features: ["Project update feed", "Shared resource library", "Onboarding checklist"],
+          slug: "request-it",
+          title: "Request IT",
+          detailTitle: "REQUEST IT — DIGITAL SERVICES MARKETPLACE",
+          headline: "Find the right help. Get your next project moving.",
+          industry: "Digital Services Marketplace",
+          description: "",
+          intro:
+            "Need a logo, a digital card or an app built? Request IT brings freelancers and customers together in one place. Browse services, explore profiles and discuss what you need directly through the app, making it easier to move from “who can help?” to getting started.",
+          tags: [],
+          image: { src: "/images/app-development/requestit-showcase.png", alt: "Request IT digital services marketplace app showcase" },
+          features: [
+            "Browse digital services and freelancer profiles.",
+            "Send requests with your project requirements.",
+            "Message freelancers to discuss the details.",
+            "Explore offers and hire through the app.",
+            "Follow professionals and discover their work through the community feed.",
+          ],
+          featuresHeading: "Key Features",
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
+          classification: "App Development Project",
+          screens: [
+            { src: "/images/app-development/requestit-inner-1.png", alt: "Request IT app case study — key screens", width: 1122, height: 1402 },
+          ],
         },
       ],
     },
@@ -792,23 +912,67 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       ],
     },
     reviews: [],
+    // Session 26: replaced the 3-question placeholder set with 10 mobile-app-specific questions Joshua supplied directly in chat (superseding an earlier general-business set he supplied moments before, which was never published — this is the set actually shown on the page).
     faqs: [
       {
-        question: "How do I know whether I need an app?",
-        answer: "Tell us what users need to do and how often. We'll help you assess whether an app or an improved website is the better fit.",
+        question: "Can you help me turn my app idea into a clear plan?",
+        answer:
+          "Yes. You don't need a finished brief to get started. Tell us who the app is for and what it should help them do. We'll help you define the main features, user journey and scope.",
       },
       {
-        question: "Can the app work on iPhone and Android?",
-        answer: "We can scope a project for both. The approach depends on the features, budget and device requirements.",
+        question: "Can you build an app for both iPhone and Android?",
+        answer:
+          "Yes. We can build for both platforms and help you decide whether to launch on both at once or start with one, based on your audience, budget and priorities.",
       },
       {
-        question: "Are app-store fees and maintenance included?",
-        answer: "We'll list what the quote covers. Store accounts, external subscriptions and ongoing maintenance are explained separately, and store approval remains with Apple or Google.",
+        question: "Can we start with a smaller version and add features later?",
+        answer:
+          "Absolutely. We can start with the essential features your users need. This gives you a working first version to launch, gather feedback on and improve before investing in more features.",
+      },
+      {
+        question: "Can you improve or finish an existing app?",
+        answer:
+          "We'll review the current app, source code and any known issues first. From there, we can recommend whether to continue development, improve specific areas or rebuild parts that are holding it back.",
+      },
+      {
+        question: "Can my app connect to my website, CRM or payment system?",
+        answer:
+          "Yes, where those systems support integration. We'll check compatibility and any subscription or usage fees before including the connections in your project scope.",
+      },
+      {
+        question: "How much does app development cost?",
+        answer:
+          "The cost depends on the features, screens, integrations and platforms involved. Once we understand what you need, we'll provide a clear scope and quote, including any separate running costs.",
+      },
+      {
+        question: "How long will it take to build my app?",
+        answer:
+          "The timeline depends on how much the app needs to do. We'll agree on a schedule covering design, development, testing and launch preparation, with opportunities for you to review the work along the way.",
+      },
+      {
+        question: "Will you help publish the app on the App Store and Google Play?",
+        answer:
+          "We can include submission support in your project. You'll need developer accounts for the relevant stores, and we'll explain what's required. Each store reviews submissions and makes the final approval decision.",
+      },
+      {
+        question: "Will I own the app and receive the source code?",
+        answer:
+          "Ownership, source-code handover and account access will be clearly set out in your project agreement. We'll also explain any third-party software or licences your app depends on before work begins.",
+      },
+      {
+        question: "What happens after the app launches?",
+        answer:
+          "We'll walk you through managing the app and agree on any support you need. Ongoing maintenance, updates and new features can be scoped separately, so you know what's included and how future work will be handled.",
       },
     ],
     finalCta: {
       heading: "What would your app help someone do?",
       body: "Tell us the idea, who it's for and the task it should make easier. We'll help you define a sensible first version.",
+      cta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
+    },
+    projectClosingCta: {
+      heading: "Have an app idea of your own?",
+      body: "Tell us who it's for and what it needs to make easier. We'll help you work out the features, scope and next step.",
       cta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
     },
   },

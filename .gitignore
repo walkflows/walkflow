@@ -35,3 +35,7 @@ next-env.d.ts
 
 # third-party design reference captures (inspiration only, not our content/copyright)
 /reference_for_walkflow/
+
+# raw Mobile App Development hand-off assets (Session 26) — already copied/optimized into
+# public/images/app-development and public/videos; the site never reads this folder directly
+/App Development/
