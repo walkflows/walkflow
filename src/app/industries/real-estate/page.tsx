@@ -24,7 +24,7 @@ export default function RealEstateIndustryPage() {
       <IndustryWorkflow heading={content.workflow.heading} steps={content.workflow.steps} safetyNote={content.safetyNote} />
       <IndustryServices heading={content.services.heading} items={content.services.items} />
       <IndustryFAQ items={content.faqs} />
-      <IndustryFinalCta heading={content.finalCta.heading} body={content.finalCta.body} cta={content.finalCta.cta} />
+      <IndustryFinalCta heading={content.finalCta.heading} body={content.finalCta.body} cta={content.finalCta.cta} secondaryCta={content.finalCta.secondaryCta} />
     </>
   );
 }

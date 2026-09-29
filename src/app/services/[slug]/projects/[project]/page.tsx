@@ -3,7 +3,13 @@ import { notFound } from "next/navigation";
 import { servicePages, type ServiceSlug } from "@/content/services";
 import { ProjectDetail } from "@/components/sections/services/ProjectDetail";
 
-const serviceSlugs = Object.keys(servicePages) as ServiceSlug[];
+// Session 27: "web-design" now has its own dedicated route at
+// /services/web-design/projects/[project] (a real WebDesignProject template,
+// not a generic ProjectItem) — that static segment already wins routing
+// precedence over this dynamic [slug] route for that path, and excluding it
+// here too keeps generateStaticParams/getContent from also trying to build
+// pages for it under this generic template.
+const serviceSlugs = (Object.keys(servicePages) as ServiceSlug[]).filter((slug) => slug !== "web-design");
 
 type Params = { slug: string; project: string };
 
@@ -14,7 +20,7 @@ export function generateStaticParams() {
 }
 
 function getContent(slug: string, project: string) {
-  if (!serviceSlugs.includes(slug as ServiceSlug)) return null;
+  if (!serviceSlugs.includes(slug as (typeof serviceSlugs)[number])) return null;
   const service = servicePages[slug as ServiceSlug];
   const projectItem = service.projects.items.find((p) => p.slug === project);
   if (!projectItem) return null;

@@ -87,7 +87,13 @@ export type IndustryPageContent = {
   safetyNote?: string;
   services: { heading: string; items: IndustryServiceItem[] };
   faqs: { question: string; answer: string }[];
-  finalCta: { heading: string; body: string; cta: { label: string; href: string } };
+  finalCta: {
+    heading: string;
+    body: string;
+    cta: { label: string; href: string };
+    /** "See How It Works" → this industry's `/demos/<slug>` concept demo. */
+    secondaryCta: { label: string; href: string };
+  };
 };
 
 /**
@@ -122,7 +128,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Turn property interest into organised enquiries.",
       body: "Property enquiries can arrive through listing sites, email, calls and social media. WALKFLOW helps bring those conversations together so your team can respond quickly, understand what each person needs and keep viewing requests moving.",
       primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "#how-it-works" },
+      secondaryCta: { label: "See How It Works", href: "/demos/real-estate" },
       image: { src: "/industries/real-estate-hero.jpg", alt: "A real-estate agent showing a property to prospective buyers" },
     },
     problem: {
@@ -228,6 +234,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Make every serious property enquiry easier to manage.",
       body: "Tell us how your team currently handles listings, enquiries and viewing requests. We'll help you identify the first improvement worth making.",
       cta: { label: "Request a Call", href: "/contact" },
+      secondaryCta: { label: "See How It Works", href: "/demos/real-estate" },
     },
   },
 
@@ -243,7 +250,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Get clearer job requests and fewer missed follow-ups.",
       body: "When a customer needs help, they want a quick response. WALKFLOW helps home-service businesses collect the right job details, route requests to the right person and keep estimates and appointments moving.",
       primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "#how-it-works" },
+      secondaryCta: { label: "See How It Works", href: "/demos/home-services" },
       image: { src: "/industries/home-services-hero.jpg", alt: "A technician servicing a home heating system" },
     },
     problem: {
@@ -344,6 +351,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Turn more service requests into completed jobs.",
       body: "Tell us where requests, estimates or follow-ups are getting stuck. We'll help you create a clearer process for your customers and your team.",
       cta: { label: "Request a Call", href: "/contact" },
+      secondaryCta: { label: "See How It Works", href: "/demos/home-services" },
     },
   },
 
@@ -359,7 +367,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Make it easier for patients to ask, book and return.",
       body: "Patients want clear information and a simple next step. WALKFLOW helps clinics explain their services, collect appointment enquiries and keep patients informed before and after they make contact.",
       primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "#how-it-works" },
+      secondaryCta: { label: "See How It Works", href: "/demos/clinics" },
       image: { src: "/industries/clinics-hero.jpg", alt: "A dental clinician treating a patient in a clinic chair" },
     },
     problem: {
@@ -465,6 +473,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Give every prospective patient a clearer next step.",
       body: "Tell us where patients get stuck—from finding information to requesting an appointment. We'll help you improve the experience without adding unnecessary complexity.",
       cta: { label: "Request a Call", href: "/contact" },
+      secondaryCta: { label: "See How It Works", href: "/demos/clinics" },
     },
   },
 
@@ -480,7 +489,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Turn interest in your expertise into qualified conversations.",
       body: "The right prospects need a clear way to explain what they need. WALKFLOW helps consulting firms turn website interest into organised discovery calls, proposal follow-ups and smoother client onboarding.",
       primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "#how-it-works" },
+      secondaryCta: { label: "See How It Works", href: "/demos/consulting" },
       image: { src: "/industries/consulting-hero.jpg", alt: "A consultant presenting a project roadmap to a team in a meeting room" },
     },
     problem: {
@@ -581,6 +590,7 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       heading: "Make it easier for the right prospects to move forward.",
       body: "Tell us where leads slow down between the first enquiry, discovery call and onboarding. We'll help you create a clearer path for your team and your clients.",
       cta: { label: "Request a Call", href: "/contact" },
+      secondaryCta: { label: "See How It Works", href: "/demos/consulting" },
     },
   },
 };

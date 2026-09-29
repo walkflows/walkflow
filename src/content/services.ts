@@ -143,7 +143,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       eyebrow: "Business Automation & CRM",
       heading: "Less chasing. More getting things done.",
       body: "An enquiry comes in. Who picks it up? What happens next? We connect your forms, customer records and follow-ups so your team can keep work moving without checking five different places.",
-      image: { src: "/images/projects/hero-business-automation-crm.jpg", alt: "A technician connecting wiring inside a control panel" },
+      // Session 29: hero image removed per explicit instruction — no replacement image.
       primaryCta: { label: "Request a Call", href: "/contact?service=business-automation-crm" },
       secondaryCta: { label: "View Projects", href: "#projects" },
     },
@@ -556,7 +556,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       eyebrow: "Web Design",
       heading: "Make your website a reason to choose you.",
       body: "People should understand what you offer without having to piece it together. We build websites that show the value of your work and make it easy to enquire, book or buy.",
-      image: { src: "/images/projects/hero-web-design.jpg", alt: "Hands working on a laptop beside project documents" },
+      // Session 29: hero image removed per explicit instruction — no replacement image.
       primaryCta: { label: "Request a Call", href: "/contact?service=web-design" },
       secondaryCta: { label: "View Projects", href: "#projects" },
     },
@@ -595,90 +595,24 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "A practical handover", body: "We explain the updates you can make and the options for future support." },
       ],
     },
+    /**
+     * Session 27: the six fictional placeholder projects that used to live
+     * here were replaced by six real project pages (FORMERA, QUES
+     * Consulting, Happy Clinics, ROOFORA, ZOOM, Youghall Beach Co.). That
+     * gallery now has its own data shape (`WebDesignProject`, with real
+     * screenshots, live URLs and per-project design copy that doesn't fit
+     * the generic cross-service `ProjectItem` type) in
+     * `src/content/web-design-projects.ts`, rendered by
+     * `WebDesignProjectGallery`/`WebDesignProjectDetail` at
+     * `/services/web-design` and `/services/web-design/projects/<slug>`
+     * instead of `ServiceProjects`/the generic `[slug]/projects/[project]`
+     * route. `items` stays empty here only to satisfy `ServicePageContent`'s
+     * required `projects` field — nothing reads it any more.
+     */
     projects: {
       heading: "Explore the details behind each design.",
-      body: "Browse these concept websites to see how different businesses can present their work and guide their customers.",
-      items: [
-        {
-          slug: "northline",
-          title: "Northline Property Group",
-          industry: "Real Estate",
-          description: "A property website with clear listing information and a straightforward way to request a viewing.",
-          tags: ["Property Website", "Viewing Enquiries"],
-          image: { src: "/images/projects/northline-property-group.jpg", alt: "An agent showing a property to prospective buyers" },
-          features: ["Clear listing pages", "Viewing request form", "Mobile-friendly browsing"],
-          videoSrc: null,
-          videoPoster: null,
-          externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
-        },
-        {
-          slug: "clearair",
-          title: "ClearAir Mechanical",
-          industry: "HVAC",
-          description: "A service website that explains installation and maintenance options and guides customers towards an estimate request.",
-          tags: ["Service Website", "Estimate Requests"],
-          image: { src: "/images/projects/clearair-mechanical.jpg", alt: "A technician servicing a home heating system" },
-          features: ["Service explainer pages", "Estimate request form", "Maintenance plan overview"],
-          videoSrc: null,
-          videoPoster: null,
-          externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
-        },
-        {
-          slug: "flowfix",
-          title: "FlowFix Plumbing",
-          industry: "Plumbing",
-          description: "A website designed for customers on their phones, with visible contact options and a simple job enquiry form.",
-          tags: ["Mobile Design", "Job Enquiries"],
-          image: { src: "/images/projects/flowfix-plumbing.jpg", alt: "A plumber assembling fittings in a bathroom" },
-          features: ["Mobile-first layout", "Simple job enquiry form", "Visible contact options"],
-          videoSrc: null,
-          videoPoster: null,
-          externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
-        },
-        {
-          slug: "harbour-dental",
-          title: "Harbour Dental Clinic",
-          industry: "Clinics",
-          description: "A clinic website that explains services, introduces the team and makes appointment requests easy to find.",
-          tags: ["Clinic Website", "Appointment Requests"],
-          image: { src: "/images/projects/harbour-dental-clinic.jpg", alt: "A dental clinician treating a patient" },
-          features: ["Treatment explainer pages", "Team introduction", "Appointment request form"],
-          videoSrc: null,
-          videoPoster: null,
-          externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
-        },
-        {
-          slug: "meridian",
-          title: "Meridian Advisory",
-          industry: "Consulting Firms",
-          description: "A consulting website that presents expertise, explains engagements and invites prospects to discuss their needs.",
-          tags: ["Consulting Website", "Discovery Calls"],
-          image: { src: "/images/projects/meridian-advisory.jpg", alt: "A consultant reviewing a proposal document with a client" },
-          features: ["Expertise-led pages", "Engagement overview", "Discovery-call booking link"],
-          videoSrc: null,
-          videoPoster: null,
-          externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
-        },
-        {
-          slug: "oak-field",
-          title: "Oak & Field",
-          industry: "Online Retail",
-          description: "An online store with organised collections, informative product pages and clear shopping navigation.",
-          tags: ["E-commerce", "Product Pages"],
-          // No matching real photo in the supplied image folder — left null rather than substituting an unrelated picture.
-          image: null,
-          features: ["Organised collections", "Informative product pages", "Clear checkout navigation"],
-          videoSrc: null,
-          videoPoster: null,
-          externalHref: null,
-          devNote: "PLACEHOLDER — REPLACE BEFORE PUBLISHING",
-        },
-      ],
+      body: "Browse these projects to see how different businesses can present their work and guide their customers.",
+      items: [],
     },
     process: {
       heading: "A clear route from your ideas to launch.",

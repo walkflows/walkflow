@@ -39,3 +39,8 @@ next-env.d.ts
 # raw Mobile App Development hand-off assets (Session 26) — already copied/optimized into
 # public/images/app-development and public/videos; the site never reads this folder directly
 /App Development/
+
+# raw Web Design portfolio brief/mockups (Session 28, 112MB) — the mockups are already copied/
+# optimized into public/images/web-design/projects/*/mockup.webp; the six live sites were
+# screenshotted directly rather than using the folder's other (uncropped, no-mobile) images
+/WEB DESIGN UPDATE/
