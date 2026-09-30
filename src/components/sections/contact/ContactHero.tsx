@@ -117,9 +117,9 @@ function InfoCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full flex-col rounded-2xl bg-white/[0.03] p-6">
+    <div className="group flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-orange/30 hover:bg-white/[0.05] hover:shadow-[0_0_28px_-10px_rgba(255,153,28,0.45)]">
       <div className="flex items-center gap-2.5 text-white/50">
-        <Icon className="h-4 w-4 text-orange" />
+        <Icon className="h-4 w-4 flex-none text-orange transition-transform duration-300 ease-out group-hover:scale-110" />
         <span className="text-xs font-bold uppercase tracking-wide">{label}</span>
       </div>
       <div className="mt-3 leading-relaxed text-white/80">{children}</div>
@@ -152,10 +152,10 @@ export function ContactHero() {
           <div className="mx-auto mt-10 max-w-4xl rounded-[2rem] border border-white/10 bg-white/[0.02] p-3 sm:p-4">
             {cards.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-3">
-                {cards.map((card) => (
-                  <div key={card.id} className={card.wide ? "sm:col-span-2" : undefined}>
+                {cards.map((card, i) => (
+                  <Reveal key={card.id} delay={0.15 + i * 0.08} y={16} className={card.wide ? "sm:col-span-2" : undefined}>
                     {card.content}
-                  </div>
+                  </Reveal>
                 ))}
               </div>
             ) : (

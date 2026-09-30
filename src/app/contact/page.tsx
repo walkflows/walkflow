@@ -21,7 +21,7 @@ export default function ContactPage() {
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {contactPage.eyebrow}
             </span>
-            <p className="mt-5 max-w-xl leading-relaxed text-white/65">{contactPage.intro}</p>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl">{contactPage.intro}</p>
           </Reveal>
 
           <div className="mt-10">

@@ -3,6 +3,28 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES.** Remote added and pushed as of Session 26: `https://github.com/walkflows/walkflow` (branch `master`). Deployed via Vercel to a `*.vercel.app` preview link (no custom domain yet). Sessions 27–29's work below is committed locally only where stated — check each entry before assuming it's pushed.
 
+## Session 31 (2026-09-30) — Demo/Platforms sections destyled and blended; Contact page card animation + bigger intro text
+
+Two small, explicit homepage-styling follow-ups plus two Contact page tweaks, on top of Session 30's work below.
+
+**Homepage Demo section (`DemoShowcase.tsx`)**: removed the giant "DEMO" background watermark text, replaced with a subtle diagonal-stripe texture (`repeating-linear-gradient`, `opacity-[0.05]`) — same restrained treatment as the site's other decorative backgrounds, just a different pattern so it reads distinctly from the grid texture used elsewhere. Also dropped the section's `border-t border-white/10` so it blends into Industries above and Services below without a hard seam.
+
+**Homepage Platforms & Tools section (`PlatformsAndTools.tsx`)**: removed both giant "PLATFORMS"/"EXPERIENCE" watermark texts and the now-unused `useScroll`/`useTransform` scroll-parallax wiring that drove them, keeping the three drifting orange blur/glow circles ("the orange shadow") untouched, including the cursor-follow effect on one of them. Also dropped `border-t border-white/10` for the same blending reason as Demo.
+
+**Contact page (`ContactHero.tsx`, `contact/page.tsx`)**: the phone/address/email `InfoCard` boxes now have a border, hover lift, hover border/background/icon-scale transition, and orange glow shadow on hover (previously static, no border at all); each card now also gets its own staggered entrance animation instead of the whole grid fading in as one block. The intro paragraph above the form ("Tell us what's going on — we'll get back to you within 24 hours to set up a discovery call.") is now rendered larger (`text-lg`/`sm:text-xl` instead of default body size).
+
+**Verified**: `typecheck`/`lint`/`build` all clean. Confirmed live via Playwright at 1440px and 390px: no "DEMO"/"PLATFORMS"/"EXPERIENCE" text anywhere in the DOM, both sections' backgrounds render as described with no visible seam against neighbouring sections, the orange glow circles still animate in Platforms & Tools, the Contact info cards carry the new hover/transition classes and the intro text is visibly larger, zero console errors/warnings, no horizontal overflow at 390px.
+
+## Session 30 (2026-09-30) — Site-wide nav/UX fixes; unified all four Service pages; deployed
+
+Implemented two supplied briefs (`WALKFLOW-Website-Update-Brief.md`, `WALKFLOW-Services-Complete-Update-and-FAQs.md`) in full. Highlights: every WALKFLOW logo now reliably returns to the homepage top from anywhere (new `HomeLogoLink`/`ScrollRestoration` components); new-page navigation always starts at the top of the destination (except intentional anchors, and native back/forward restoration is preserved); mobile menu rebuilt as a proper accordion with `overviewHref` support for parents with a real overview page; favicon replaced with the real logo; homepage reordered to Hero → Industries → Demos → Services → Why WALKFLOW (split out of the old Platforms & Tools section) → How We Work → Platforms & Tools → FAQs → final CTA, with every "Request a Call" swapped for "See How It Works" linking to `#demos`; About page got italic handwritten tagline styling, three corrected founder tags, a LinkedIn icon (non-interactive until a real URL is supplied), and Boluwatife's corrected role; all four Industry Solutions pages got exact three-card solutions copy and industry-specific "Explore [Industry] Demo"/"Request a Consultation" CTAs; the contact form gained industry and timing dropdowns in a reordered 12-field flow; all four Service pages (Web Design, Business Automation & CRM, Mobile App Development, Email Marketing) were rebuilt onto one shared section order, one "Book a Consultation" CTA label everywhere, a new `ServicePlatforms` section on the two that lacked one, and Web Design/Business Automation & CRM got their FAQs fully replaced with the two supplied 10-question sets.
+
+**Real bug found and fixed**: the Web Design gallery heading update initially had no visible effect — it was written to `servicePages["web-design"].projects.heading`, a dead field nothing reads; the gallery actually renders from a separate `webDesignGallery` object in `web-design-projects.ts`, fixed there instead (now flagged in a comment as "the real source the gallery renders from").
+
+**Verified**: `typecheck`/`lint`/`build` all clean. Confirmed live via Playwright across 320/390/768/1440px: every requirement in both briefs (listed above), no console/hydration errors, no horizontal overflow.
+
+**Committed and deployed** (`ac4d532`), pushed to `origin/master`, Vercel auto-deployed to production — confirmed live via `curl` that the new copy is served at `https://walkflow-phi.vercel.app`.
+
 ## Session 29 (2026-09-29) — reverted Industry Solutions photos; removed Web Design/Business Automation hero images
 
 Two explicit corrections to work from the last two sessions, both about images specifically:

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { platformsAndTools } from "@/content/home";
 import { tools, type Tool } from "@/content/tools";
 import { ButtonEl } from "@/components/ui/Button";
@@ -50,18 +50,6 @@ export function PlatformsAndTools() {
   const reduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Scroll-linked parallax on the decorative background typography only —
-  // driven by Motion values applied via `style`, not by conditional
-  // initial/animate props or class names, so it never touches anything
-  // hydration-sensitive. The site-wide prefers-reduced-motion rule can't
-  // reach this (it's a JS transform, not a CSS transition/animation), so
-  // `motion-reduce:!transform-none` below neutralises it visually instead
-  // (Motion applies x/y via the `transform` property, not the native CSS
-  // `translate` property, so the override must target `transform`).
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
-  const typographyYFar = useTransform(scrollYProgress, [0, 1], [50, -50]);
-  const typographyYNear = useTransform(scrollYProgress, [0, 1], [-36, 36]);
-
   // Extremely subtle cursor-follow on one ambient light layer. Skipped
   // entirely under reduced motion (a runtime early-return, not a render
   // branch), and smoothed with a spring for an unhurried, elegant lag.
@@ -84,24 +72,15 @@ export function PlatformsAndTools() {
   }, [reduceMotion, cursorX, cursorY]);
 
   return (
-    <section ref={sectionRef} className="relative isolate overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
-      {/* Ambient atmosphere: huge low-opacity typography + slow-drifting
-          blurred orange light. Purely decorative, aria-hidden, and never
-          intercepts pointer events or reading order. */}
+    <section ref={sectionRef} className="relative isolate overflow-hidden bg-navy-deep py-20 sm:py-28">
+      {/*
+        Session 30: removed the giant "PLATFORMS"/"EXPERIENCE" background
+        watermarks per explicit instruction — the section is plain now,
+        keeping only the slow-drifting blurred orange glow ("the orange
+        shadow"). No `border-t` either, so this section blends straight into
+        Process above and FAQ below instead of showing a hard seam.
+      */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <motion.p
-          style={{ y: typographyYFar }}
-          className="absolute -top-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[22vw] font-medium leading-none tracking-wide text-white/[0.05] motion-reduce:!transform-none"
-        >
-          PLATFORMS
-        </motion.p>
-        <motion.p
-          style={{ y: typographyYNear }}
-          className="absolute top-[60%] left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-heading text-[17vw] font-medium leading-none tracking-wide text-white/[0.045] motion-reduce:!transform-none"
-        >
-          EXPERIENCE
-        </motion.p>
-
         <div className="absolute -left-32 top-10 h-[26rem] w-[26rem] animate-drift-a rounded-full bg-[radial-gradient(closest-side,rgba(255,153,28,0.16),transparent)] blur-3xl" />
         <motion.div
           style={{ x: smoothX, y: smoothY }}

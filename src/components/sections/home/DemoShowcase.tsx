@@ -6,17 +6,22 @@ import { cx } from "@/lib/utils";
 
 export function DemoShowcase() {
   return (
-    <section id="demos" className="relative isolate scroll-mt-24 overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
-      {/* Huge, near-invisible background typography, matching the treatment
-          used for "PLATFORMS"/"EXPERIENCE" in the section above. Purely
-          decorative: aria-hidden, clipped by the section's own
-          overflow-hidden, never intercepts pointer events or reading order. */}
-      <p
+    <section id="demos" className="relative isolate scroll-mt-24 overflow-hidden bg-navy-deep py-20 sm:py-28">
+      {/*
+        Session 30: replaced the giant "DEMO" background watermark with a
+        subtle diagonal stripe texture, per explicit instruction. Same
+        restrained, near-invisible treatment as the site's other decorative
+        backgrounds (very low opacity, aria-hidden, pointer-events-none) —
+        just a different pattern (diagonal repeating lines instead of a
+        square grid) so this section reads distinctly from Hero/Process's
+        grid texture. No `border-t` on this section any more, so it blends
+        straight into Industries above and Services below rather than
+        showing a hard seam.
+      */}
+      <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-heading text-[30vw] font-medium leading-none tracking-wide text-white/[0.05] sm:text-[23vw]"
-      >
-        DEMO
-      </p>
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.05] [background-image:repeating-linear-gradient(135deg,white_0,white_1px,transparent_1px,transparent_14px)]"
+      />
 
       <Container>
         <Reveal>
