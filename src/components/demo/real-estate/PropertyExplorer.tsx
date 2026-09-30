@@ -17,7 +17,7 @@ import type { Filters } from "./types";
 const INITIAL_VISIBLE_COUNT = 3;
 
 const selectClass =
-  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white [color-scheme:dark] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
 const labelClass = "block text-xs font-semibold uppercase tracking-wide text-white/50";
 
 export const initialFilters: Filters = {
