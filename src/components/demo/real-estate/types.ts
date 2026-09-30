@@ -7,16 +7,3 @@ export type Filters = {
   minBedrooms: number;
   propertyType: PropertyType | "any";
 };
-
-export type LeadStage = "New Enquiry" | "Matched" | "Viewing Requested";
-
-export type Lead = {
-  id: string;
-  name: string;
-  email: string;
-  stage: LeadStage;
-  requirementsSummary: string;
-  matchedPropertyIds: string[];
-  viewing?: { propertyId: string; date: string };
-  followUpReady: boolean;
-};

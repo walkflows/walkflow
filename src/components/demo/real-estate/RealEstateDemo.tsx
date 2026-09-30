@@ -1,142 +1,184 @@
 "use client";
 
 import { useState } from "react";
-import { demoStrings, demoTabs, type DemoTabId } from "@/content/real-estate-demo";
-import { properties } from "@/content/real-estate-properties";
-import { ButtonEl } from "@/components/ui/Button";
-import { TabList, TabPanel } from "@/components/ui/Tabs";
+import { properties, type Property } from "@/content/real-estate-properties";
+import { agentViewToggleLabels, conversionPrompt, demoStrings, previewModeBanner } from "@/content/real-estate-demo";
+import { Button, ButtonEl } from "@/components/ui/Button";
 import { AgentView } from "./AgentView";
-import { PreferenceForm, type PreferenceResult, type PreferenceValues } from "./PreferenceForm";
+import { AssignmentPanel } from "./AssignmentPanel";
+import { AutomationPanel } from "./AutomationPanel";
+import { EnquiryForm, type EnquiryFormValues } from "./EnquiryForm";
+import type { Requirements } from "./engine";
+import { MatchingPanel } from "./MatchingPanel";
+import { NextStepPanel } from "./NextStepPanel";
+import { PostViewingPanel } from "./PostViewingPanel";
 import { PropertyDetailsDialog } from "./PropertyDetailsDialog";
-import { PropertyExplorer, initialFilters, matchesFilters } from "./PropertyExplorer";
-import type { Filters, Lead } from "./types";
-import { ViewingRequestForm, type ViewingResult, type ViewingValues } from "./ViewingRequestForm";
+import { initialFilters, PropertyExplorer } from "./PropertyExplorer";
+import { StageProgress } from "./StageProgress";
+import type { Filters } from "./types";
+import { ViewingPanel } from "./ViewingPanel";
+import { useRealEstateDemoSession } from "./session";
 
 const tabPanelClass = "mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-8";
 
-function summarisePreferences(values: PreferenceValues) {
-  const listing = values.listingType === "buy" ? "Buy" : "Rent";
-  const budget = values.maxBudget ? `up to $${values.maxBudget.toLocaleString("en-US")}` : "no max budget";
-  const beds = values.minBedrooms > 0 ? `${values.minBedrooms}+ beds` : "any beds";
-  const type = values.propertyType === "any" ? "any type" : values.propertyType;
-  const area = values.neighbourhood === "any" ? "any area" : values.neighbourhood;
-  return `${listing} · ${area} · ${budget} · ${beds} · ${type}`;
+function prefillFromProperty(p: Property): Partial<Requirements> {
+  return {
+    listingType: p.listingType,
+    neighbourhood: p.neighbourhood,
+    propertyType: p.propertyType,
+    minBedrooms: p.bedrooms,
+    maxBudget: p.price,
+  };
 }
 
 export function RealEstateDemo() {
-  const [activeTab, setActiveTab] = useState<DemoTabId>("browse");
+  const { state, processing, dispatch, run } = useRealEstateDemoSession();
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
-  const [pendingPropertyId, setPendingPropertyId] = useState<string | null>(null);
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [preferenceResult, setPreferenceResult] = useState<PreferenceResult | null>(null);
-  const [viewingResult, setViewingResult] = useState<ViewingResult | null>(null);
 
   const selectedProperty = properties.find((p) => p.id === selectedPropertyId) ?? null;
 
-  function handleBookViewing(id: string) {
+  function startJourney(propertyId?: string) {
+    const property = propertyId ? (properties.find((p) => p.id === propertyId) ?? null) : null;
     setSelectedPropertyId(null);
-    setPendingPropertyId(id);
-    setActiveTab("viewing");
+    dispatch({ type: "START_JOURNEY", prefill: property ? prefillFromProperty(property) : null });
   }
 
-  function handlePreferenceSubmit(values: PreferenceValues) {
-    const matched = properties.filter((p) =>
-      matchesFilters(p, {
-        listingType: values.listingType,
-        neighbourhood: values.neighbourhood,
-        maxBudget: values.maxBudget,
-        minBedrooms: values.minBedrooms,
-        propertyType: values.propertyType,
-      }),
-    );
-    const matchedPropertyIds = matched.map((p) => p.id);
-    setPreferenceResult({ matchedPropertyIds });
-    setLeads((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        name: values.name,
-        email: values.email,
-        stage: matchedPropertyIds.length > 0 ? "Matched" : "New Enquiry",
-        requirementsSummary: summarisePreferences(values),
-        matchedPropertyIds,
-        followUpReady: false,
-      },
-    ]);
-  }
-
-  function handleViewingSubmit(values: ViewingValues) {
-    setViewingResult({ propertyId: values.propertyId, date: values.date });
-    const property = properties.find((p) => p.id === values.propertyId);
-    setLeads((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        name: values.name,
-        email: values.email,
-        stage: "Viewing Requested",
-        requirementsSummary: `Viewing request · ${property?.name ?? "sample property"}`,
-        matchedPropertyIds: [],
-        viewing: { propertyId: values.propertyId, date: values.date },
-        followUpReady: true,
-      },
-    ]);
-  }
-
-  function handleResetDemo() {
-    setActiveTab("browse");
-    setFilters(initialFilters);
-    setSelectedPropertyId(null);
-    setPendingPropertyId(null);
-    setLeads([]);
-    setPreferenceResult(null);
-    setViewingResult(null);
-  }
+  const showConversion = state.stage === "assignment" || state.stage === "viewing" || state.stage === "post-viewing" || state.stage === "next-step";
 
   return (
     <div id="interactive-demo" className="scroll-mt-24">
-      <div className="rounded-2xl border border-orange/25 bg-orange/[0.08] p-4 text-sm font-medium text-white/85">
-        {demoStrings.persistentNotice}
+      <span className="inline-flex items-center rounded-full bg-orange/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
+        {previewModeBanner.pill}
+      </span>
+      <div className="mt-3 rounded-2xl border border-orange/25 bg-orange/[0.08] p-4 text-sm font-medium text-white/85">
+        {previewModeBanner.notice}
       </div>
 
-      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <TabList
-          label="Real estate demo sections"
-          tabs={demoTabs}
-          activeId={activeTab}
-          onChange={(id) => setActiveTab(id as DemoTabId)}
-          className="flex flex-wrap gap-2"
-          tabClassName="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-white/70 transition-colors duration-200 hover:text-white"
-          activeTabClassName="border-orange! bg-orange! text-navy-deep!"
-        />
-        <ButtonEl variant="secondary-on-dark" size="sm" onClick={handleResetDemo} className="self-start sm:self-auto">
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        {state.stage === "browse" && <ButtonEl onClick={() => startJourney()}>Start Sample Journey</ButtonEl>}
+        <ButtonEl variant="secondary-on-dark" size="sm" onClick={() => dispatch({ type: "TOGGLE_AGENT_VIEW" })}>
+          {state.agentViewOpen ? agentViewToggleLabels.close : agentViewToggleLabels.open}
+        </ButtonEl>
+        <ButtonEl variant="ghost-on-dark" size="sm" onClick={() => dispatch({ type: "RESTART" })}>
           {demoStrings.restartDemo}
         </ButtonEl>
       </div>
 
-      <TabPanel id="browse" activeId={activeTab} className={tabPanelClass}>
-        <PropertyExplorer
-          filters={filters}
-          onFiltersChange={setFilters}
-          onViewDetails={setSelectedPropertyId}
-          onBookViewing={handleBookViewing}
+      {state.stage !== "browse" && (
+        <div className="mt-6">
+          <StageProgress stage={state.stage} />
+        </div>
+      )}
+
+      {state.stage === "browse" && (
+        <div className={tabPanelClass}>
+          <PropertyExplorer
+            filters={filters}
+            onFiltersChange={setFilters}
+            onViewDetails={setSelectedPropertyId}
+            onRequestViewing={(id) => startJourney(id)}
+          />
+        </div>
+      )}
+
+      {state.stage === "enquiry" && (
+        <div className={tabPanelClass}>
+          <EnquiryForm
+            prefill={state.prefill}
+            submitting={processing}
+            onSubmit={(values: EnquiryFormValues) => run({ type: "SUBMIT_ENQUIRY", values })}
+          />
+        </div>
+      )}
+
+      {state.stage === "matching" && (
+        <div className={tabPanelClass}>
+          <MatchingPanel
+            matches={state.matches}
+            alternatives={state.alternatives}
+            processing={processing}
+            onAdjust={() => dispatch({ type: "ADJUST_REQUIREMENTS" })}
+            onContinue={() => run({ type: "CONTINUE_TO_ASSIGNMENT" })}
+          />
+        </div>
+      )}
+
+      {state.stage === "assignment" && state.agent && (
+        <div className={tabPanelClass}>
+          <AssignmentPanel
+            agent={state.agent}
+            task={state.tasks[state.tasks.length - 1]}
+            onContinue={() => dispatch({ type: "CONTINUE_TO_VIEWING" })}
+          />
+        </div>
+      )}
+
+      {state.stage === "viewing" && (
+        <div className={tabPanelClass}>
+          <ViewingPanel
+            matches={state.matches}
+            alternatives={state.alternatives}
+            viewing={state.viewing}
+            processing={processing}
+            onRequest={(propertyId, slotId, slotLabel) => run({ type: "REQUEST_VIEWING", propertyId, slotId, slotLabel })}
+            onConfirm={() => run({ type: "CONFIRM_VIEWING" })}
+            onCancel={() => dispatch({ type: "CANCEL_VIEWING" })}
+            onMarkOutcome={(outcome) => run({ type: "MARK_VIEWING_OUTCOME", outcome })}
+            onReschedule={(slotId, slotLabel) => dispatch({ type: "RESCHEDULE_VIEWING", slotId, slotLabel })}
+          />
+        </div>
+      )}
+
+      {state.stage === "post-viewing" && (
+        <div className={tabPanelClass}>
+          <PostViewingPanel processing={processing} onSubmit={(interest, feedback) => run({ type: "RECORD_INTEREST", interest, feedback })} />
+        </div>
+      )}
+
+      {state.stage === "next-step" && state.viewing && (
+        <div className={tabPanelClass}>
+          <NextStepPanel
+            task={state.tasks[state.tasks.length - 1] ?? null}
+            viewing={state.viewing}
+            outcome={state.outcome}
+            closed={state.closed}
+            onAdjustRequirements={() => dispatch({ type: "ADJUST_REQUIREMENTS" })}
+            onBrowseAgain={() => dispatch({ type: "BACK_TO_VIEWING" })}
+            onClose={() => dispatch({ type: "CLOSE_ENQUIRY" })}
+          />
+        </div>
+      )}
+
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <AutomationPanel
+          events={state.events}
+          tasks={state.tasks}
+          simulatedDay={state.simulatedDay}
+          closed={state.closed}
+          onPreviewNextDay={() => dispatch({ type: "PREVIEW_NEXT_DAY" })}
         />
-      </TabPanel>
+        {state.agentViewOpen && (
+          <AgentView
+            enquiry={state.enquiry}
+            matches={state.matches}
+            agent={state.agent}
+            stage={state.stage}
+            tasks={state.tasks}
+            events={state.events}
+            messages={state.messages}
+          />
+        )}
+      </div>
 
-      <TabPanel id="requirements" activeId={activeTab} className={tabPanelClass}>
-        <PreferenceForm onSubmit={handlePreferenceSubmit} result={preferenceResult} />
-      </TabPanel>
+      {showConversion && (
+        <div className="mt-8 flex flex-col items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-lg font-semibold text-white">{conversionPrompt.heading}</p>
+          <Button href={conversionPrompt.cta.href}>{conversionPrompt.cta.label}</Button>
+        </div>
+      )}
 
-      <TabPanel id="viewing" activeId={activeTab} className={tabPanelClass}>
-        <ViewingRequestForm initialPropertyId={pendingPropertyId} onSubmit={handleViewingSubmit} result={viewingResult} />
-      </TabPanel>
-
-      <TabPanel id="agent" activeId={activeTab} className={tabPanelClass}>
-        <AgentView leads={leads} />
-      </TabPanel>
-
-      <PropertyDetailsDialog property={selectedProperty} onClose={() => setSelectedPropertyId(null)} onBookViewing={handleBookViewing} />
+      <PropertyDetailsDialog property={selectedProperty} onClose={() => setSelectedPropertyId(null)} onRequestViewing={(id) => startJourney(id)} />
     </div>
   );
 }

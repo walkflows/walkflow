@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   bedroomOptions,
   budgetOptions,
@@ -10,6 +13,8 @@ import { demoStrings } from "@/content/real-estate-demo";
 import { ButtonEl } from "@/components/ui/Button";
 import { PropertyCard } from "./PropertyCard";
 import type { Filters } from "./types";
+
+const INITIAL_VISIBLE_COUNT = 3;
 
 const selectClass =
   "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
@@ -36,14 +41,16 @@ export function PropertyExplorer({
   filters,
   onFiltersChange,
   onViewDetails,
-  onBookViewing,
+  onRequestViewing,
 }: {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
   onViewDetails: (id: string) => void;
-  onBookViewing: (id: string) => void;
+  onRequestViewing: (id: string) => void;
 }) {
+  const [showAll, setShowAll] = useState(false);
   const results = properties.filter((p) => matchesFilters(p, filters));
+  const visible = showAll ? results : results.slice(0, INITIAL_VISIBLE_COUNT);
 
   function update<K extends keyof Filters>(key: K, value: Filters[K]) {
     onFiltersChange({ ...filters, [key]: value });
@@ -145,7 +152,15 @@ export function PropertyExplorer({
         <p className="text-sm text-white/50">
           {results.length} of {properties.length} sample listings · {sampleMarketLabel}
         </p>
-        <ButtonEl variant="ghost-on-dark" size="sm" className="self-start sm:self-auto" onClick={() => onFiltersChange(initialFilters)}>
+        <ButtonEl
+          variant="ghost-on-dark"
+          size="sm"
+          className="self-start sm:self-auto"
+          onClick={() => {
+            onFiltersChange(initialFilters);
+            setShowAll(false);
+          }}
+        >
           {demoStrings.resetFilters}
         </ButtonEl>
       </div>
@@ -155,11 +170,20 @@ export function PropertyExplorer({
           {demoStrings.noListingMatch}
         </p>
       ) : (
-        <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((property) => (
-            <PropertyCard key={property.id} property={property} onViewDetails={onViewDetails} onBookViewing={onBookViewing} />
-          ))}
-        </ul>
+        <>
+          <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((property) => (
+              <PropertyCard key={property.id} property={property} onViewDetails={onViewDetails} onRequestViewing={onRequestViewing} />
+            ))}
+          </ul>
+          {results.length > INITIAL_VISIBLE_COUNT && (
+            <div className="mt-6 flex justify-center">
+              <ButtonEl variant="secondary-on-dark" size="sm" onClick={() => setShowAll((v) => !v)}>
+                {showAll ? "Show fewer" : "View all sample properties"}
+              </ButtonEl>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

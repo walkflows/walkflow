@@ -1,0 +1,157 @@
+{
+  "name": "WALKFLOW Demo — Real Estate: Viewing Lifecycle",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -220],
+      "parameters": {
+        "width": 460,
+        "height": 260,
+        "content": "PREPARED, NOT TESTED. See 01-enquiry-matching-assignment.json's setup note for credential/webhook-secret setup — identical steps apply here.\n\nHandles four contract.ts actions on one webhook, routed by `action`: request_viewing, confirm_viewing, cancel_viewing, reschedule_viewing.\n\nThe Switch node must enforce the same stage-order guards as src/components/demo/real-estate/session.ts's demoReducer (e.g. confirm_viewing only valid when the viewing's current status is 'requested') — reject out-of-order actions with error code 'out_of_order' rather than applying them."
+      }
+    },
+    {
+      "id": "webhook-viewing",
+      "name": "Webhook — viewing actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "real-estate/viewing", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "load-viewing",
+      "name": "Load Current Viewing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_viewings?id=eq.{{ $json.body.input.viewingId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [440, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "request_viewing", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "request_viewing", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "confirm_viewing", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "confirm_viewing", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "cancel_viewing", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "cancel_viewing", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "reschedule_viewing", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "reschedule_viewing", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "insert-viewing",
+      "name": "Insert Viewing (requested)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -180],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_viewings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { enquiry_id: $json.body.input.enquiryId, property_id: $json.body.input.propertyId, slot_iso: $json.body.input.slotIso, status: \"requested\" } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "confirm-viewing",
+      "name": "Update Viewing (confirmed)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_viewings?id=eq.{{ $json.body.input.viewingId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"confirmed\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only proceed if Load Current Viewing returned status 'requested', else return error code 'out_of_order'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "cancel-viewing",
+      "name": "Update Viewing (cancelled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_viewings?id=eq.{{ $json.body.input.viewingId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"cancelled\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "reschedule-viewing",
+      "name": "Update Viewing (rescheduled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 180],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_viewings?id=eq.{{ $json.body.input.viewingId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"requested\", slot_iso: $json.body.input.slotIso, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [960, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — viewing actions": { "main": [[{ "node": "Load Current Viewing", "type": "main", "index": 0 }]] },
+    "Load Current Viewing": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Insert Viewing (requested)", "type": "main", "index": 0 }],
+        [{ "node": "Update Viewing (confirmed)", "type": "main", "index": 0 }],
+        [{ "node": "Update Viewing (cancelled)", "type": "main", "index": 0 }],
+        [{ "node": "Update Viewing (rescheduled)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Insert Viewing (requested)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Viewing (confirmed)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Viewing (cancelled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Viewing (rescheduled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

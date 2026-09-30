@@ -6,11 +6,11 @@ import { PropertyThumb } from "@/components/ui/illustrations";
 export function PropertyCard({
   property,
   onViewDetails,
-  onBookViewing,
+  onRequestViewing,
 }: {
   property: Property;
   onViewDetails: (id: string) => void;
-  onBookViewing: (id: string) => void;
+  onRequestViewing: (id: string) => void;
 }) {
   return (
     <li className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition-colors duration-300 hover:border-white/20">
@@ -49,8 +49,8 @@ export function PropertyCard({
           <ButtonEl variant="secondary-on-dark" size="sm" className="flex-1" onClick={() => onViewDetails(property.id)}>
             View details
           </ButtonEl>
-          <ButtonEl size="sm" className="flex-1" onClick={() => onBookViewing(property.id)}>
-            Book viewing
+          <ButtonEl size="sm" className="flex-1" onClick={() => onRequestViewing(property.id)}>
+            Request a viewing
           </ButtonEl>
         </div>
       </div>

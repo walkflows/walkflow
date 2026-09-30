@@ -11,11 +11,11 @@ import { PropertyThumb } from "@/components/ui/illustrations";
 export function PropertyDetailsDialog({
   property,
   onClose,
-  onBookViewing,
+  onRequestViewing,
 }: {
   property: Property | null;
   onClose: () => void;
-  onBookViewing: (id: string) => void;
+  onRequestViewing: (id: string) => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
 
@@ -79,10 +79,10 @@ export function PropertyDetailsDialog({
               <ButtonEl
                 className="flex-1"
                 onClick={() => {
-                  onBookViewing(property.id);
+                  onRequestViewing(property.id);
                 }}
               >
-                Book a viewing
+                Request a viewing
               </ButtonEl>
             </div>
           </div>

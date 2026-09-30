@@ -1,0 +1,138 @@
+{
+  "name": "WALKFLOW Demo — Real Estate: Enquiry, Matching, Assignment",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -220],
+      "parameters": {
+        "width": 460,
+        "height": 300,
+        "content": "PREPARED, NOT TESTED.\n\nThis workflow is not imported into any live n8n instance yet. Before use:\n1. Import this file into n8n (Workflows > Import from File).\n2. Create a Supabase credential named 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>). Never use the anon key here.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL with the real Supabase project ref.\n4. Set this workflow's Webhook node to require the header 'x-walkflow-webhook-secret' matching N8N_WEBHOOK_SECRET (see .env.example) — configure this under the Webhook node's Authentication option.\n5. Activate the workflow, copy its production webhook URL into N8N_REAL_ESTATE_WEBHOOK_URL, then test end to end before enabling Connected Mode on the website.\n\nCorresponds to src/lib/real-estate-demo/contract.ts action 'submit_requirements'."
+      }
+    },
+    {
+      "id": "webhook-enquiry",
+      "name": "Webhook — submit_requirements",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": {
+        "path": "real-estate/enquiry",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "validate-input",
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "requestId", "type": "string", "value": "={{ $json.body.requestId }}" },
+            { "name": "sessionId", "type": "string", "value": "={{ $json.body.sessionId }}" },
+            { "name": "input", "type": "object", "value": "={{ $json.body.input }}" }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "TODO: reject (route to Respond With Error) if requestId/sessionId/input are missing, or if input fails the SubmitRequirementsInput shape in contract.ts."
+    },
+    {
+      "id": "check-duplicate",
+      "name": "Check For Duplicate Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_jobs?session_id=eq.{{ $json.sessionId }}&request_id=eq.{{ $json.requestId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "compute-matches",
+      "name": "Compute Matches (port of engine.ts matchProperties)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [660, 0],
+      "parameters": {
+        "functionCode": "// TODO: port matchProperties()/assignAgent() from src/components/demo/real-estate/engine.ts\n// so Connected Mode and Preview Mode can never disagree about a match.\n// Fetch the property/agent rows from Supabase (not hardcoded here) and\n// apply the same deterministic rules. Return { matches, alternatives, agent }.\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-enquiry",
+      "name": "Insert Enquiry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, -80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_enquiries",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { session_id: $json.sessionId, request_id: $json.requestId, ...$json.input } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "insert-matches",
+      "name": "Insert Matches + Assignment + Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_matches",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.matches }}",
+        "options": {}
+      },
+      "notes": "TODO: this node currently only inserts matches — add the sibling inserts for demo_real_estate_assignments and demo_real_estate_tasks (same pattern) before relying on this in Connected Mode.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [1100, 0],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { requestId: $json.requestId, status: \"accepted\" } }}"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook — submit_requirements": { "main": [[{ "node": "Validate Request", "type": "main", "index": 0 }]] },
+    "Validate Request": { "main": [[{ "node": "Check For Duplicate Request", "type": "main", "index": 0 }]] },
+    "Check For Duplicate Request": { "main": [[{ "node": "Compute Matches (port of engine.ts matchProperties)", "type": "main", "index": 0 }]] },
+    "Compute Matches (port of engine.ts matchProperties)": {
+      "main": [
+        [
+          { "node": "Insert Enquiry", "type": "main", "index": 0 },
+          { "node": "Insert Matches + Assignment + Task", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Insert Enquiry": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Insert Matches + Assignment + Task": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

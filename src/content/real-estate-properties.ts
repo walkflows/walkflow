@@ -10,20 +10,59 @@ export type Property = {
   neighbourhood: string;
   propertyType: PropertyType;
   listingType: ListingType;
-  /** Whole currency units. Rent prices are per month. */
+  /** Whole currency units. Rent prices are per rentalPeriod. */
   price: number;
+  /** Single-currency fictional market — kept as an explicit field (not a hardcoded "$") so the matching/automation layer has a real currency to read and display, per the demo automation brief's data-model requirement. */
+  currency: "USD";
+  /** Present only for rent listings. */
+  rentalPeriod?: "month";
   bedrooms: number;
   bathrooms: number;
   status: PropertyStatus;
   description: string;
   /**
    * Real sample photo from "Real estate demo images/" (Session 9), served
-   * from public/real-estate-demo/. Optional: "Greenway Duplex" has no
-   * matching photo in that folder, so it falls back to the illustrated
-   * PropertyThumb placeholder in PropertyCard/PropertyDetailsDialog.
+   * from public/real-estate-demo/. "Greenway Duplex" has no dedicated photo
+   * in that folder — Session 32 reuses thorn-hill-townhouse.jpg (the
+   * closest available match in building type/scale) rather than inventing
+   * a new asset or leaving the illustrated PropertyThumb placeholder up;
+   * flagged here since the same file now backs two fictional listings.
    */
   image?: string;
 };
+
+/** Fictional agent roster for Stage 3 (agent assignment) of the automation demo. Assignment rule (deterministic, no AI call): match the enquiry's neighbourhood to an agent's coverage list first, then fall back to listing-type specialism, then to Elena Cruz as the default/fallback agent. */
+export type DemoAgent = {
+  id: string;
+  name: string;
+  email: string;
+  neighbourhoods: string[];
+  specialism: ListingType | "both";
+};
+
+export const demoAgents: DemoAgent[] = [
+  {
+    id: "agent-priya",
+    name: "Priya Shah",
+    email: "priya@ashcombe-demo.example",
+    neighbourhoods: ["Millbrook", "Cedar Row", "Thorn Hill", "Lakeside", "Fernwood"],
+    specialism: "buy",
+  },
+  {
+    id: "agent-marcus",
+    name: "Marcus Bell",
+    email: "marcus@ashcombe-demo.example",
+    neighbourhoods: ["Northgate", "Harbor Row", "Southbank", "Greenway"],
+    specialism: "rent",
+  },
+  {
+    id: "agent-elena",
+    name: "Elena Cruz",
+    email: "elena@ashcombe-demo.example",
+    neighbourhoods: ["Old Ferry"],
+    specialism: "both",
+  },
+];
 
 /** A clearly fictional sample market — no resemblance to a real place is intended. */
 export const sampleMarketLabel = "Ashcombe (fictional sample market)";
@@ -70,6 +109,7 @@ export const properties: Property[] = [
     propertyType: "House",
     listingType: "buy",
     price: 465000,
+    currency: "USD",
     bedrooms: 4,
     bathrooms: 2,
     status: "Available",
@@ -83,6 +123,8 @@ export const properties: Property[] = [
     propertyType: "Apartment",
     listingType: "rent",
     price: 1650,
+    currency: "USD",
+    rentalPeriod: "month",
     bedrooms: 2,
     bathrooms: 2,
     status: "Available",
@@ -96,6 +138,7 @@ export const properties: Property[] = [
     propertyType: "Apartment",
     listingType: "buy",
     price: 289000,
+    currency: "USD",
     bedrooms: 2,
     bathrooms: 1,
     status: "Available",
@@ -109,6 +152,7 @@ export const properties: Property[] = [
     propertyType: "Bungalow",
     listingType: "buy",
     price: 340000,
+    currency: "USD",
     bedrooms: 3,
     bathrooms: 1,
     status: "Available",
@@ -122,6 +166,7 @@ export const properties: Property[] = [
     propertyType: "Townhouse",
     listingType: "buy",
     price: 525000,
+    currency: "USD",
     bedrooms: 3,
     bathrooms: 2,
     status: "Under Offer",
@@ -135,6 +180,7 @@ export const properties: Property[] = [
     propertyType: "Villa",
     listingType: "buy",
     price: 1150000,
+    currency: "USD",
     bedrooms: 5,
     bathrooms: 4,
     status: "Available",
@@ -148,6 +194,8 @@ export const properties: Property[] = [
     propertyType: "Studio",
     listingType: "rent",
     price: 895,
+    currency: "USD",
+    rentalPeriod: "month",
     bedrooms: 1,
     bathrooms: 1,
     status: "Available",
@@ -161,10 +209,14 @@ export const properties: Property[] = [
     propertyType: "Duplex",
     listingType: "rent",
     price: 1450,
+    currency: "USD",
+    rentalPeriod: "month",
     bedrooms: 3,
     bathrooms: 2,
     status: "Available",
     description: "A modern duplex with dark timber cladding, an open-plan kitchen and a small private yard.",
+    // Reused from Thorn Hill Townhouse — see the Property.image comment above.
+    image: "/real-estate-demo/thorn-hill-townhouse.jpg",
   },
   {
     id: "wf-109",
@@ -173,6 +225,8 @@ export const properties: Property[] = [
     propertyType: "Apartment",
     listingType: "rent",
     price: 2400,
+    currency: "USD",
+    rentalPeriod: "month",
     bedrooms: 3,
     bathrooms: 2,
     status: "Available",
@@ -186,6 +240,7 @@ export const properties: Property[] = [
     propertyType: "Cottage",
     listingType: "buy",
     price: 615000,
+    currency: "USD",
     bedrooms: 3,
     bathrooms: 2,
     status: "Available",
@@ -194,7 +249,10 @@ export const properties: Property[] = [
   },
 ];
 
-export function formatPrice(property: Pick<Property, "price" | "listingType">) {
+const currencySymbols: Record<Property["currency"], string> = { USD: "$" };
+
+export function formatPrice(property: Pick<Property, "price" | "currency" | "rentalPeriod">) {
   const amount = property.price.toLocaleString("en-US");
-  return property.listingType === "rent" ? `$${amount} / month` : `$${amount}`;
+  const symbol = currencySymbols[property.currency];
+  return property.rentalPeriod ? `${symbol}${amount} / ${property.rentalPeriod}` : `${symbol}${amount}`;
 }

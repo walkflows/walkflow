@@ -1,0 +1,48 @@
+{
+  "name": "WALKFLOW Demo — Real Estate: Expired Session Cleanup",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -160],
+      "parameters": {
+        "width": 460,
+        "height": 220,
+        "content": "PREPARED, NOT TESTED. Runs on a schedule (default: hourly) rather than a webhook. Calls the demo_real_estate_cleanup_expired_sessions() Postgres function defined in supabase/migrations/0001_real_estate_demo.sql via Supabase's RPC endpoint. Deleting a session cascades to every table referencing it (enquiries, matches, viewings, tasks, message previews, activity events) via ON DELETE CASCADE — restarting a demo session on the website already gets a fresh session id, so this only cleans up abandoned ones."
+      }
+    },
+    {
+      "id": "schedule",
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] } }
+    },
+    {
+      "id": "call-cleanup-rpc",
+      "name": "Call Cleanup RPC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/rpc/demo_real_estate_cleanup_expired_sessions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {} }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    }
+  ],
+  "connections": {
+    "Every Hour": { "main": [[{ "node": "Call Cleanup RPC", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

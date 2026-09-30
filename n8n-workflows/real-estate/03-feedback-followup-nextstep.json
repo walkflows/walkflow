@@ -1,0 +1,115 @@
+{
+  "name": "WALKFLOW Demo — Real Estate: Feedback, Follow-up, Next Step",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -220],
+      "parameters": {
+        "width": 460,
+        "height": 260,
+        "content": "PREPARED, NOT TESTED. See 01-enquiry-matching-assignment.json's setup note for credential/webhook-secret setup.\n\nHandles record_viewing_outcome and preview_followup. The Function node ports nextStepFor() from src/components/demo/real-estate/engine.ts so Connected Mode branches (interested/not-interested/needs-info, missed/cancelled) match Preview Mode exactly. No real email/WhatsApp/SMS is ever sent — only a row in demo_real_estate_message_previews, which the website displays as a labelled preview."
+      }
+    },
+    {
+      "id": "webhook-outcome",
+      "name": "Webhook — outcome/followup",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "real-estate/outcome", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "next-step",
+      "name": "Compute Next Step (port of engine.ts nextStepFor)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [220, 0],
+      "parameters": {
+        "functionCode": "// TODO: port nextStepFor() from src/components/demo/real-estate/engine.ts.\n// Given { outcome, interest, listingType } return { taskLabel, taskDetail, messageSubject, messageBody }.\nreturn items;"
+      }
+    },
+    {
+      "id": "update-viewing-outcome",
+      "name": "Update Viewing With Outcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, -80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_viewings?id=eq.{{ $json.body.input.viewingId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: $json.body.input.outcome, interest: $json.body.input.interest || null, feedback: $json.body.input.feedback || null, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "insert-task",
+      "name": "Insert Next-Step Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_tasks",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { enquiry_id: $json.body.input.enquiryId, label: $json.taskLabel, detail: $json.taskDetail, due_label: \"Next business day (simulated)\" } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "insert-message-preview",
+      "name": "Insert Message Preview",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_message_previews",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { enquiry_id: $json.body.input.enquiryId, label: \"Example email — not sent\", recipient: $json.body.input.email || \"\", subject: $json.messageSubject, body: $json.messageBody } }}",
+        "options": {}
+      },
+      "notes": "Never marked as sent — the website always labels this a preview, matching demoStrings.sampleMessageLabel.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [880, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — outcome/followup": { "main": [[{ "node": "Compute Next Step (port of engine.ts nextStepFor)", "type": "main", "index": 0 }]] },
+    "Compute Next Step (port of engine.ts nextStepFor)": {
+      "main": [
+        [
+          { "node": "Update Viewing With Outcome", "type": "main", "index": 0 },
+          { "node": "Insert Next-Step Task", "type": "main", "index": 0 },
+          { "node": "Insert Message Preview", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Update Viewing With Outcome": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Insert Next-Step Task": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Insert Message Preview": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

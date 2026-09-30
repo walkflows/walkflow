@@ -51,6 +51,7 @@ export const demoStrings = {
   noListingMatch: "No sample properties match these choices. In a connected client system, this enquiry would be sent to an agent for review.",
   propertyResult: "These sample listings meet the selected criteria. Availability and viewing access would be checked before a real confirmation.",
   sampleMessageLabel: "Example email — not sent",
+  sampleReminderLabel: "Example reminder — not sent",
   sampleAppointmentLabel: "Example viewing request — no appointment booked",
   completionHeading: "You’ve reached the end of this sample journey. Want to discuss a version for your business?",
   requestACall: "Request a Call",
@@ -64,3 +65,43 @@ export const demoTabs = [
 ] as const;
 
 export type DemoTabId = (typeof demoTabs)[number]["id"];
+
+/**
+ * Session 32 — full six-stage interactive automation demo. `demoStrings`,
+ * `demoTabs`/`DemoTabId` above are kept for backward compatibility (nothing
+ * currently imports them after this rewrite of RealEstateDemo.tsx, but
+ * removing working content unrelated to this task isn't this task's job).
+ * Everything below is new copy for the rebuilt journey.
+ */
+
+/** Always "preview" until a real n8n + Supabase connection is wired, tested and explicitly turned on. See src/lib/real-estate-demo/contract.ts for the integration layer this will call. */
+export const realEstateDemoMode: "preview" | "connected" = "preview";
+
+export const previewModeBanner = {
+  pill: "Preview Mode",
+  notice:
+    "This demo runs entirely in your browser. No emails, WhatsApp messages, calendar bookings or payments are created, and nothing is sent to n8n or Supabase yet. All names, agents and viewing times are fictional.",
+};
+
+export const journeyStageLabels = [
+  "Enquiry",
+  "Matching",
+  "Agent Assignment",
+  "Viewing Request",
+  "After the Viewing",
+  "Next Step",
+] as const;
+
+export const automationPanelHeading = "What happened automatically";
+
+export const conversionPrompt = {
+  heading: "Want this working for your business?",
+  cta: { label: "Book a Consultation", href: "/contact?service=business-automation-crm" },
+};
+
+export const agentViewToggleLabels = {
+  open: "See the agent's view",
+  close: "Hide the agent's view",
+};
+
+export const previewNextDayLabel = "Preview the next day";

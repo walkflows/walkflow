@@ -1,0 +1,71 @@
+{
+  "name": "WALKFLOW Demo — Real Estate: Error Handling & Owner Notification",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -200],
+      "parameters": {
+        "width": 480,
+        "height": 260,
+        "content": "PREPARED, NOT TESTED. Set this as the Error Workflow (Workflow Settings > Error Workflow) on workflows 01, 02 and 03 so any node failure there triggers this one automatically, instead of silently failing.\n\nThis workflow: (1) marks the originating job as 'failed' in demo_real_estate_jobs with a real error code/message so the website's poll can show a genuine retry state — never a fake success, and (2) optionally notifies Joshua (email node, disabled by default — enable and configure a credential once a real notification address is agreed). It never surfaces internal error detail to the visitor; the website only ever sees the codes defined in src/lib/real-estate-demo/contract.ts (DemoErrorCode)."
+      }
+    },
+    {
+      "id": "error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "id": "mark-job-failed",
+      "name": "Mark Job Failed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, -60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_real_estate_jobs?request_id=eq.{{ $json.execution.data.resultData.error.context?.requestId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"failed\", error_code: \"upstream_unavailable\", error_message: $json.execution.data.resultData.error.message, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "notify-owner",
+      "name": "Notify Joshua (disabled by default)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "disabled": true,
+      "position": [220, 60],
+      "parameters": {
+        "fromEmail": "demo-alerts@walkflow.example",
+        "toEmail": "REPLACE-WITH-REAL-NOTIFICATION-ADDRESS",
+        "subject": "Real Estate demo workflow error",
+        "emailFormat": "text",
+        "text": "={{ $json.execution.data.resultData.error.message }}"
+      },
+      "notes": "Disabled until a real notification address and email credential are agreed and configured — see .env.example."
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          { "node": "Mark Job Failed", "type": "main", "index": 0 },
+          { "node": "Notify Joshua (disabled by default)", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}
