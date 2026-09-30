@@ -11,6 +11,7 @@ import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
 import { IconArrowRight } from "@/components/ui/icons";
 import { cx } from "@/lib/utils";
+import { HomeLogoLink } from "./HomeLogoLink";
 
 /**
  * The header spans a wider band than the rest of the page's content
@@ -135,10 +136,106 @@ function NavDropdown({
   );
 }
 
+/**
+ * One accordion row in the mobile menu (Session 29 redesign). The whole row
+ * — label and chevron together — is a single button that toggles the
+ * submenu; it never navigates itself, since dropdown parents have no page
+ * of their own (`mainNav`'s `NavItem` type deliberately omits `href` for
+ * these). When the parent does have a real overview page (`overviewHref` —
+ * currently only Industry Solutions → `/industries`), that page stays
+ * reachable via an explicit link inside the expanded submenu instead.
+ */
+function MobileAccordionItem({
+  label,
+  items,
+  overviewHref,
+  active,
+  onNavigate,
+}: {
+  label: string;
+  items: { label: string; href: string }[];
+  overviewHref?: string;
+  active: boolean;
+  onNavigate: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const panelId = `mobile-submenu-${label.replace(/\s+/g, "-").toLowerCase()}`;
+
+  return (
+    <div className="border-b border-white/10 py-1 last:border-none">
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={panelId}
+        onClick={() => setExpanded((v) => !v)}
+        className={cx(
+          "flex w-full items-center justify-between gap-3 rounded-lg px-1 py-3 text-left text-base font-semibold uppercase tracking-wide outline-none transition-colors duration-150 focus-visible:text-orange",
+          active ? "text-orange" : "text-white",
+        )}
+      >
+        {label}
+        <svg
+          width="14"
+          height="9"
+          viewBox="0 0 14 9"
+          aria-hidden="true"
+          className={cx("flex-none text-white/60 transition-transform duration-200", expanded && "rotate-180")}
+        >
+          <path d="M1 1.5 7 7.5l6-6" stroke="currentColor" strokeWidth="1.7" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            id={panelId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="flex flex-col gap-1 py-1 pl-3">
+              {overviewHref && (
+                <Link
+                  href={overviewHref}
+                  className="rounded-lg py-2 text-sm font-semibold text-white transition-colors duration-150 hover:text-orange"
+                  onClick={onNavigate}
+                >
+                  All {label}
+                </Link>
+              )}
+              {items.map((child) => (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  className="rounded-lg py-2 text-sm text-white/65 transition-colors duration-150 hover:text-orange"
+                  onClick={onNavigate}
+                >
+                  {child.label}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const pathname = usePathname();
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+
+  const closeMobileMenu = useCallback(() => {
+    setMobileOpen(false);
+    // Release the scroll lock synchronously, rather than waiting for the
+    // effect below to catch up — this is what a navigating link needs
+    // ("release its scroll lock before completing navigation").
+    document.body.style.overflow = "";
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -150,11 +247,14 @@ export function Header() {
   useEffect(() => {
     if (!mobileOpen) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setMobileOpen(false);
+      if (e.key === "Escape") {
+        closeMobileMenu();
+        menuToggleRef.current?.focus();
+      }
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [mobileOpen]);
+  }, [mobileOpen, closeMobileMenu]);
 
   return (
     <motion.header
@@ -167,7 +267,7 @@ export function Header() {
         Skip to Main Content
       </a>
       <HeaderBand className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-4">
-        <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
+        <HomeLogoLink className="flex items-center gap-2" ariaLabel={`${site.name} home`} onBeforeNavigate={closeMobileMenu}>
           <Image
             src={media.logoOnBlack.src!}
             alt={media.logoOnBlack.alt}
@@ -180,7 +280,7 @@ export function Header() {
             <span className="text-orange">WALK</span>
             <span className="text-white">FLOW</span>
           </span>
-        </Link>
+        </HomeLogoLink>
 
         <nav
           aria-label="Main"
@@ -216,6 +316,7 @@ export function Header() {
           </div>
 
           <button
+            ref={menuToggleRef}
             type="button"
             className="flex h-11 w-11 items-center justify-center rounded-full text-white lg:hidden"
             aria-expanded={mobileOpen}
@@ -238,43 +339,36 @@ export function Header() {
         {mobileOpen && (
           <motion.div
             id="mobile-menu"
-            className="overflow-hidden border-t border-white/10 bg-navy-deep lg:hidden"
+            className="max-h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden border-t border-white/10 bg-navy-deep lg:hidden"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.28, ease: "easeInOut" }}
           >
             <HeaderBand className="flex flex-col gap-1 py-4">
-              {mainNav.map((item) => (
-                <div key={item.label} className="border-b border-white/10 py-2 last:border-none">
-                  {item.href ? (
+              {mainNav.map((item) =>
+                item.children ? (
+                  <MobileAccordionItem
+                    key={item.label}
+                    label={item.label}
+                    items={item.children}
+                    overviewHref={item.overviewHref}
+                    active={item.children.some((child) => isActivePath(pathname, child.href))}
+                    onNavigate={closeMobileMenu}
+                  />
+                ) : (
+                  <div key={item.label} className="border-b border-white/10 py-1 last:border-none">
                     <Link
-                      href={item.href}
-                      className="block py-2 text-base font-semibold uppercase tracking-wide text-white"
-                      onClick={() => setMobileOpen(false)}
+                      href={item.href!}
+                      className="block rounded-lg px-1 py-3 text-base font-semibold uppercase tracking-wide text-white outline-none transition-colors duration-150 focus-visible:text-orange"
+                      onClick={closeMobileMenu}
                     >
                       {item.label}
                     </Link>
-                  ) : (
-                    <p className="py-2 text-base font-semibold uppercase tracking-wide text-white/50">{item.label}</p>
-                  )}
-                  {item.children && (
-                    <div className="mt-1 flex flex-col gap-1 pl-3">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="rounded-lg py-1.5 text-sm text-white/65 transition-colors duration-150 hover:text-orange"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-              <Button href={consultationCta.href} className="mt-4 w-full">
+                  </div>
+                ),
+              )}
+              <Button href={consultationCta.href} className="mt-4 w-full" onClick={closeMobileMenu}>
                 {consultationCta.label}
                 <IconArrowRight />
               </Button>

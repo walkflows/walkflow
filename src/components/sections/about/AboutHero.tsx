@@ -3,7 +3,7 @@ import { aboutHero } from "@/content/about";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconArrowRight } from "@/components/ui/icons";
+import { IconArrowRight, IconLinkedin } from "@/components/ui/icons";
 
 export function AboutHero() {
   return (
@@ -51,9 +51,29 @@ export function AboutHero() {
                 priority
               />
             </div>
-            <p className="mt-5 text-center font-heading text-[clamp(1.5rem,2.6vw,1.9rem)] font-medium leading-none text-white lg:text-left">
-              {aboutHero.name.split(" ")[0]} <span className="text-orange">{aboutHero.name.split(" ").slice(1).join(" ")}</span>
-            </p>
+            <div className="mt-5 flex items-center justify-center gap-3 lg:justify-start">
+              <p className="text-center font-heading text-[clamp(1.5rem,2.6vw,1.9rem)] font-medium leading-none text-white lg:text-left">
+                {aboutHero.name.split(" ")[0]} <span className="text-orange">{aboutHero.name.split(" ").slice(1).join(" ")}</span>
+              </p>
+              {aboutHero.linkedinUrl ? (
+                <a
+                  href={aboutHero.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${aboutHero.name} on LinkedIn`}
+                  className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/15 text-white/75 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-orange hover:text-orange"
+                >
+                  <IconLinkedin className="h-4 w-4" />
+                </a>
+              ) : (
+                <span
+                  aria-label="LinkedIn profile link coming soon"
+                  className="flex h-9 w-9 flex-none cursor-not-allowed items-center justify-center rounded-full border border-white/10 text-white/25"
+                >
+                  <IconLinkedin className="h-4 w-4" />
+                </span>
+              )}
+            </div>
           </div>
         </Reveal>
       </Container>

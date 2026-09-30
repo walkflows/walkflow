@@ -18,6 +18,11 @@ const sequence = [0, 0.08, 0.16, 0.24];
  * background. `image` is optional (Session 24) — Email Marketing's hero
  * dropped its image per explicit instruction; every other service page
  * still supplies one and renders exactly as before.
+ *
+ * `secondaryCta` is optional (Session 29) — all four service pages now omit
+ * it, showing one concise "Book a Consultation" button since the project
+ * showcase sits directly below the hero and no longer needs a "jump to it"
+ * button of its own.
  */
 export function ServiceHero({
   eyebrow,
@@ -32,7 +37,7 @@ export function ServiceHero({
   body: string;
   image?: { src: string; alt: string };
   primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 }) {
   const reduceMotion = useReducedMotion();
   const d = (i: number) => (reduceMotion ? 0 : sequence[i]);
@@ -92,9 +97,11 @@ export function ServiceHero({
             {primaryCta.label}
             <IconArrowRight />
           </Button>
-          <Button href={secondaryCta.href} variant="secondary-on-dark">
-            {secondaryCta.label}
-          </Button>
+          {secondaryCta && (
+            <Button href={secondaryCta.href} variant="secondary-on-dark">
+              {secondaryCta.label}
+            </Button>
+          )}
         </motion.div>
 
         {image && (

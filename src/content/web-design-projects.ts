@@ -325,12 +325,13 @@ export const webDesignProjects: WebDesignProject[] = [
 
 export const webDesignGallery = {
   eyebrow: "Selected Websites",
-  heading: "Different businesses. One clear next step.",
-  intro: "Explore how we bring content, design and navigation together to help people understand a business, explore what it offers and know what to do next.",
+  // Session 29: heading/intro replaced with the exact required copy — this is the real source the gallery renders from (servicePages["web-design"].projects.heading is unused dead data now that this gallery replaced <ServiceProjects>).
+  heading: "Explore our website projects.",
+  intro: "Explore websites designed to make each business clear, credible and easy to contact.",
 };
 
 export const webDesignClosingCta = {
   heading: "Want this kind of clarity for your business?",
   body: "Tell us what you offer and what you want visitors to do. We'll help shape the pages, content and next steps around that goal.",
-  cta: { label: "Discuss Your Website", href: "/contact?service=web-design" },
+  cta: { label: "Book a Consultation", href: "/contact?service=web-design" },
 };

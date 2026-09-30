@@ -13,7 +13,7 @@ export function FAQ() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-navy-deep py-20 sm:py-28">
+    <section className="border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       <Container className="max-w-4xl">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">

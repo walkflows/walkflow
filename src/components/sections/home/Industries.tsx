@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Industries() {
   return (
-    <section className="bg-navy-deep py-20 sm:py-28">
+    <section className="border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       <Container>
         <Reveal>
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">

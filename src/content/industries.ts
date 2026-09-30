@@ -81,7 +81,8 @@ export type IndustryPageContent = {
     image: { src: string; alt: string };
   };
   problem: { heading: string; body: string; points: string[] };
-  solutions: { heading: string; body: string; areas: string[] };
+  /** Session 29: replaced the old long chip list (`areas: string[]`) with exactly three full cards per industry — see IndustrySolutions.tsx. */
+  solutions: { heading: string; body: string; cards: { title: string; body: string }[] };
   workflow: { heading: string; steps: string[] };
   /** Clinics-only administrative-scope disclaimer, per explicit instruction. Omitted for every other industry. */
   safetyNote?: string;
@@ -127,8 +128,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       eyebrow: "Real Estate",
       heading: "Turn property interest into organised enquiries.",
       body: "Property enquiries can arrive through listing sites, email, calls and social media. WALKFLOW helps bring those conversations together so your team can respond quickly, understand what each person needs and keep viewing requests moving.",
-      primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/real-estate" },
+      primaryCta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Real Estate Demo", href: "/demos/real-estate" },
       image: { src: "/industries/real-estate-hero.jpg", alt: "A real-estate agent showing a property to prospective buyers" },
     },
     problem: {
@@ -146,17 +147,19 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     solutions: {
       heading: "A clearer path from property interest to viewing.",
       body: "We help real-estate teams capture better information, organise every enquiry and create a follow-up process that keeps serious property seekers moving forward.",
-      areas: [
-        "Property enquiry forms",
-        "Buyer and renter requirement capture",
-        "Viewing request workflows",
-        "Lead qualification",
-        "Agent assignment",
-        "Viewing reminders",
-        "Follow-up email sequences",
-        "CRM pipeline management",
-        "Listing and enquiry websites",
-        "Mobile property-search experiences",
+      cards: [
+        {
+          title: "Capture Enquiries",
+          body: "Collect property interests, budgets and preferences through clear enquiry forms.",
+        },
+        {
+          title: "Organise Leads",
+          body: "Qualify enquiries, assign agents and track each opportunity in one place.",
+        },
+        {
+          title: "Manage Viewings & Follow-up",
+          body: "Simplify viewing requests, send reminders and follow up with interested property seekers.",
+        },
       ],
     },
     workflow: {
@@ -233,8 +236,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     finalCta: {
       heading: "Make every serious property enquiry easier to manage.",
       body: "Tell us how your team currently handles listings, enquiries and viewing requests. We'll help you identify the first improvement worth making.",
-      cta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/real-estate" },
+      cta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Real Estate Demo", href: "/demos/real-estate" },
     },
   },
 
@@ -249,8 +252,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       eyebrow: "Home Services — HVAC & Plumbing",
       heading: "Get clearer job requests and fewer missed follow-ups.",
       body: "When a customer needs help, they want a quick response. WALKFLOW helps home-service businesses collect the right job details, route requests to the right person and keep estimates and appointments moving.",
-      primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/home-services" },
+      primaryCta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Home Services Demo", href: "/demos/home-services" },
       image: { src: "/industries/home-services-hero.jpg", alt: "A technician servicing a home heating system" },
     },
     problem: {
@@ -268,17 +271,19 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     solutions: {
       heading: "A better way to move each service request forward.",
       body: "We help your business collect clearer requests, respond with the right information and keep every job moving from enquiry to completed work.",
-      areas: [
-        "Service request forms",
-        "Emergency enquiry routing",
-        "Job-detail collection",
-        "Appointment booking",
-        "Estimate follow-ups",
-        "Customer reminders",
-        "Technician notifications",
-        "CRM pipeline management",
-        "Maintenance email campaigns",
-        "Customer-service mobile apps",
+      cards: [
+        {
+          title: "Capture Service Requests",
+          body: "Collect job details and locations, and route urgent enquiries to the right team.",
+        },
+        {
+          title: "Organise Jobs & Bookings",
+          body: "Manage appointment requests, track job progress and notify technicians.",
+        },
+        {
+          title: "Keep Customers Updated",
+          body: "Send appointment reminders, follow up on estimates and prompt maintenance bookings.",
+        },
       ],
     },
     workflow: {
@@ -350,8 +355,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     finalCta: {
       heading: "Turn more service requests into completed jobs.",
       body: "Tell us where requests, estimates or follow-ups are getting stuck. We'll help you create a clearer process for your customers and your team.",
-      cta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/home-services" },
+      cta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Home Services Demo", href: "/demos/home-services" },
     },
   },
 
@@ -366,8 +371,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       eyebrow: "Clinics",
       heading: "Make it easier for patients to ask, book and return.",
       body: "Patients want clear information and a simple next step. WALKFLOW helps clinics explain their services, collect appointment enquiries and keep patients informed before and after they make contact.",
-      primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/clinics" },
+      primaryCta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Clinics Demo", href: "/demos/clinics" },
       image: { src: "/industries/clinics-hero.jpg", alt: "A dental clinician treating a patient in a clinic chair" },
     },
     problem: {
@@ -385,17 +390,19 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     solutions: {
       heading: "A smoother enquiry and appointment experience.",
       body: "We help clinics give prospective patients clearer information, simpler appointment requests and more consistent administrative communication.",
-      areas: [
-        "Treatment enquiry forms",
-        "Appointment requests",
-        "Patient information collection",
-        "Appointment reminders",
-        "Missed-appointment follow-ups",
-        "FAQ chat assistants",
-        "Patient education email sequences",
-        "Staff notifications",
-        "Enquiry tracking",
-        "Patient booking mobile apps",
+      cards: [
+        {
+          title: "Capture Appointment Enquiries",
+          body: "Help visitors explore services and submit appointment requests with essential contact details.",
+        },
+        {
+          title: "Organise Requests & Notify Staff",
+          body: "Track enquiries and alert your team when a request needs attention.",
+        },
+        {
+          title: "Support Patient Follow-up",
+          body: "Send appointment reminders, share preparation information and follow up on missed appointments.",
+        },
       ],
     },
     workflow: {
@@ -472,8 +479,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     finalCta: {
       heading: "Give every prospective patient a clearer next step.",
       body: "Tell us where patients get stuck—from finding information to requesting an appointment. We'll help you improve the experience without adding unnecessary complexity.",
-      cta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/clinics" },
+      cta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Clinics Demo", href: "/demos/clinics" },
     },
   },
 
@@ -488,8 +495,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
       eyebrow: "Consulting Firms",
       heading: "Turn interest in your expertise into qualified conversations.",
       body: "The right prospects need a clear way to explain what they need. WALKFLOW helps consulting firms turn website interest into organised discovery calls, proposal follow-ups and smoother client onboarding.",
-      primaryCta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/consulting" },
+      primaryCta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Consulting Firms Demo", href: "/demos/consulting" },
       image: { src: "/industries/consulting-hero.jpg", alt: "A consultant presenting a project roadmap to a team in a meeting room" },
     },
     problem: {
@@ -507,17 +514,19 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     solutions: {
       heading: "A more reliable path from first enquiry to active client.",
       body: "We help consulting firms collect better information, qualify opportunities and create a clearer process from discovery call to client onboarding.",
-      areas: [
-        "Discovery call forms",
-        "Consultation booking",
-        "Lead qualification",
-        "Proposal follow-ups",
-        "Client onboarding",
-        "Document collection",
-        "Email nurture campaigns",
-        "CRM opportunity pipelines",
-        "Internal task assignments",
-        "Client portals or mobile apps where appropriate",
+      cards: [
+        {
+          title: "Capture Enquiries & Book Calls",
+          body: "Collect project needs and help prospects schedule a discovery call.",
+        },
+        {
+          title: "Qualify & Organise Opportunities",
+          body: "Assess fit, track conversations and assign next steps in your CRM.",
+        },
+        {
+          title: "Follow Up & Onboard Clients",
+          body: "Keep proposals moving, collect documents and guide new clients through onboarding.",
+        },
       ],
     },
     workflow: {
@@ -589,8 +598,8 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
     finalCta: {
       heading: "Make it easier for the right prospects to move forward.",
       body: "Tell us where leads slow down between the first enquiry, discovery call and onboarding. We'll help you create a clearer path for your team and your clients.",
-      cta: { label: "Request a Call", href: "/contact" },
-      secondaryCta: { label: "See How It Works", href: "/demos/consulting" },
+      cta: { label: "Request a Consultation", href: "/contact" },
+      secondaryCta: { label: "Explore Consulting Firms Demo", href: "/demos/consulting" },
     },
   },
 };

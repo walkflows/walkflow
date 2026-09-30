@@ -4,6 +4,16 @@ export type EnquiryPayload = {
   company: string;
   /** One of `contactServiceOptions`' values (content/contact.ts) — always required. */
   service: string;
+  /** One of `contactIndustryOptions`' values (Session 29) — always required. */
+  industry: string;
+  /**
+   * Only present when `industry === "other"` (Session 29) — the form clears
+   * and hides this field the moment a real industry is selected, so it
+   * never lingers in the payload once it no longer applies.
+   */
+  otherIndustry?: string;
+  /** One of `contactTimingOptions`' values (Session 29) — always required. */
+  timing: string;
   message: string;
   role: string;
   website: string;

@@ -84,10 +84,11 @@ export type ServicePageContent = {
     /** Optional (Session 24) — Email Marketing's hero has no image, per explicit instruction; every other service still supplies one. */
     image?: { src: string; alt: string };
     primaryCta: { label: string; href: string };
-    secondaryCta: { label: string; href: string };
+    /** Optional (Session 29) — every service page now omits this; the showcase sits directly below the hero and no longer needs a "jump to it" button. */
+    secondaryCta?: { label: string; href: string };
   };
-  benefits: { heading: string; body: string; items: TitleBody[] };
   whatWeDo: { heading: string; body: string; items: TitleBody[] };
+  /** Session 29: merged with the old separate "Benefits" section into this one "Why WALKFLOW" section, per explicit instruction — every page's `items` below now combines what used to be two lists into one, reusing existing copy rather than inventing new lines. */
   whyWalkflow: { heading: string; items: TitleBody[] };
   projects: { eyebrow?: string; heading: string; body: string; items: ProjectItem[] };
   process: { heading: string; steps: TitleBody[] };
@@ -144,20 +145,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       heading: "Less chasing. More getting things done.",
       body: "An enquiry comes in. Who picks it up? What happens next? We connect your forms, customer records and follow-ups so your team can keep work moving without checking five different places.",
       // Session 29: hero image removed per explicit instruction — no replacement image.
-      primaryCta: { label: "Request a Call", href: "/contact?service=business-automation-crm" },
-      secondaryCta: { label: "View Projects", href: "#projects" },
-    },
-    benefits: {
-      heading: "Your team shouldn't have to remember everything.",
-      body: "Copying customer details, checking who replied and chasing the next step all take time. A clear system gives those tasks a place to go—and your team fewer things to keep in their heads.",
-      items: [
-        { title: "Keep enquiries together", body: "Bring new requests into one organised system, with the details your team needs to respond." },
-        { title: "Know who handles what", body: "Assign enquiries and tasks so the next person knows when it's their turn." },
-        { title: "Follow up without starting over", body: "Set up reminders and agreed messages for enquiries, estimates and proposals that need another conversation." },
-        { title: "Enter information once", body: "Connect supported tools so your team spends less time copying the same details between them." },
-        { title: "See what needs attention", body: "Keep track of new leads, open conversations and work waiting on a decision." },
-        { title: "Give customers a clearer response", body: "Acknowledge requests, explain the next step and pass questions to your team when personal help is needed." },
-      ],
+      primaryCta: { label: "Book a Consultation", href: "/contact?service=business-automation-crm" },
     },
     whatWeDo: {
       heading: "Connect the tasks that keep your business moving.",
@@ -171,20 +159,21 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "AI assistants", body: "Help answer approved questions, collect details and hand conversations to a person." },
       ],
     },
+    // Session 29: merged with the old separate "Benefits" section (six more items) into this one "Why WALKFLOW" section — kept to six items covering the brief's named themes (clearer lead ownership, fewer repeated tasks, consistent follow-up, visibility into enquiries) plus two of the strongest remaining trust points, all reusing existing approved copy verbatim rather than inventing anything new.
     whyWalkflow: {
       heading: "Built around how your team actually works.",
       items: [
-        { title: "Start with the real bottleneck", body: "We look at where work stalls before deciding what to automate." },
+        { title: "Know who handles what", body: "Assign enquiries and tasks so the next person knows when it's their turn." },
+        { title: "Enter information once", body: "Connect supported tools so your team spends less time copying the same details between them." },
+        { title: "Follow up without starting over", body: "Set up reminders and agreed messages for enquiries, estimates and proposals that need another conversation." },
+        { title: "See what needs attention", body: "Keep track of new leads, open conversations and work waiting on a decision." },
         { title: "Know what you're paying for", body: "Your scope includes the agreed workflows, integrations and any ongoing platform costs." },
         { title: "Keep people in control", body: "Approvals and handoffs stay in place where a task needs human judgement." },
-        { title: "Test the awkward situations", body: "Missing details, duplicate enquiries and failed connections are part of the review." },
-        { title: "Learn how to use it", body: "We walk your team through the system and the tasks they'll manage." },
-        { title: "Add more when it makes sense", body: "Begin with a useful workflow and expand around the way your business develops." },
       ],
     },
     projects: {
-      heading: "See what a better process could look like.",
-      body: "Explore these concept projects to see how everyday requests can become organised, manageable work.",
+      heading: "See business automation in action.",
+      body: "Explore how everyday enquiries and tasks can move through a clearer, connected process.",
       items: [
         {
           slug: "leadflow",
@@ -243,31 +232,67 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     process: {
       heading: "From a repeated task to a working system.",
       steps: [
-        { title: "Show us the process", body: "Walk us through what happens today, which tools you use and where your team gets stuck." },
-        { title: "Agree on the workflow", body: "We map the steps, responsibilities and exceptions, then confirm the scope and cost." },
+        { title: "Map the process", body: "Walk us through what happens today, which tools you use and where your team gets stuck." },
+        { title: "Design the workflow", body: "We map the steps, responsibilities and exceptions, then confirm the scope and cost." },
         { title: "Build and test", body: "We connect the agreed tools and test typical requests alongside situations that could go wrong." },
-        { title: "Put it to work", body: "We help your team get started and explain how to monitor the workflow and handle exceptions." },
+        { title: "Launch and hand over", body: "We help your team get started and explain how to monitor the workflow and handle exceptions." },
       ],
     },
     reviews: [],
+    // Session 29: replaced with the exact 10 approved Business Automation & CRM FAQs, verbatim and in order, superseding the old 3-question set.
     faqs: [
       {
+        question: "What parts of my business can you automate?",
+        answer:
+          "Common starting points include capturing enquiries, assigning leads, sending reminders, following up with prospects and creating internal tasks. We'll help identify repetitive work where automation could make a practical difference.",
+      },
+      {
         question: "Can you work with the tools we already use?",
-        answer: "We'll check their integration options first. If a connection needs a paid plan or a different approach, we'll explain that before work begins.",
+        answer: "We'll check their integration options first. If a connection requires a paid plan, custom development or a different approach, we'll explain that before work begins.",
+      },
+      {
+        question: "Do we need a CRM before getting started?",
+        answer: "No. We can help you choose and set up a CRM, improve an existing one or assess whether a simpler setup is enough for your current needs.",
       },
       {
         question: "Do we need to automate everything?",
-        answer: "No. You can start with one task, such as organising new enquiries or following up on estimates.",
+        answer: "No. Starting with one useful workflow is often the most manageable approach. Decisions that need personal judgement or approval can stay with your team.",
+      },
+      {
+        question: "How much does automation and CRM setup cost?",
+        answer:
+          "The cost depends on the workflows, tools and level of customisation involved. We'll outline the setup fee and any expected software subscriptions or usage charges before you commit.",
+      },
+      {
+        question: "How long does it take to set up?",
+        answer:
+          "Timing depends on the number of connections, the condition of your existing data and the testing required. We'll agree on a timeline after reviewing your process and account access requirements.",
+      },
+      {
+        question: "Can you move our existing contacts into a new CRM?",
+        answer:
+          "We can assess your current data and plan an import where the platforms support it. We'll agree on which records to transfer and how to handle duplicates, missing information and backups before making changes.",
+      },
+      {
+        question: "How will you protect our business and customer information?",
+        answer:
+          "We'll review the data each workflow needs, who should have access and how connected tools handle it. Any sensitive information or industry-specific requirements should be discussed before choosing the setup.",
       },
       {
         question: "What happens if an automation fails?",
-        answer: "We agree on suitable alerts, checks and recovery steps as part of the project. Ongoing monitoring and maintenance can be scoped separately.",
+        answer:
+          "We'll plan how failures should be flagged and handled, using alerts, retries or manual fallback steps where appropriate. Your support agreement will define who monitors the workflows and handles fixes.",
+      },
+      {
+        question: "Will our team be able to use and manage the system?",
+        answer:
+          "We'll agree on the guidance and handover your team needs, including everyday tasks and when to ask for help. Ongoing support and workflow improvements can also be included in the project scope.",
       },
     ],
     finalCta: {
       heading: "Which task would you like to stop chasing?",
       body: "Tell us what your team keeps copying, checking or following up. We'll help you work out a useful place to start.",
-      cta: { label: "Request a Call", href: "/contact?service=business-automation-crm" },
+      cta: { label: "Book a Consultation", href: "/contact?service=business-automation-crm" },
     },
   },
 
@@ -282,20 +307,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       heading: "Give interested customers a reason to come back.",
       body: "Some people need more time before they buy. We write, design and set up emails that answer their questions, explain your offer and keep your business in mind.",
       // Session 24: the hero image (a composite of the four brand designs) was tried, then explicitly removed per Joshua's feedback — no replacement image, by request. `image` is optional on ServiceHero.tsx precisely for this case.
-      primaryCta: { label: "Request a Call", href: "/contact?service=email-marketing" },
-      secondaryCta: { label: "View Projects", href: "#projects" },
-    },
-    benefits: {
-      heading: "The first visit doesn't have to be the last conversation.",
-      body: "Someone joins your list, asks about a service or buys from you once. A useful email gives you a way to continue that relationship without writing every message from scratch.",
-      items: [
-        { title: "Welcome new subscribers", body: "Introduce your business and help people find the information they signed up for." },
-        { title: "Answer questions before they become doubts", body: "Explain your services, process and next steps while someone is considering their options." },
-        { title: "Stay in touch consistently", body: "Plan a realistic email schedule that your business can maintain." },
-        { title: "Make messages more relevant", body: "Group contacts by their interests or actions so everyone doesn't receive the same email." },
-        { title: "Invite customers back", body: "Share useful updates, relevant offers and reminders with people who have agreed to hear from you." },
-        { title: "Understand what gets a response", body: "Review clicks, enquiries and purchases where tracking is available, then use those findings to improve." },
-      ],
+      primaryCta: { label: "Book a Consultation", href: "/contact?service=email-marketing" },
     },
     whatWeDo: {
       heading: "The message, the design and the setup.",
@@ -309,15 +321,16 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "Campaign setup and reporting", body: "Configure audiences, timing, links and tracking within your chosen platform." },
       ],
     },
+    // Session 29: merged with the old separate "Benefits" section into this one "Why WALKFLOW" section — kept to six items covering the brief's named themes (readable layouts, consistent brand presentation, relevant messaging, a clear next action) plus two more strong points, all reusing existing approved copy verbatim.
     whyWalkflow: {
       heading: "Emails your customers can understand and act on.",
       items: [
-        { title: "One clear purpose", body: "Each email has a specific job, whether that's explaining a service or inviting a booking." },
-        { title: "Your voice comes through", body: "We use your offer, examples and language to make the messages sound like your business." },
         { title: "Readable on a phone", body: "Copy and layouts are designed for people checking their inbox on the move." },
-        { title: "Timing with a reason", body: "Sequences follow the customer's situation, with agreed rules for when messages start and stop." },
+        { title: "Your voice comes through", body: "We use your offer, examples and language to make the messages sound like your business." },
+        { title: "Make messages more relevant", body: "Group contacts by their interests or actions so everyone doesn't receive the same email." },
+        { title: "One clear purpose", body: "Each email has a specific job, whether that's explaining a service or inviting a booking." },
+        { title: "Stay in touch consistently", body: "Plan a realistic email schedule that your business can maintain." },
         { title: "Care with your contact list", body: "We account for permission, unsubscribes and duplicate contacts during setup." },
-        { title: "Useful reporting", body: "We focus on the actions that matter to your campaign and explain what the available data shows." },
       ],
     },
     /**
@@ -339,8 +352,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
      * pieces.
      */
     projects: {
-      heading: "Explore our email designs.",
-      body: "A selection of email designs that put the product, offer and next step front and centre.",
+      heading: "Explore our email designs and campaigns.",
+      body: "See how layout, messaging and clear calls to action come together in our email work.",
       items: [
         {
           slug: "suku-vitamins",
@@ -479,9 +492,9 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     process: {
       heading: "From “we should send an email” to a clear plan.",
       steps: [
-        { title: "Get to know your audience", body: "We review your offer, your contact list and what people need to know before taking action." },
-        { title: "Plan the conversation", body: "We agree on the emails, their timing and where each link should take the reader." },
-        { title: "Write, design and test", body: "You review the content before we check layouts, links, personalisation and sequence settings." },
+        { title: "Understand the audience", body: "We review your offer, your contact list and what people need to know before taking action." },
+        { title: "Plan and design", body: "We agree on the emails, their timing and where each link should take the reader." },
+        { title: "Set up and test", body: "You review the content before we check layouts, links, personalisation and sequence settings." },
         { title: "Launch and review", body: "We launch the agreed campaign and review the available results. Continuing campaign management can be arranged separately." },
       ],
     },
@@ -542,7 +555,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     finalCta: {
       heading: "What should customers hear from you next?",
       body: "Share your offer and what you want people to do. We'll help you plan the emails that move the conversation forward.",
-      cta: { label: "Request a Call", href: "/contact?service=email-marketing" },
+      cta: { label: "Book a Consultation", href: "/contact?service=email-marketing" },
     },
   },
 
@@ -557,20 +570,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       heading: "Make your website a reason to choose you.",
       body: "People should understand what you offer without having to piece it together. We build websites that show the value of your work and make it easy to enquire, book or buy.",
       // Session 29: hero image removed per explicit instruction — no replacement image.
-      primaryCta: { label: "Request a Call", href: "/contact?service=web-design" },
-      secondaryCta: { label: "View Projects", href: "#projects" },
-    },
-    benefits: {
-      heading: "You've worked hard on your business. Your website should show it.",
-      body: "If your site feels outdated, hides important details or is difficult to use on a phone, visitors may leave with the wrong impression. We help you give them a clearer picture.",
-      items: [
-        { title: "Explain your offer quickly", body: "Help visitors understand what you do, who it's for and why it matters to them." },
-        { title: "Show the quality of your work", body: "Give your projects, photographs and genuine customer feedback the space they deserve." },
-        { title: "Make mobile visits easier", body: "Keep text readable, navigation simple and forms practical on smaller screens." },
-        { title: "Guide the next step", body: "Place enquiry, booking and purchase options where visitors need them." },
-        { title: "Help customers find answers", body: "Organise services, pricing information and common questions into a sensible page structure." },
-        { title: "Put enquiries to work", body: "Connect forms to an agreed destination so your team can respond with the right information." },
-      ],
+      primaryCta: { label: "Book a Consultation", href: "/contact?service=web-design" },
     },
     whatWeDo: {
       heading: "Everything your website needs to tell the right story.",
@@ -584,15 +584,27 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "Launch essentials", body: "Check mobile layouts, page titles, links, forms and performance before launch." },
       ],
     },
+    /**
+     * Session 29: combined the old separate "You've worked hard on your
+     * business..." (Benefits) and "A website you can feel confident sending
+     * people to" (Why WALKFLOW) sections into this one section, per explicit
+     * instruction — exactly the five named themes (clear messaging and
+     * navigation, mobile usability, practical enquiry and booking paths,
+     * collaborative review stages, useful handover and agreed support),
+     * each reusing an existing approved line rather than new copy. "Show the
+     * quality of your work"/"Your work takes centre stage" were dropped
+     * rather than kept as a sixth item, since the showcase directly above
+     * this section already does that job — avoiding the repetition the
+     * brief explicitly asked to avoid.
+     */
     whyWalkflow: {
       heading: "A website you can feel confident sending people to.",
       items: [
-        { title: "Built around your customers", body: "We plan what visitors need to know and what they should be able to do." },
-        { title: "Your work takes centre stage", body: "Real projects, images and examples help people understand what makes your business worth considering." },
-        { title: "A clear scope", body: "You know the agreed pages, features, cost and responsibilities before the build starts." },
-        { title: "Room for your feedback", body: "You review the design and content at agreed stages as the website takes shape." },
-        { title: "Care beyond the desktop", body: "We check how the layout and key actions work across screen sizes." },
-        { title: "A practical handover", body: "We explain the updates you can make and the options for future support." },
+        { title: "Clear messaging and navigation", body: "Help visitors understand what you do, who it's for and why it matters to them." },
+        { title: "Mobile usability", body: "Keep text readable, navigation simple and forms practical on smaller screens." },
+        { title: "Practical enquiry and booking paths", body: "Place enquiry, booking and purchase options where visitors need them." },
+        { title: "Collaborative review stages", body: "You review the design and content at agreed stages as the website takes shape." },
+        { title: "Useful handover and agreed support", body: "We explain the updates you can make and the options for future support." },
       ],
     },
     /**
@@ -610,38 +622,67 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
      * required `projects` field — nothing reads it any more.
      */
     projects: {
-      heading: "Explore the details behind each design.",
-      body: "Browse these projects to see how different businesses can present their work and guide their customers.",
+      heading: "Explore our website projects.",
+      body: "Explore websites designed to make each business clear, credible and easy to contact.",
       items: [],
     },
     process: {
       heading: "A clear route from your ideas to launch.",
       steps: [
         { title: "Understand the business", body: "We discuss your customers, your current website and what the new site needs to achieve." },
-        { title: "Plan and design", body: "We organise the pages and content, then create a visual direction for you to review." },
+        { title: "Plan the structure and design", body: "We organise the pages and content, then create a visual direction for you to review." },
         { title: "Build and refine", body: "We build the agreed pages, add your content and work through feedback at planned review stages." },
         { title: "Test and launch", body: "We check the important journeys, launch when approved and show you how to manage agreed updates." },
       ],
     },
     reviews: [],
+    // Session 29: replaced with the exact 10 approved Web Design FAQs, verbatim and in order, superseding the old 3-question set.
     faqs: [
       {
-        question: "Can you improve my existing website?",
-        answer: "Yes. We'll review it and explain whether focused changes or a rebuild would better suit your needs.",
+        question: "Can you improve my existing website, or do I need a new one?",
+        answer: "We can help with either. We'll review your current website, identify what's holding it back and recommend focused improvements or a rebuild based on your goals.",
+      },
+      {
+        question: "How much will my website cost?",
+        answer: "Pricing depends on the number of pages, design requirements and features you need. Book a consultation so we can understand your project and provide a clear quote.",
+      },
+      {
+        question: "How long will it take to build my website?",
+        answer: "The timeline depends on the project's size, features and how quickly content and feedback are available. We'll agree on a schedule before work begins and explain what we need from you.",
+      },
+      {
+        question: "Will my website work properly on mobile phones?",
+        answer: "Yes. We design for mobile, tablet and desktop, with layouts, navigation and forms that are easy to use across screen sizes.",
       },
       {
         question: "Can I supply my own images and copy?",
-        answer: "Yes. Your own work and photographs help make the site personal to your business. We can also help organise or refine the content.",
+        answer: "Yes. You can provide your logo, brand assets, images and written content. If you need help preparing them, we'll discuss the available options and include any additional work in your quote.",
       },
       {
-        question: "Can I update the website after launch?",
-        answer: "Yes. The editing process depends on the platform. We'll explain how updates work and agree on any handover or support you need.",
+        question: "Will my website be set up for SEO?",
+        answer: "We include foundational SEO setup appropriate to your platform, such as page titles, descriptions and heading structure. Ongoing SEO and content work can be discussed separately; search rankings aren't guaranteed.",
+      },
+      {
+        question: "Can you connect booking systems, payments, forms or my CRM?",
+        answer: "Yes, where your chosen platform and tools support the connection. We'll check compatibility and explain any subscription costs or custom development requirements before proceeding.",
+      },
+      {
+        question: "Can I update the website myself after launch?",
+        answer: "That depends on how the website is built. If you want to edit text, images or listings yourself, tell us early so we can plan a suitable content management setup and explain how to use it.",
+      },
+      {
+        question: "Will I own my website, and are hosting and a domain included?",
+        answer: "We'll explain ownership, account access and handover arrangements in your proposal. Domain names, hosting and third-party subscriptions will be clearly listed, including any ongoing costs and asset licensing restrictions.",
+      },
+      {
+        question: "What happens after launch if I need help or changes?",
+        answer: "We'll agree on post-launch support before the project starts. Your proposal will explain what's covered, while ongoing maintenance, new pages and additional features can be arranged separately.",
       },
     ],
     finalCta: {
       heading: "Ready for a website that reflects your business?",
       body: "Send us your current website or tell us what you're planning. We'll help you work out the pages and features you need.",
-      cta: { label: "Request a Call", href: "/contact?service=web-design" },
+      cta: { label: "Book a Consultation", href: "/contact?service=web-design" },
     },
   },
 
@@ -656,20 +697,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       heading: "Turn your app idea into something people can use.",
       body: "Give customers a simpler way to book, order or stay updated—or help your team get work done away from a desk. We plan and build mobile apps around the tasks people need to complete.",
       // Session 26: hero image removed per explicit instruction (matches the same request on Email Marketing in Session 24) — no replacement image.
-      primaryCta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
-      secondaryCta: { label: "View Projects", href: "#projects" },
-    },
-    benefits: {
-      heading: "Make the tasks people repeat easier to complete.",
-      body: "An app earns its place on someone's phone by being useful. We help you identify the actions worth building around and keep the first version focused on them.",
-      items: [
-        { title: "Make repeat visits simpler", body: "Let customers return to their account, saved items or requests without starting again." },
-        { title: "Keep useful information close", body: "Give people access to the details they need while they're away from a computer." },
-        { title: "Reduce back-and-forth", body: "Bring requests, updates and agreed information into one accessible place." },
-        { title: "Keep users informed", body: "Use relevant notifications to let people know when something needs their attention." },
-        { title: "Support work on the move", body: "Help staff view assignments, submit updates or collect information from their phones." },
-        { title: "Start with the essentials", body: "Build a focused first version so you can learn from use before investing in more features." },
-      ],
+      primaryCta: { label: "Book a Consultation", href: "/contact?service=mobile-app-development" },
     },
     whatWeDo: {
       heading: "From the first screens to the working app.",
@@ -683,15 +711,16 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         { title: "Testing and release support", body: "Test the agreed devices and help prepare for the chosen distribution route." },
       ],
     },
+    // Session 29: merged with the old separate "Benefits" section into this one "Why WALKFLOW" section — kept to six items covering the brief's named themes (clear user journeys, prioritised features, feedback, practical handover) plus two more strong points, all reusing existing approved copy verbatim.
     whyWalkflow: {
       heading: "Keep the idea clear as the build gets bigger.",
       items: [
-        { title: "A useful first version", body: "We help separate essential features from ideas that can wait." },
         { title: "Review the journey early", body: "See how users move through the screens before the full build." },
-        { title: "Choose the right approach", body: "We discuss the platform, integrations and maintenance needs before committing." },
-        { title: "Know the ongoing costs", body: "Hosting, third-party services and app-store fees are outlined where applicable." },
+        { title: "A useful first version", body: "We help separate essential features from ideas that can wait." },
         { title: "Test real tasks", body: "We check whether users can complete the actions the app was built for." },
         { title: "Plan beyond release", body: "We explain what future updates and support will involve." },
+        { title: "Keep users informed", body: "Use relevant notifications to let people know when something needs their attention." },
+        { title: "Know the ongoing costs", body: "Hosting, third-party services and app-store fees are outlined where applicable." },
       ],
     },
     /**
@@ -839,10 +868,10 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     process: {
       heading: "Build the first version with a clear purpose.",
       steps: [
-        { title: "Define the main task", body: "We discuss who will use the app and what they need to accomplish." },
-        { title: "Plan the screens", body: "We map the user journey, agree on the first-release features and design the key screens." },
+        { title: "Define the requirements", body: "We discuss who will use the app and what they need to accomplish." },
+        { title: "Design the experience", body: "We map the user journey, agree on the first-release features and design the key screens." },
         { title: "Build and test", body: "We develop the app and integrations, then test the agreed journeys and devices." },
-        { title: "Prepare for release", body: "We help with the agreed release process and outline the next steps for maintenance and improvements." },
+        { title: "Release and hand over", body: "We help with the agreed release process and outline the next steps for maintenance and improvements." },
       ],
     },
     reviews: [],
@@ -902,12 +931,12 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     finalCta: {
       heading: "What would your app help someone do?",
       body: "Tell us the idea, who it's for and the task it should make easier. We'll help you define a sensible first version.",
-      cta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
+      cta: { label: "Book a Consultation", href: "/contact?service=mobile-app-development" },
     },
     projectClosingCta: {
       heading: "Have an app idea of your own?",
       body: "Tell us who it's for and what it needs to make easier. We'll help you work out the features, scope and next step.",
-      cta: { label: "Request a Call", href: "/contact?service=mobile-app-development" },
+      cta: { label: "Book a Consultation", href: "/contact?service=mobile-app-development" },
     },
   },
 };

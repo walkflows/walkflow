@@ -180,7 +180,7 @@ export function ProjectDetail({ project, service }: { project: ProjectItem; serv
                 </Button>
               )}
               <Button href={closing ? closing.cta.href : `/contact?service=${service.slug}`}>
-                {closing ? closing.cta.label : "Request a Call"}
+                {closing ? closing.cta.label : "Book a Consultation"}
                 <IconArrowRight />
               </Button>
             </div>

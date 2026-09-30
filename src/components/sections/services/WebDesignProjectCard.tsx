@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { WebDesignProject } from "@/content/web-design-projects";
-import { IconArrowUpRight } from "@/components/ui/icons";
 
 /**
  * Gallery card for the Web Design portfolio (Session 27). Unlike
@@ -10,10 +9,10 @@ import { IconArrowUpRight } from "@/components/ui/icons";
  * `object-cover` — every supplied mockup is already a 4:3 image, so this
  * never letterboxes in practice, but `contain` is used anyway per the
  * brief's explicit instruction not to risk cutting off mockup devices/text.
- * The whole card is one link (no nested links) to the WALKFLOW detail page
- * — never straight to the live site — and "Explore Project" is a plain
- * always-visible label under the copy, not a hover-reveal overlay, since
- * the brief wants all six projects easy to discover without hovering.
+ * The whole card (mockup image + project name) is one link (no nested
+ * links) to the WALKFLOW detail page — never straight to the live site.
+ * Session 29: removed the separate "Explore Project" label — access is now
+ * through the image/title alone, per explicit instruction.
  */
 export function WebDesignProjectCard({ project }: { project: WebDesignProject }) {
   return (
@@ -35,10 +34,6 @@ export function WebDesignProjectCard({ project }: { project: WebDesignProject })
         <p className="text-xs font-bold uppercase tracking-wide text-orange">{project.category}</p>
         <h3 className="mt-2 text-lg text-white">{project.title}</h3>
         <p className="mt-2.5 leading-relaxed text-white/60">{project.cardDescription}</p>
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-orange">
-          Explore Project
-          <IconArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5" />
-        </span>
       </div>
     </Link>
   );

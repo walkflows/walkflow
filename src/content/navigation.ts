@@ -15,6 +15,15 @@ export type NavItem = {
    */
   href?: string;
   children?: NavLink[];
+  /**
+   * Session 29: set only when a dropdown parent has a genuine overview page
+   * of its own — currently just Industry Solutions (`/industries`). The
+   * mobile accordion menu shows this as an explicit extra link inside the
+   * expanded submenu, since the parent row itself only toggles the submenu
+   * and never navigates. Services and Demo Projects have no overview page
+   * built yet, so they omit this and get no such link.
+   */
+  overviewHref?: string;
 };
 
 /**
@@ -33,6 +42,7 @@ export const mainNav: NavItem[] = [
   { label: "About", href: "/about" },
   {
     label: "Industry Solutions",
+    overviewHref: "/industries",
     children: [
       { label: "Real Estate", href: "/industries/real-estate" },
       { label: "Home Services – HVAC & Plumbing", href: "/industries/home-services" },

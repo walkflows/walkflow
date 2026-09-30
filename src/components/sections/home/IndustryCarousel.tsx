@@ -15,6 +15,12 @@ export function IndustryCarousel() {
   const loopSlides = useMemo(() => [...industriesCarousel, ...industriesCarousel], []);
 
   const [manuallyPaused, setManuallyPaused] = useState(false);
+  // Session 29: only an active drag pauses the loop now — hover used to
+  // pause it too, which directly conflicted with the explicit "continuous
+  // movement, autoplay continues on hover" requirement. Dragging still
+  // pauses (the user is actively controlling the track by hand), and the
+  // manual pause button remains as the one deliberate, user-initiated way
+  // to stop it.
   const [interactionPaused, setInteractionPaused] = useState(false);
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -113,10 +119,6 @@ export function IndustryCarousel() {
       role="region"
       aria-roledescription="carousel"
       aria-label="Industries we work with"
-      onMouseEnter={() => setInteractionPaused(true)}
-      onMouseLeave={() => setInteractionPaused(false)}
-      onFocusCapture={() => setInteractionPaused(true)}
-      onBlurCapture={() => setInteractionPaused(false)}
     >
       <span className="sr-only">{activeLabel} and other industries — scrolling gallery</span>
 

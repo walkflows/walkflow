@@ -44,3 +44,6 @@ next-env.d.ts
 # optimized into public/images/web-design/projects/*/mockup.webp; the six live sites were
 # screenshotted directly rather than using the folder's other (uncropped, no-mobile) images
 /WEB DESIGN UPDATE/
+
+.vercel
+.env*

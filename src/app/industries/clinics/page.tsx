@@ -20,7 +20,7 @@ export default function ClinicsIndustryPage() {
     <>
       <IndustryHero {...content.hero} />
       <IndustryProblem heading={content.problem.heading} body={content.problem.body} points={content.problem.points} />
-      <IndustrySolutions heading={content.solutions.heading} body={content.solutions.body} areas={content.solutions.areas} />
+      <IndustrySolutions heading={content.solutions.heading} body={content.solutions.body} cards={content.solutions.cards} />
       <IndustryWorkflow heading={content.workflow.heading} steps={content.workflow.steps} safetyNote={content.safetyNote} />
       <IndustryServices heading={content.services.heading} items={content.services.items} />
       <IndustryFAQ items={content.faqs} />

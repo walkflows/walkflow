@@ -3,7 +3,14 @@
 import { useId, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { contactForm, contactMethodOptions, contactPage, contactServiceOptions } from "@/content/contact";
+import {
+  contactForm,
+  contactIndustryOptions,
+  contactMethodOptions,
+  contactPage,
+  contactServiceOptions,
+  contactTimingOptions,
+} from "@/content/contact";
 import { ButtonEl } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { cx } from "@/lib/utils";
@@ -14,6 +21,9 @@ type Values = {
   email: string;
   company: string;
   service: string;
+  industry: string;
+  otherIndustry: string;
+  timing: string;
   message: string;
   role: string;
   website: string;
@@ -28,6 +38,9 @@ const initialValues: Values = {
   email: "",
   company: "",
   service: "",
+  industry: "",
+  otherIndustry: "",
+  timing: "",
   message: "",
   role: "",
   website: "",
@@ -36,7 +49,9 @@ const initialValues: Values = {
   hpField: "",
 };
 
-type FieldErrors = Partial<Record<"name" | "email" | "company" | "service" | "message" | "whatsappNumber", string>>;
+type FieldErrors = Partial<
+  Record<"name" | "email" | "company" | "service" | "industry" | "otherIndustry" | "timing" | "message" | "whatsappNumber", string>
+>;
 
 type Status = "idle" | "submitting" | "success" | "error" | "unconfigured";
 
@@ -103,6 +118,9 @@ export function ContactForm() {
     else if (!EMAIL_RE.test(v.email.trim())) next.email = "Please enter a valid email address.";
     if (!v.company.trim()) next.company = "Please enter your company name.";
     if (!v.service.trim()) next.service = "Please select a service.";
+    if (!v.industry.trim()) next.industry = "Please select your industry.";
+    else if (v.industry === "other" && !v.otherIndustry.trim()) next.otherIndustry = "Please specify your industry.";
+    if (!v.timing.trim()) next.timing = "Please select a timeframe.";
     if (!v.message.trim()) next.message = "Let us know what's slowing your business down.";
     if (v.method === "whatsapp") {
       const digitsOnly = v.whatsappNumber.replace(/[^0-9]/g, "");
@@ -118,6 +136,12 @@ export function ContactForm() {
     setValues((v) => ({ ...v, method, whatsappNumber: method === "whatsapp" ? v.whatsappNumber : "" }));
     // Clear a stale WhatsApp-number error the moment the field is hidden again.
     setErrors((e) => (method === "whatsapp" ? e : { ...e, whatsappNumber: undefined }));
+  }
+
+  function handleIndustryChange(industry: string) {
+    setValues((v) => ({ ...v, industry, otherIndustry: industry === "other" ? v.otherIndustry : "" }));
+    // Clear a stale "please specify" error/requirement the moment the field is hidden again.
+    setErrors((e) => (industry === "other" ? e : { ...e, otherIndustry: undefined }));
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -137,6 +161,9 @@ export function ContactForm() {
         email: values.email.trim(),
         company: values.company.trim(),
         service: values.service,
+        industry: values.industry,
+        ...(values.industry === "other" ? { otherIndustry: values.otherIndustry.trim() } : {}),
+        timing: values.timing,
         message: values.message.trim(),
         role: values.role.trim(),
         website: values.website.trim(),
@@ -217,42 +244,82 @@ export function ContactForm() {
         autoComplete="organization"
       />
 
+      <Field
+        id={`${idPrefix}-role`}
+        label={contactForm.fields.role.label}
+        placeholder={contactForm.fields.role.placeholder}
+        value={values.role}
+        onChange={(v) => update("role", v)}
+        autoComplete="organization-title"
+      />
+
+      <Field
+        id={`${idPrefix}-website`}
+        label={contactForm.fields.website.label}
+        placeholder={contactForm.fields.website.placeholder}
+        value={values.website}
+        onChange={(v) => update("website", v)}
+        autoComplete="url"
+      />
+
+      <Select
+        id={`${idPrefix}-service`}
+        label={contactForm.fields.service.label}
+        placeholder={contactForm.fields.service.placeholder}
+        value={values.service}
+        onChange={(v) => update("service", v)}
+        options={contactServiceOptions}
+        error={errors.service}
+        required
+      />
+
       <div>
-        <label className={labelClass} htmlFor={`${idPrefix}-service`}>
-          {contactForm.fields.service.label} <span aria-hidden="true" className="text-orange">*</span>
-        </label>
-        <div className="relative mt-2">
-          <select
-            id={`${idPrefix}-service`}
-            name="service"
-            required
-            value={values.service}
-            onChange={(e) => update("service", e.target.value)}
-            aria-invalid={Boolean(errors.service)}
-            aria-describedby={errors.service ? `${idPrefix}-service-error` : undefined}
-            className={cx(fieldClass, "appearance-none pr-10", values.service === "" && "text-white/35")}
-          >
-            <option value="" disabled>
-              {contactForm.fields.service.placeholder}
-            </option>
-            {contactServiceOptions.map((option) => (
-              <option key={option.value} value={option.value} className="text-navy-deep">
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <svg
-            width="12"
-            height="8"
-            viewBox="0 0 12 8"
-            aria-hidden="true"
-            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/50"
-          >
-            <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        {errors.service && <ErrorText id={`${idPrefix}-service-error`}>{errors.service}</ErrorText>}
+        <Select
+          id={`${idPrefix}-industry`}
+          label={contactForm.fields.industry.label}
+          placeholder={contactForm.fields.industry.placeholder}
+          value={values.industry}
+          onChange={handleIndustryChange}
+          options={contactIndustryOptions}
+          error={errors.industry}
+          required
+        />
+
+        <AnimatePresence initial={false}>
+          {values.industry === "other" && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.25, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <div className="pt-4">
+                <Field
+                  id={`${idPrefix}-other-industry`}
+                  label={contactForm.fields.otherIndustry.label}
+                  placeholder={contactForm.fields.otherIndustry.placeholder}
+                  value={values.otherIndustry}
+                  onChange={(v) => update("otherIndustry", v)}
+                  error={errors.otherIndustry}
+                  required
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      <Select
+        id={`${idPrefix}-timing`}
+        label={contactForm.fields.timing.label}
+        placeholder={contactForm.fields.timing.placeholder}
+        value={values.timing}
+        onChange={(v) => update("timing", v)}
+        options={contactTimingOptions}
+        error={errors.timing}
+        required
+      />
 
       <div>
         <label className={labelClass} htmlFor={`${idPrefix}-message`}>
@@ -273,24 +340,6 @@ export function ContactForm() {
         />
         {errors.message && <ErrorText id={`${idPrefix}-message-error`}>{errors.message}</ErrorText>}
       </div>
-
-      <Field
-        id={`${idPrefix}-role`}
-        label={contactForm.fields.role.label}
-        placeholder={contactForm.fields.role.placeholder}
-        value={values.role}
-        onChange={(v) => update("role", v)}
-        autoComplete="organization-title"
-      />
-
-      <Field
-        id={`${idPrefix}-website`}
-        label={contactForm.fields.website.label}
-        placeholder={contactForm.fields.website.placeholder}
-        value={values.website}
-        onChange={(v) => update("website", v)}
-        autoComplete="url"
-      />
 
       <fieldset>
         <legend className={labelClass}>{contactForm.fields.method.label}</legend>
@@ -375,6 +424,66 @@ export function ContactForm() {
         {submitting ? contactForm.submittingLabel : contactForm.submitLabel}
       </ButtonEl>
     </form>
+  );
+}
+
+/** Shared markup for every plain `<select>` field — service, industry, timing. */
+function Select({
+  id,
+  label,
+  placeholder,
+  value,
+  onChange,
+  options,
+  error,
+  required,
+}: {
+  id: string;
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: readonly { value: string; label: string }[];
+  error?: string;
+  required?: boolean;
+}) {
+  const errorId = error ? `${id}-error` : undefined;
+  return (
+    <div>
+      <label className={labelClass} htmlFor={id}>
+        {label} {required && <span aria-hidden="true" className="text-orange">*</span>}
+      </label>
+      <div className="relative mt-2">
+        <select
+          id={id}
+          required={required}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          aria-invalid={Boolean(error)}
+          aria-describedby={errorId}
+          className={cx(fieldClass, "appearance-none pr-10", value === "" && "text-white/35")}
+        >
+          <option value="" disabled>
+            {placeholder}
+          </option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value} className="text-navy-deep">
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          width="12"
+          height="8"
+          viewBox="0 0 12 8"
+          aria-hidden="true"
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/50"
+        >
+          <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      {error && <ErrorText id={errorId!}>{error}</ErrorText>}
+    </div>
   );
 }
 

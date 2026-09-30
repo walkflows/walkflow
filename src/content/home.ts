@@ -36,7 +36,8 @@ export const services = {
   id: "solutions",
   eyebrow: "OUR SERVICES",
   headingLines: ["Get more enquiries.", "Make the next steps easier."],
-  cta: { label: "Request a Call", href: "/contact" },
+  // Session 29: every homepage "Request a Call" button becomes "See How It Works", linking to the Demos section.
+  cta: { label: "See How It Works", href: "#demos" },
   items: [
     {
       id: "automation",
@@ -76,14 +77,29 @@ export const platformsAndTools = {
   body: "Examples of the platforms and AI tools a WALKFLOW project might use or connect to, depending on scope — shown for reference, not as clients or partners.",
   pause: "Pause moving logos",
   resume: "Resume moving logos",
+};
+
+/**
+ * Session 29: split out of `platformsAndTools` — this content (three
+ * reassurance/benefit cards, the stat-circle row and the quick-benefit
+ * pills) always read as "why work with WALKFLOW" copy, just filed under a
+ * platforms-logo section that had nothing to do with it. The required
+ * homepage section order names a standalone "Why WALKFLOW" section that
+ * didn't exist as its own component before now — this is that section,
+ * built from the same existing copy (nothing new invented), just given its
+ * own heading and position.
+ */
+export const whyWalkflow = {
+  eyebrow: "Why WALKFLOW",
+  heading: "A practical way to work with us.",
   /**
-   * UNVERIFIED PLACEHOLDER CONTENT — added for the cinematic motion pass on
-   * this section, using the reference screenshot's own numbers/copy exactly
-   * as instructed, pending your sign-off. None of these figures (years,
-   * project/client/review counts) are confirmed real WALKFLOW numbers yet;
-   * CLAUDE.md prohibits invented metrics as approved marketing claims, so
-   * treat this block as a layout placeholder, not launch-ready copy. See
-   * SESSION-NOTES.md.
+   * UNVERIFIED PLACEHOLDER CONTENT, carried over unchanged from the old
+   * `platformsAndTools.stats` — added for an earlier motion pass using a
+   * reference screenshot's own numbers/copy exactly as instructed, pending
+   * your sign-off. None of these figures (years, project/client/review
+   * counts) are confirmed real WALKFLOW numbers yet; CLAUDE.md prohibits
+   * invented metrics as approved marketing claims, so this is still a
+   * layout placeholder, not launch-ready copy. See SESSION-NOTES.md.
    */
   stats: [
     { id: "years", value: "7 Years", label: "Hands-on Experience" },
@@ -313,6 +329,7 @@ export const faq = {
 export const finalCta = {
   heading: "What would you like your business to do better?",
   body: "A clearer website? Easier enquiry handling? Less time spent on follow-ups? Tell us where things feel difficult. Let’s work out the next step.",
-  cta: { label: "Request a Call", href: "/contact" },
+  // Session 29: "Request a Call" → "See How It Works" (→ #demos), now the secondary button — Book a Consultation renders first. See FinalCta.tsx.
+  cta: { label: "See How It Works", href: "#demos" },
   note: "Send a short enquiry, and we’ll contact you to arrange a conversation. No account needed.",
 };

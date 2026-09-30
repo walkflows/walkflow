@@ -6,13 +6,15 @@ import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconMail, IconMapPin, IconPhone, IconWhatsapp, IconLinkedin, IconInstagram } from "@/components/ui/icons";
+import { HomeLogoLink } from "./HomeLogoLink";
 
 const socialIcons = { whatsapp: IconWhatsapp, linkedin: IconLinkedin, instagram: IconInstagram };
 
+/** Session 29: heading colour set to brand orange (#FF991C via the `text-orange` token) on the three footer columns explicitly named in the brief. */
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
     <div>
-      <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-white/60">{title}</h3>
+      <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">{title}</h3>
       <ul className="mt-4 flex flex-col gap-3">
         {links.map((link) => (
           <li key={link.href}>
@@ -34,7 +36,7 @@ export function Footer() {
       <Reveal y={24}>
         <Container className="grid gap-12 py-16 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
         <div>
-          <Link href="/" className="flex items-center gap-2" aria-label={`${site.name} home`}>
+          <HomeLogoLink className="flex items-center gap-2" ariaLabel={`${site.name} home`}>
             <Image
               src={media.logoOnBlack.src!}
               alt={media.logoOnBlack.alt}
@@ -46,7 +48,7 @@ export function Footer() {
               <span className="text-orange">WALK</span>
               <span className="text-white">FLOW</span>
             </span>
-          </Link>
+          </HomeLogoLink>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/75">{site.footerDescription}</p>
           <p className="mt-4 font-accent text-2xl font-medium text-orange-light">{site.tagline}</p>
         </div>
@@ -55,7 +57,7 @@ export function Footer() {
         <FooterColumn title="Services" links={footerNav.services} />
 
         <div>
-          <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-white/60">Connect with Us</h3>
+          <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">Connect with Us</h3>
           {/*
             Placeholder contact details (src/content/site.ts `contact`) — not
             Joshua's real email/phone/address yet. See CLAUDE.md/SESSION-NOTES.md.

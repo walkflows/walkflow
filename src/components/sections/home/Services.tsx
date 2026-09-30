@@ -14,7 +14,7 @@ const icons = {
 
 export function Services() {
   return (
-    <section id={services.id} className="scroll-mt-24 bg-navy-deep py-20 sm:py-28">
+    <section id={services.id} className="scroll-mt-24 border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       <Container>
         <Reveal>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

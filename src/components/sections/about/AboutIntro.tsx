@@ -42,8 +42,9 @@ export function AboutIntro() {
             ))}
           </div>
           <div className="mt-7 border-l-2 border-orange/50 pl-4">
-            <p className="text-lg font-semibold text-white">{aboutIntro.highlight}</p>
-            <p className="mt-1 text-sm text-white/50">{aboutIntro.highlightNote}</p>
+            {/* Session 29: the site's existing handwritten/accent font (Caveat), in italic — Caveat has no dedicated italic cut, so `italic` here is the "appropriate slanted treatment" fallback the brief allows. */}
+            <p className="font-accent text-2xl italic leading-none text-orange-light">{aboutIntro.highlight}</p>
+            <p className="mt-2 text-sm text-white/50">{aboutIntro.highlightNote}</p>
           </div>
         </Reveal>
 

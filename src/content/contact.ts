@@ -55,11 +55,30 @@ export const contactServiceOptions = [
   { value: "web-design", label: "Web Design" },
   { value: "mobile-app-development", label: "Mobile App Development" },
   { value: "all", label: "All" },
+  // Session 29: added per explicit instruction — a valid, submittable value, not just a UI placeholder.
+  { value: "not-sure-yet", label: "Not sure yet" },
 ] as const;
 
 export const contactMethodOptions = [
   { value: "email", label: "Email" },
   { value: "whatsapp", label: "WhatsApp" },
+] as const;
+
+/** Session 29: new required "Your industry" dropdown. */
+export const contactIndustryOptions = [
+  { value: "real-estate", label: "Real Estate" },
+  { value: "home-services", label: "Home Services - HVAC & Plumbing" },
+  { value: "clinics", label: "Clinics" },
+  { value: "consulting-firm", label: "Consulting firm" },
+  { value: "other", label: "Other" },
+] as const;
+
+/** Session 29: new required "When would you like to start?" dropdown. */
+export const contactTimingOptions = [
+  { value: "asap", label: "As Soon as Possible" },
+  { value: "within-1-month", label: "Within 1 Month" },
+  { value: "within-3-months", label: "Within 3 Months" },
+  { value: "just-exploring", label: "Just Exploring" },
 ] as const;
 
 export const contactForm = {
@@ -72,6 +91,9 @@ export const contactForm = {
     },
     company: { label: "Company name", placeholder: "Your company" },
     service: { label: "Which service are you interested in?", placeholder: "Select a service" },
+    industry: { label: "Your industry", placeholder: "Select your industry" },
+    otherIndustry: { label: "Please specify your industry.", placeholder: "Tell us your industry" },
+    timing: { label: "When would you like to start?", placeholder: "Select a timeframe" },
     message: {
       label: "Tell us what's slowing your business down",
       placeholder: "e.g. we're losing leads, our website isn't converting, too much manual follow-up...",

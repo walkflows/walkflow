@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Process() {
   return (
-    <section className="relative isolate overflow-hidden bg-navy-deep py-20 sm:py-28">
+    <section className="relative isolate overflow-hidden border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       {/* Subtle depth so the section doesn't read as flat black: a faint
           grid texture (same technique as the hero) plus two soft, blurred
           orange glows tucked into opposite corners. All aria-hidden,

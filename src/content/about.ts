@@ -62,8 +62,17 @@ export const aboutHero = {
   intro:
     "Joshua Ayomide didn't set out to run an automation agency. He studied mechanical engineering, taught himself content writing, picked up web design during lockdown, and learned automation because a client needed it. WALKFLOW is what happens when you keep saying yes to the next skill the work demands — until one day you've built a team instead of just a career.",
   name: "Joshua Ayomide",
-  tags: ["Mech Engineering Grad", "Content Writer", "Certified Web Designer", "AI Automation Consultant"],
-  cta: { label: "Request a Call", href: "/contact" },
+  // Session 29: replaced the old four-tag set with exactly these three, in this order, per explicit instruction.
+  tags: ["Web Designer", "AI Automation Specialist", "Content Writer"],
+  cta: { label: "Book a Consultation", href: "/contact" },
+  /**
+   * Session 29: LinkedIn placeholder, explicitly requested ahead of having a
+   * real URL. `null` renders a non-interactive icon with an accessible
+   * "coming soon" description in AboutHero.tsx — never an `href="#"` or an
+   * invented profile link. Set this to the real profile URL once supplied
+   * and the icon becomes a real external link automatically.
+   */
+  linkedinUrl: null as string | null,
   /**
    * Session 22: swapped to the "walkflow founder" asset (a branded-tee
    * headshot Joshua added to `about us/`) in place of the earlier casual
@@ -84,7 +93,7 @@ export const aboutTeam = {
   members: [
     {
       name: "Boluwatife A.",
-      role: "AI Automation Specialist",
+      role: "Email & AI Automation Specialist",
       body: "Builds and optimizes the automation systems that keep your business running efficiently, from lead capture to follow-up.",
       photo: { src: "/team/boluwatife.jpg", alt: "Boluwatife A., AI Automation Specialist at WALKFLOW" },
     },
@@ -122,5 +131,5 @@ export const aboutValues = {
 export const aboutCta = {
   heading: "Have a project in mind?",
   body: "Tell us what you're working on and we'll reply by email to arrange a call.",
-  cta: { label: "Request a Call", href: "/contact" },
+  cta: { label: "Book a Consultation", href: "/contact" },
 };

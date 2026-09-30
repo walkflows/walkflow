@@ -46,7 +46,7 @@ export function WebDesignProjectDetail({ project }: { project: WebDesignProject 
               <span className="sr-only">(opens in a new tab)</span>
             </Button>
             <Button href="/contact?service=web-design" variant="secondary-on-dark">
-              Discuss Your Website
+              Book a Consultation
             </Button>
           </div>
         </Reveal>
