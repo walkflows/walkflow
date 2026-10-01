@@ -1,0 +1,132 @@
+{
+  "name": "WALKFLOW Demo — Clinics: Availability, Confirmation and Rescheduling",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -220],
+      "parameters": {
+        "width": 480,
+        "height": 260,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles three contract.ts actions on one webhook, routed by `action`: request_appointment, confirm_appointment, reschedule_appointment. 'Check Availability' must port hasConflict() from src/components/demo/clinics/engine.ts — in Connected Mode this should check every appointment for the assigned provider at that slot, not just the current session's own appointment, which is what Preview Mode trivially does. The Switch node must enforce the same stage-order guards as session.ts's demoReducer (e.g. confirm_appointment only valid when status is 'requested')."
+      }
+    },
+    {
+      "id": "webhook-appointment",
+      "name": "Webhook — appointment actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "clinics/appointment", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "check-availability",
+      "name": "Check Availability (port of engine.ts hasConflict)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [220, 0],
+      "parameters": {
+        "functionCode": "// TODO: query demo_clinics_appointments for the assigned provider at the candidate slot_iso, across all sessions (unlike Preview Mode's single-session check). Reject with error code 'invalid_input' if occupied.\nreturn items;"
+      }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [440, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "request_appointment", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "request_appointment", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "confirm_appointment", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "confirm_appointment", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "reschedule_appointment", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "reschedule_appointment", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "insert-appointment",
+      "name": "Insert Appointment (requested)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -140],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_appointments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { request_id: $json.body.input.requestRecordId, slot_iso: $json.body.input.slotIso, status: \"requested\" } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "confirm-appointment",
+      "name": "Update Appointment (confirmed)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 0],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_appointments?id=eq.{{ $json.body.input.appointmentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"confirmed\", reminders_valid: true, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only proceed if the appointment's current status is 'requested'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "reschedule-appointment",
+      "name": "Update Appointment (rescheduled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 140],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_appointments?id=eq.{{ $json.body.input.appointmentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"requested\", slot_iso: $json.body.input.slotIso, reminders_valid: false, attendance_intent_confirmed: false, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "Invalidates previous reminders (reminders_valid: false) — workflow 03 must not send a reminder referencing the old slot once this has run.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [960, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — appointment actions": { "main": [[{ "node": "Check Availability (port of engine.ts hasConflict)", "type": "main", "index": 0 }]] },
+    "Check Availability (port of engine.ts hasConflict)": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Insert Appointment (requested)", "type": "main", "index": 0 }],
+        [{ "node": "Update Appointment (confirmed)", "type": "main", "index": 0 }],
+        [{ "node": "Update Appointment (rescheduled)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Insert Appointment (requested)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Appointment (confirmed)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Appointment (rescheduled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

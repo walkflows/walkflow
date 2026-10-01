@@ -1,0 +1,111 @@
+{
+  "name": "WALKFLOW Demo — Clinics: Attendance and Administrative Follow-up",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, -240],
+      "parameters": {
+        "width": 500,
+        "height": 300,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles record_attendance (checked-in/attended/missed) and record_followup. 'Attended' must only be accepted if the appointment is already 'checked-in' (guard, matching session.ts's demoReducer). Follow-up must port followUpInstructionFor() from src/components/demo/clinics/engine.ts and respect follow_up_opt_in — never create a follow-up task when the patient opted out, even if a staff instruction exists for that category. Never generate diagnoses, prescriptions, test interpretations or personalised care instructions here."
+      }
+    },
+    {
+      "id": "webhook-attendance",
+      "name": "Webhook — attendance/followup actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "clinics/attendance", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "record_attendance", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_attendance", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "record_followup", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_followup", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "update-attendance",
+      "name": "Update Appointment Attendance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, -80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_appointments?id=eq.{{ $json.body.input.appointmentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { attendance_status: $json.body.input.status, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — 'attended' only valid when current attendance_status is 'checked-in'. On 'missed', also insert the reception follow-up task + rebooking-preview message (separate HTTP Request nodes, following the pattern in n8n-workflows/home-services/03-*.json).",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "followup-logic",
+      "name": "Follow-up Logic (port of engine.ts followUpInstructionFor)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 80],
+      "parameters": {
+        "functionCode": "// TODO: port followUpInstructionFor() from engine.ts. If the linked request's follow_up_opt_in is false, skip creating a task/message even when an instruction exists — just log the skip.\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-feedback-message",
+      "name": "Insert Feedback + Follow-up Previews",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_message_previews",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.messages }}",
+        "options": {}
+      },
+      "notes": "Always inserts the neutral feedback preview; the follow-up message/task is only included when the Function node above determined it applies.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [900, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — attendance/followup actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Update Appointment Attendance", "type": "main", "index": 0 }],
+        [{ "node": "Follow-up Logic (port of engine.ts followUpInstructionFor)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update Appointment Attendance": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Follow-up Logic (port of engine.ts followUpInstructionFor)": { "main": [[{ "node": "Insert Feedback + Follow-up Previews", "type": "main", "index": 0 }]] },
+    "Insert Feedback + Follow-up Previews": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

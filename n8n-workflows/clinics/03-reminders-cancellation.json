@@ -1,0 +1,116 @@
+{
+  "name": "WALKFLOW Demo — Clinics: Reminder Previews and Cancellation",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -220],
+      "parameters": {
+        "width": 480,
+        "height": 260,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles preview_reminder and cancel_appointment. A reminder must only be generated when the linked appointment's reminders_valid is true — check this before inserting a message preview, so a stale reminder referencing an old/cancelled slot is never sent. Cancelling here does NOT create the waiting-list offer directly — it releases the slot and hands off to workflow 04 (chain via an Execute Workflow node once both are tested)."
+      }
+    },
+    {
+      "id": "webhook-reminders",
+      "name": "Webhook — reminder/cancel actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "clinics/reminders", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "preview_reminder", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "preview_reminder", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "cancel_appointment", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "cancel_appointment", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "check-reminders-valid",
+      "name": "Check Reminders Valid",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, -80],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_appointments?request_id=eq.{{ $json.body.input.requestRecordId }}&select=reminders_valid",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "options": {}
+      },
+      "notes": "TODO: if reminders_valid is false, return early without inserting a message preview — the appointment changed since the last valid reminder.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "insert-reminder-preview",
+      "name": "Insert Reminder Preview",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, -80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_message_previews",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { request_id: $json.body.input.requestRecordId, label: \"Example reminder — not sent\", recipient: $json.recipientEmail, subject: \"Reminder: your upcoming appointment\", body: $json.reminderBody } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "cancel-and-release",
+      "name": "Cancel Appointment + Release Slot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_appointments?id=eq.{{ $json.body.input.appointmentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"cancelled\", reminders_valid: false, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: on success, call workflow 04 (Execute Workflow node) to create the waiting-list offer for this category/slot.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [900, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — reminder/cancel actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Check Reminders Valid", "type": "main", "index": 0 }],
+        [{ "node": "Cancel Appointment + Release Slot", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check Reminders Valid": { "main": [[{ "node": "Insert Reminder Preview", "type": "main", "index": 0 }]] },
+    "Insert Reminder Preview": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Cancel Appointment + Release Slot": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

@@ -34,96 +34,21 @@ export type IndustryDemoContent = {
 };
 
 /**
- * Two concept demonstrations (Clinics, Consulting) built to this shared,
+ * One remaining concept demonstration (Consulting) built to this shared,
  * generic pattern — same section order, styling and interactive-demo
  * mechanism (a customer-facing form + a business-side view of the
- * resulting record), with only copy, labels and sample data changed per
- * industry. All "results" figures are outcome descriptions, not invented
- * metrics — no numbers are stated.
+ * resulting record). All "results" figures are outcome descriptions, not
+ * invented metrics — no numbers are stated.
  *
- * Home Services used to be the third entry here (Session 10) but was
- * rebuilt (Session 35) into its own bespoke, multi-stage demo — see
- * src/content/home-services-demo.ts and src/components/demo/home-services/
- * — following the same richer architecture as the Real Estate demo rather
- * than this shared template. Removed from this Record rather than kept
- * stale alongside the unused new build.
+ * Home Services (Session 35) and Clinics (Session 36) used to be entries
+ * here but were each rebuilt into their own bespoke, multi-stage demo —
+ * see src/content/home-services-demo.ts / clinics-demo.ts and
+ * src/components/demo/home-services/ / clinics/ — following the same
+ * richer architecture as the Real Estate demo rather than this shared
+ * template. Removed from this Record rather than kept stale alongside the
+ * unused new builds.
  */
-export const industryDemos: Record<"clinics" | "consulting", IndustryDemoContent> = {
-  clinics: {
-    slug: "clinics",
-    seo: {
-      title: "Clinic Website Demo & Booking Journey",
-      description:
-        "Explore a sample clinic website and the intended booking-to-visit journey. A WALKFLOW concept demonstration, not a live practice.",
-    },
-    hero: {
-      eyebrow: "Concept Demonstration",
-      heading: "Clinics",
-      subheading: "Patients struggle to book, and no-shows cost the practice time and revenue.",
-      primaryCta: { label: "Start Sample Journey", href: "#interactive-demo" },
-      secondaryCta: { label: "Request a Call", href: "/contact" },
-      notice:
-        "Sample bookings and demonstration content. This is not a live clinic or medical practice. No real appointment is arranged through this demo.",
-    },
-    problem: {
-      heading: "The business problem",
-      points: [
-        "Patients struggle to book appointments outside a phone call during office hours.",
-        "No-shows are costly, and easy to reduce with a simple reminder sequence.",
-        "Front-desk staff are overwhelmed with repetitive scheduling calls that a system could handle.",
-      ],
-    },
-    solution: {
-      heading: "What WALKFLOW builds",
-      body: "A website with online booking, automated appointment reminders and patient follow-up sequences — reducing no-shows and admin load on reception.",
-      components: ["Online booking", "Automated appointment reminders", "Patient follow-up sequences"],
-    },
-    steps: {
-      heading: "The intended journey",
-      items: [
-        { title: "Patient books online", body: "Available slots are visible without a phone call." },
-        { title: "Automated confirmation sent", body: "The patient receives an immediate booking confirmation." },
-        { title: "Reminder sequence before appointment", body: "Timed reminders reduce avoidable no-shows." },
-        { title: "Post-visit follow-up", body: "A follow-up or review request goes out after the visit." },
-        { title: "Re-engagement for recurring care", body: "Patients due a check-up are prompted to rebook." },
-      ],
-    },
-    visual: {
-      heading: "What the live site could look like",
-      body: "Screenshots of the actual booking flow and clinic pages go here once supplied — shown as a placeholder for now.",
-    },
-    results: {
-      heading: "What this solves",
-      body: "Fewer no-shows, a lighter front-desk workload and patients who stay engaged between visits.",
-      outcomes: ["Fewer missed appointments", "Less reception time on the phone", "Patients who return for recurring care"],
-    },
-    interactiveDemo: {
-      customerTabLabel: "Book an Appointment",
-      businessTabLabel: "Clinic View",
-      introText:
-        "Browse available appointment slots, share your visit reason as a patient would, book an appointment, then switch to Clinic View to see how the same booking would appear to staff.",
-      disclaimer:
-        "This demonstration is a website prototype. Appointment confirmations, reminders and follow-ups are planned capabilities unless explicitly marked as tested live integrations. For a client build, the appointment types, provider availability and communication process are configured and tested for that practice.",
-      slotLabel: "Preferred appointment time",
-      slots: ["Tomorrow 09:30", "Tomorrow 11:00", "Wednesday 14:00", "Friday 10:30"],
-      issueLabel: "Reason for visit",
-      issuePlaceholder: "e.g. Annual check-up",
-      submitLabel: "Book Appointment",
-      confirmationHeading: "Want a version of this for your practice?",
-      businessSteps: [
-        { title: "Incoming booking received", body: "The appointment appears in one place, with the reason for visit attached." },
-        { title: "Automated confirmation sent", body: "The patient gets an immediate confirmation." },
-        { title: "Reminder sequence scheduled", body: "Reminders are queued ahead of the appointment." },
-        { title: "Post-visit follow-up queued", body: "A follow-up message is queued to send after the visit." },
-      ],
-      emptyStateBody: "No demo bookings yet. Use “Book an Appointment” to see how a record appears here.",
-    },
-    finalCta: {
-      heading: "What would this journey look like for your practice?",
-      cta: { label: "Request a Call", href: "/contact" },
-    },
-  },
-
+export const industryDemos: Record<"consulting", IndustryDemoContent> = {
   consulting: {
     slug: "consulting",
     seo: {

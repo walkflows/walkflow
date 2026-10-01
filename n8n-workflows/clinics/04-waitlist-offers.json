@@ -1,0 +1,132 @@
+{
+  "name": "WALKFLOW Demo — Clinics: Waiting-List Offers, Acceptance and Expiry",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, -240],
+      "parameters": {
+        "width": 500,
+        "height": 300,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles offer_waitlist_slot (called from workflow 03 after a cancellation), respond_waitlist_offer and expire_waitlist_offer. Matching rule (port of engine.ts waitlistCandidateFor): one candidate per category in the sample data, so 'no further candidates' after a decline/expiry is a real, honest state — do not invent additional candidates. Prevent duplicate offers: only create a new offer if no existing offer for that appointment has status 'offered'. A scheduled sub-flow (or this workflow's own Wait node + the expiry action) should call expire_waitlist_offer once the defined hold window passes without a response."
+      }
+    },
+    {
+      "id": "webhook-waitlist",
+      "name": "Webhook — waitlist actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "clinics/waitlist", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "offer_waitlist_slot", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "offer_waitlist_slot", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "respond_waitlist_offer", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "respond_waitlist_offer", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "expire_waitlist_offer", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "expire_waitlist_offer", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "find-candidate",
+      "name": "Find Waitlist Candidate (port of engine.ts)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, -160],
+      "parameters": {
+        "functionCode": "// TODO: port waitlistCandidateFor() from engine.ts. Check no existing 'offered' row exists for this appointment before creating one (prevents duplicate offers).\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-offer",
+      "name": "Insert Waitlist Offer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, -160],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_waitlist_offers",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { appointment_id: $json.body.input.appointmentId, candidate_id: $json.candidate.id, slot_iso: $json.slotIso, status: \"offered\" } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond-offer",
+      "name": "Update Offer (accepted/declined)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 0],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_waitlist_offers?id=eq.{{ $json.body.input.offerId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: $json.body.input.response, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only proceed if the offer's current status is 'offered'. On 'accepted', this is where a real replacement-booking record would be created in a full build.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "expire-offer",
+      "name": "Update Offer (expired)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 160],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_waitlist_offers?id=eq.{{ $json.body.input.offerId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"expired\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only proceed if the offer's current status is 'offered'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [900, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — waitlist actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Find Waitlist Candidate (port of engine.ts)", "type": "main", "index": 0 }],
+        [{ "node": "Update Offer (accepted/declined)", "type": "main", "index": 0 }],
+        [{ "node": "Update Offer (expired)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Find Waitlist Candidate (port of engine.ts)": { "main": [[{ "node": "Insert Waitlist Offer", "type": "main", "index": 0 }]] },
+    "Insert Waitlist Offer": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Offer (accepted/declined)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Offer (expired)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,114 @@
+{
+  "name": "WALKFLOW Demo — Clinics: Appointment Request Capture and Staff Assignment",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -240],
+      "parameters": {
+        "width": 480,
+        "height": 320,
+        "content": "PREPARED, NOT TESTED.\n\nMirrors n8n-workflows/real-estate/01-*.json and n8n-workflows/home-services/01-*.json's setup exactly:\n1. Import into n8n.\n2. Create credential 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>) — never the anon key.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL.\n4. Require header 'x-walkflow-webhook-secret' matching N8N_WEBHOOK_SECRET on the Webhook node's Authentication.\n5. Activate, copy the production webhook URL into N8N_CLINICS_WEBHOOK_URL, then test end to end before enabling Connected Mode.\n\nCorresponds to src/lib/clinics-demo/contract.ts action 'submit_request'. The Function node below must port assignReceptionOwner()/assignProvider() from src/components/demo/clinics/engine.ts so Connected Mode and Preview Mode never disagree. 'I'm not sure yet' always routes to the reception-review owner with no provider assigned."
+      }
+    },
+    {
+      "id": "webhook-request",
+      "name": "Webhook — submit_request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "clinics/request", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "validate-input",
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "requestId", "type": "string", "value": "={{ $json.body.requestId }}" },
+            { "name": "sessionId", "type": "string", "value": "={{ $json.body.sessionId }}" },
+            { "name": "input", "type": "object", "value": "={{ $json.body.input }}" }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "TODO: reject (route to Respond With Error) if requestId/sessionId/input are missing, or if input fails the SubmitRequestInput shape in contract.ts."
+    },
+    {
+      "id": "assign-staff",
+      "name": "Assign Reception Owner + Provider (port of engine.ts)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [440, 0],
+      "parameters": {
+        "functionCode": "// TODO: port assignReceptionOwner()/assignProvider() from src/components/demo/clinics/engine.ts.\n// Fetch reception staff/providers from Supabase (not hardcoded here) rather than duplicating the roster.\n// Return { owner, provider, categoryPending }.\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-request",
+      "name": "Insert Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_requests",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { session_id: $json.sessionId, request_id: $json.requestId, ...$json.input, category_pending: $json.categoryPending, reception_owner_id: $json.owner.id, provider_id: $json.provider ? $json.provider.id : null } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "insert-tasks",
+      "name": "Insert Task(s)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_clinics_tasks",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.tasks }}",
+        "options": {}
+      },
+      "notes": "TODO: the Function node above should also build the task(s) array — a pending-review task when categoryPending is true, otherwise a confirm-details task plus a referral/preparation-check task when categoryId is 'diagnostics'-equivalent.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [880, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — submit_request": { "main": [[{ "node": "Validate Request", "type": "main", "index": 0 }]] },
+    "Validate Request": { "main": [[{ "node": "Assign Reception Owner + Provider (port of engine.ts)", "type": "main", "index": 0 }]] },
+    "Assign Reception Owner + Provider (port of engine.ts)": {
+      "main": [
+        [
+          { "node": "Insert Request", "type": "main", "index": 0 },
+          { "node": "Insert Task(s)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Insert Request": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Insert Task(s)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}
