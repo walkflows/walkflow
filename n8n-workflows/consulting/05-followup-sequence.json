@@ -1,0 +1,110 @@
+{
+  "name": "WALKFLOW Demo — Consulting: Limited Follow-up Sequence",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, -260],
+      "parameters": {
+        "width": 500,
+        "height": 320,
+        "content": "PREPARED, NOT TESTED.\n\nCovers preview_next_touch and record_followup_outcome from src/lib/consulting-demo/contract.ts. This sequence is deliberately FINITE — it must never send more than the touches defined in followUpSequence (src/content/consulting-services.ts, currently 2) and must stop the instant an outcome is recorded (accepted/declined/cancelled) or the client opted out at intake.\n\nTODO: port the guards from PREVIEW_NEXT_TOUCH/RECORD_FOLLOWUP_OUTCOME in src/components/demo/consulting/session.ts exactly — in particular, Preview Next Touch must be a no-op (respond out_of_order) once touches_sent >= followUpSequence.length or outcome is already set."
+      }
+    },
+    {
+      "id": "webhook-followup",
+      "name": "Webhook — followup actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "consulting/followup", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "preview_next_touch", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_followup_outcome", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        }
+      }
+    },
+    {
+      "id": "check-eligible",
+      "name": "Check Sequence Still Eligible",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [440, -80],
+      "parameters": {
+        "functionCode": "// TODO: fetch demo_consulting_followups for this requestRecordId and return eligible=false\n// (respond out_of_order) if outcome is already set or touches_sent >= followUpSequence.length (2).\nreturn items;"
+      }
+    },
+    {
+      "id": "send-touch",
+      "name": "Send Next Touch (increment + insert message preview)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_followups?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { touches_sent: $json.touchesSent + 1, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: also insert the corresponding demo_consulting_message_previews row using the template at followUpSequence[touchesSent] from src/content/consulting-services.ts.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "record-outcome",
+      "name": "Record Outcome (stop sequence)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 160],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_followups?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { outcome: $json.body.input.outcome, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — no-op (respond out_of_order) if an outcome is already set.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [880, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — followup actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Check Sequence Still Eligible", "type": "main", "index": 0 }],
+        [{ "node": "Record Outcome (stop sequence)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check Sequence Still Eligible": { "main": [[{ "node": "Send Next Touch (increment + insert message preview)", "type": "main", "index": 0 }]] },
+    "Send Next Touch (increment + insert message preview)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Record Outcome (stop sequence)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

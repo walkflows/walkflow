@@ -1,0 +1,121 @@
+{
+  "name": "WALKFLOW Demo — Consulting: Session Scheduling and Payment (Session Path)",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -240],
+      "parameters": {
+        "width": 480,
+        "height": 300,
+        "content": "PREPARED, NOT TESTED.\n\nHandles the 'session' path only — request_session, simulate_payment and cancel_session from src/lib/consulting-demo/contract.ts. The 'project' path never touches this workflow; see 03-proposal-scoping-decision.json instead.\n\nCredential and URL setup is identical to 01-request-capture-assignment.json. simulate_payment must stay a SIMULATION even when connected — no real payment processor is called. TODO: port the status transitions from the REQUEST_SESSION/SIMULATE_PAYMENT/CANCEL_SESSION cases in src/components/demo/consulting/session.ts."
+      }
+    },
+    {
+      "id": "webhook-session",
+      "name": "Webhook — request_session / simulate_payment / cancel_session",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "consulting/session", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "request_session", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "simulate_payment", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "cancel_session", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        }
+      },
+      "notes": "TODO: reject unrecognised actions with error code invalid_input."
+    },
+    {
+      "id": "upsert-appointment-requested",
+      "name": "Upsert Appointment (requested)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, -160],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_appointments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { request_id: $json.body.input.requestRecordId, slot_iso: $json.body.input.slotIso, status: \"requested\", payment_status: \"unpaid\" } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "update-appointment-paid",
+      "name": "Update Appointment (confirmed + paid)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 0],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_appointments?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"confirmed\", payment_status: \"paid\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only apply if the existing row's status is 'requested' and payment_status is 'unpaid' (mirrors SIMULATE_PAYMENT's guard in session.ts); otherwise respond out_of_order.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "update-appointment-cancelled",
+      "name": "Update Appointment (cancelled) + Stop Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 160],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_appointments?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"cancelled\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: also upsert demo_consulting_followups with outcome = 'cancelled' here, so the follow-up sequence stops immediately — mirrors CANCEL_SESSION's effect on followUpOutcome in session.ts.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [660, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — request_session / simulate_payment / cancel_session": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Upsert Appointment (requested)", "type": "main", "index": 0 }],
+        [{ "node": "Update Appointment (confirmed + paid)", "type": "main", "index": 0 }],
+        [{ "node": "Update Appointment (cancelled) + Stop Follow-up", "type": "main", "index": 0 }]
+      ]
+    },
+    "Upsert Appointment (requested)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Appointment (confirmed + paid)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Appointment (cancelled) + Stop Follow-up": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

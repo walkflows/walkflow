@@ -1,0 +1,114 @@
+{
+  "name": "WALKFLOW Demo — Consulting: Request Capture and Consultant Assignment",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -240],
+      "parameters": {
+        "width": 480,
+        "height": 320,
+        "content": "PREPARED, NOT TESTED.\n\nMirrors n8n-workflows/clinics/01-*.json's setup exactly:\n1. Import into n8n.\n2. Create credential 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>) — never the anon key.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL.\n4. Require header 'x-walkflow-webhook-secret' matching N8N_WEBHOOK_SECRET on the Webhook node's Authentication.\n5. Activate, copy the production webhook URL into N8N_CONSULTING_WEBHOOK_URL, then test end to end before enabling Connected Mode.\n\nCorresponds to src/lib/consulting-demo/contract.ts action 'submit_request'. The Function node below must port assignConsultant() from src/components/demo/consulting/engine.ts so Connected Mode and Preview Mode never disagree. A 'project' path request is always routed to the custom-project consultant, never a service specialist."
+      }
+    },
+    {
+      "id": "webhook-request",
+      "name": "Webhook — submit_request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "consulting/request", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "validate-input",
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "requestId", "type": "string", "value": "={{ $json.body.requestId }}" },
+            { "name": "sessionId", "type": "string", "value": "={{ $json.body.sessionId }}" },
+            { "name": "input", "type": "object", "value": "={{ $json.body.input }}" }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "TODO: reject (route to Respond With Error) if requestId/sessionId/input are missing, if input fails the SubmitRequestInput shape in contract.ts, or if path is 'session' with no serviceId."
+    },
+    {
+      "id": "assign-consultant",
+      "name": "Assign Consultant (port of engine.ts)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [440, 0],
+      "parameters": {
+        "functionCode": "// TODO: port assignConsultant() from src/components/demo/consulting/engine.ts.\n// Fetch consultants from Supabase (not hardcoded here) rather than duplicating the roster.\n// Return { consultant, task }.\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-request",
+      "name": "Insert Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_requests",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { session_id: $json.sessionId, request_id: $json.requestId, ...$json.input, consultant_id: $json.consultant.id } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "insert-task",
+      "name": "Insert Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_tasks",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.task }}",
+        "options": {}
+      },
+      "notes": "TODO: the Function node above should also build the task — 'Confirm session details with client' for path 'session', or 'Review project enquiry and scope' for path 'project'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [880, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — submit_request": { "main": [[{ "node": "Validate Request", "type": "main", "index": 0 }]] },
+    "Validate Request": { "main": [[{ "node": "Assign Consultant (port of engine.ts)", "type": "main", "index": 0 }]] },
+    "Assign Consultant (port of engine.ts)": {
+      "main": [
+        [
+          { "node": "Insert Request", "type": "main", "index": 0 },
+          { "node": "Insert Task", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Insert Request": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Insert Task": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

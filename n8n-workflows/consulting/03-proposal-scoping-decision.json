@@ -1,0 +1,142 @@
+{
+  "name": "WALKFLOW Demo — Consulting: Proposal Scoping and Client Decision (Project Path)",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, -260],
+      "parameters": {
+        "width": 500,
+        "height": 340,
+        "content": "PREPARED, NOT TESTED.\n\nHandles the 'project' path only — draft_proposal, approve_proposal, record_proposal_decision and prepare_revised_proposal from src/lib/consulting-demo/contract.ts. The 'session' path never touches this workflow; see 02-session-scheduling-payment.json instead.\n\nCredential and URL setup is identical to 01-request-capture-assignment.json. The fee range inserted by Draft Proposal must come from the same illustrative sample (customProjectProposal in src/content/consulting-services.ts) used by Preview Mode — never a real quote. TODO: port the status transitions from the CONTINUE_TO_SCOPE/APPROVE_PROPOSAL/RECORD_PROPOSAL_DECISION/PREPARE_REVISED_PROPOSAL cases in src/components/demo/consulting/session.ts, including that 'declined' must also stop the follow-up sequence (see 05-followup-sequence.json)."
+      }
+    },
+    {
+      "id": "webhook-proposal",
+      "name": "Webhook — proposal actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "consulting/proposal", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "draft_proposal", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "approve_proposal", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_proposal_decision", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "prepare_revised_proposal", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        }
+      }
+    },
+    {
+      "id": "draft-proposal",
+      "name": "Draft Proposal (pending-approval)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, -240],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_proposals",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { request_id: $json.body.input.requestRecordId, scope_of_work: \"A scoped engagement covering the broader work discussed in your enquiry — defined in full once a consultant reviews your project.\", deliverables: \"A written proposal with scope, milestones and deliverables, agreed before any work begins.\", fee_range: \"US$2,500–US$8,000 (illustrative range only)\", notes: \"Custom projects are quoted separately from standard sessions. This is a sample range for demonstration — real pricing depends on scope.\", status: \"pending-approval\", revised: false } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "approve-proposal",
+      "name": "Approve Proposal (awaiting-client)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, -80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_proposals?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"awaiting-client\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only apply if the existing row's status is 'pending-approval'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "record-decision",
+      "name": "Record Client Decision",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_proposals?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: $json.body.input.decision, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only apply if the existing row's status is 'awaiting-client'. If decision is 'declined', also upsert demo_consulting_followups with outcome = 'declined' to stop the follow-up sequence. If 'accepted', create the demo_consulting_kickoffs row (status 'awaiting-scheduling').",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "prepare-revision",
+      "name": "Prepare Revised Proposal (pending-approval)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 240],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_proposals?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"pending-approval\", revised: true, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only apply if the existing row's status is 'changes-requested'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [660, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — proposal actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Draft Proposal (pending-approval)", "type": "main", "index": 0 }],
+        [{ "node": "Approve Proposal (awaiting-client)", "type": "main", "index": 0 }],
+        [{ "node": "Record Client Decision", "type": "main", "index": 0 }],
+        [{ "node": "Prepare Revised Proposal (pending-approval)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Draft Proposal (pending-approval)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Approve Proposal (awaiting-client)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Record Client Decision": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Prepare Revised Proposal (pending-approval)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

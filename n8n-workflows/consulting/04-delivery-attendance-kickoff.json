@@ -1,0 +1,120 @@
+{
+  "name": "WALKFLOW Demo — Consulting: Delivery (Attendance / Kickoff)",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -240],
+      "parameters": {
+        "width": 480,
+        "height": 300,
+        "content": "PREPARED, NOT TESTED.\n\nCovers Stage 5 (Delivery) for both paths: mark_checked_in / record_attendance (session path) and request_kickoff_date (project path) from src/lib/consulting-demo/contract.ts.\n\nCredential and URL setup is identical to 01-request-capture-assignment.json. TODO: port the guards from MARK_CHECKED_IN/MARK_ATTENDANCE/REQUEST_KICKOFF_DATE in src/components/demo/consulting/session.ts — e.g. 'attended' requires a prior 'checked-in', and a missed paid session should also insert a demo_consulting_tasks row flagging it for manual follow-up."
+      }
+    },
+    {
+      "id": "webhook-delivery",
+      "name": "Webhook — delivery actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "consulting/delivery", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "mark_checked_in", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_attendance", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "request_kickoff_date", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        }
+      }
+    },
+    {
+      "id": "mark-checked-in",
+      "name": "Mark Checked In",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, -160],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_appointments?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { attendance_status: \"checked-in\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "record-attendance",
+      "name": "Record Attendance (attended / missed)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 0],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_appointments?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { attendance_status: $json.body.input.status, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — 'attended' requires the existing row's attendance_status to already be 'checked-in'. If status is 'missed', also insert a demo_consulting_tasks row ('Follow up on missed paid session').",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "schedule-kickoff",
+      "name": "Schedule Kickoff",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 160],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_kickoffs?request_id=eq.{{ $json.body.input.requestRecordId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { date_iso: $json.body.input.dateIso, status: \"scheduled\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only apply if the existing row's status is 'awaiting-scheduling'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [660, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — delivery actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Mark Checked In", "type": "main", "index": 0 }],
+        [{ "node": "Record Attendance (attended / missed)", "type": "main", "index": 0 }],
+        [{ "node": "Schedule Kickoff", "type": "main", "index": 0 }]
+      ]
+    },
+    "Mark Checked In": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Record Attendance (attended / missed)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Schedule Kickoff": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

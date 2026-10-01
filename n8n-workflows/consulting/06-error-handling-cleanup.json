@@ -1,0 +1,75 @@
+{
+  "name": "WALKFLOW Demo — Consulting: Error Handling & Expired-Session Cleanup",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, -220],
+      "parameters": {
+        "width": 520,
+        "height": 300,
+        "content": "PREPARED, NOT TESTED. Combines two roles in one file, mirroring n8n-workflows/clinics/06-error-handling-cleanup.json:\n\n(A) Error handling — set this as the Error Workflow (Workflow Settings > Error Workflow) on workflows 01–05, so any node failure there marks the originating job 'failed' in demo_consulting_jobs_queue with a real error code/message, rather than failing silently. Never surfaces internal error detail to the visitor — only the codes defined in src/lib/consulting-demo/contract.ts (DemoErrorCode).\n\n(B) Expired-session cleanup — runs hourly, calling demo_consulting_cleanup_expired_sessions() (defined in supabase/migrations/0004_consulting_demo.sql). Deleting a session cascades to every table referencing it via ON DELETE CASCADE, including any open proposals or kickoffs — so a reset never leaves a stale pending job able to restore a cleared record."
+      }
+    },
+    {
+      "id": "error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [0, -80],
+      "parameters": {}
+    },
+    {
+      "id": "mark-job-failed",
+      "name": "Mark Job Failed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, -80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_consulting_jobs_queue?request_id=eq.{{ $json.execution.data.resultData.error.context?.requestId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"failed\", error_code: \"upstream_unavailable\", error_message: $json.execution.data.resultData.error.message, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "schedule",
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 80],
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] } }
+    },
+    {
+      "id": "call-cleanup-rpc",
+      "name": "Call Cleanup RPC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/rpc/demo_consulting_cleanup_expired_sessions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {} }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    }
+  ],
+  "connections": {
+    "Error Trigger": { "main": [[{ "node": "Mark Job Failed", "type": "main", "index": 0 }]] },
+    "Every Hour": { "main": [[{ "node": "Call Cleanup RPC", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}
