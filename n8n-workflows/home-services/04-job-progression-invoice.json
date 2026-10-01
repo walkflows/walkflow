@@ -1,0 +1,174 @@
+{
+  "name": "WALKFLOW Demo — Home Services: Job Progression, Invoice, Follow-up",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -260],
+      "parameters": {
+        "width": 500,
+        "height": 280,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles request_job_date, update_job_status (in-progress/delayed/cancelled), reschedule_job, record_job_completion (drafts an invoice + feedback-request message preview) and simulate_payment. No real invoice is ever issued and no real payment is ever processed — simulate_payment only flips a status column. Message previews are inserted into demo_home_services_message_previews, labelled, never sent."
+      }
+    },
+    {
+      "id": "webhook-job",
+      "name": "Webhook — job actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "home-services/job", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "request_job_date", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "request_job_date", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "update_status", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "update_job_status", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "reschedule_job", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "reschedule_job", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "record_completion", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_job_completion", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "simulate_payment", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "simulate_payment", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "set-job-date",
+      "name": "Update Job (scheduled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, -220],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_jobs?id=eq.{{ $json.body.input.jobId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { date_iso: $json.body.input.dateIso, status: \"scheduled\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "update-status",
+      "name": "Update Job (status)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, -110],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_jobs?id=eq.{{ $json.body.input.jobId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: $json.body.input.status, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "reschedule-job",
+      "name": "Update Job (rescheduled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 0],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_jobs?id=eq.{{ $json.body.input.jobId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { date_iso: $json.body.input.dateIso, status: \"scheduled\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "complete-job",
+      "name": "Complete Job + Draft Invoice",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [500, 120],
+      "parameters": {
+        "functionCode": "// TODO: PATCH the job to status 'completed', then build an invoice object { amount, currency: 'USD', status: 'unpaid' } from the job's linked estimate amount.\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-invoice",
+      "name": "Insert Invoice + Message Previews",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 120],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_invoices",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { job_id: $json.body.input.jobId, amount: $json.invoice.amount, currency: \"USD\", status: \"unpaid\" } }}",
+        "options": {}
+      },
+      "notes": "TODO: also insert the invoice-preview and feedback-request message previews (demo_home_services_message_previews) in the same transaction/step — never marked as sent.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "simulate-payment",
+      "name": "Update Invoice (paid)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 240],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_invoices?id=eq.{{ $json.body.input.invoiceId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"paid\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "Never processes real money — a status flip only.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [940, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — job actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Update Job (scheduled)", "type": "main", "index": 0 }],
+        [{ "node": "Update Job (status)", "type": "main", "index": 0 }],
+        [{ "node": "Update Job (rescheduled)", "type": "main", "index": 0 }],
+        [{ "node": "Complete Job + Draft Invoice", "type": "main", "index": 0 }],
+        [{ "node": "Update Invoice (paid)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update Job (scheduled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Job (status)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Job (rescheduled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Complete Job + Draft Invoice": { "main": [[{ "node": "Insert Invoice + Message Previews", "type": "main", "index": 0 }]] },
+    "Insert Invoice + Message Previews": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Invoice (paid)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

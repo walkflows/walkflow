@@ -34,89 +34,21 @@ export type IndustryDemoContent = {
 };
 
 /**
- * Three concept demonstrations built to the same pattern as
- * /demos/real-estate (Session 10) — same section order, styling and
- * interactive-demo mechanism (a customer-facing form + a business-side
- * view of the resulting record), with only copy, labels and sample data
- * changed per industry, per explicit instruction. All "results" figures
- * are outcome descriptions, not invented metrics — no numbers are stated.
+ * Two concept demonstrations (Clinics, Consulting) built to this shared,
+ * generic pattern — same section order, styling and interactive-demo
+ * mechanism (a customer-facing form + a business-side view of the
+ * resulting record), with only copy, labels and sample data changed per
+ * industry. All "results" figures are outcome descriptions, not invented
+ * metrics — no numbers are stated.
+ *
+ * Home Services used to be the third entry here (Session 10) but was
+ * rebuilt (Session 35) into its own bespoke, multi-stage demo — see
+ * src/content/home-services-demo.ts and src/components/demo/home-services/
+ * — following the same richer architecture as the Real Estate demo rather
+ * than this shared template. Removed from this Record rather than kept
+ * stale alongside the unused new build.
  */
-export const industryDemos: Record<"home-services" | "clinics" | "consulting", IndustryDemoContent> = {
-  "home-services": {
-    slug: "home-services",
-    seo: {
-      title: "Home Services Website Demo & Callout Journey",
-      description:
-        "Explore a sample home services website and the intended callout-to-job journey. A WALKFLOW concept demonstration, not a live business.",
-    },
-    hero: {
-      eyebrow: "Concept Demonstration",
-      heading: "Home Services",
-      subheading: "Missed calls and slow follow-up lose jobs to competitors.",
-      primaryCta: { label: "Start Sample Journey", href: "#interactive-demo" },
-      secondaryCta: { label: "Request a Call", href: "/contact" },
-      notice:
-        "Sample requests and demonstration content. This is not a live home services business. No real callout or job is arranged through this demo.",
-    },
-    problem: {
-      heading: "The business problem",
-      points: [
-        "Missed calls and slow follow-up lose jobs to competitors.",
-        "Scheduling is manual and chaotic, with details spread across calls, texts and paper notes.",
-        "There's no system to capture leads after hours, when many callouts actually come in.",
-      ],
-    },
-    solution: {
-      heading: "What WALKFLOW builds",
-      body: "A website with instant lead capture, automated follow-up and a booking system that works around the clock — so a callout request never just sits in a voicemail.",
-      components: ["Instant lead capture", "Automated SMS/email follow-up", "24/7 appointment booking"],
-    },
-    steps: {
-      heading: "The intended journey",
-      items: [
-        { title: "Visitor submits a request", body: "A short form or call captures the job details, no back-and-forth needed." },
-        { title: "Automated system responds instantly", body: "The visitor gets an immediate acknowledgement, even outside business hours." },
-        { title: "Appointment auto-scheduled", body: "A callout slot is booked against the team's availability." },
-        { title: "Reminders sent automatically", body: "Both the customer and the team get a reminder ahead of the job." },
-        { title: "Job completed, follow-up triggered", body: "A review or referral request goes out once the work is done." },
-      ],
-    },
-    visual: {
-      heading: "What the live site could look like",
-      body: "Screenshots of the actual booking flow and service pages go here once supplied — shown as a placeholder for now.",
-    },
-    results: {
-      heading: "What this solves",
-      body: "Faster response times, more booked appointments and less time spent on manual scheduling.",
-      outcomes: ["Faster response to new enquiries", "More jobs booked without back-and-forth", "Less admin time spent scheduling"],
-    },
-    interactiveDemo: {
-      customerTabLabel: "Request a Callout",
-      businessTabLabel: "Business View",
-      introText:
-        "Browse available service slots, describe your issue as a customer would, request a callout, then switch to Business View to see how the same request would appear to the business.",
-      disclaimer:
-        "This demonstration is a website prototype. Automated responses, scheduling and reminders are planned capabilities unless explicitly marked as tested live integrations. For a client build, the service area, calendar availability and communication process are configured and tested for that business.",
-      slotLabel: "Preferred callout time",
-      slots: ["Today 16:00", "Tomorrow 09:00", "Tomorrow 13:30", "Thursday 10:00"],
-      issueLabel: "Describe your issue",
-      issuePlaceholder: "e.g. No hot water since this morning",
-      submitLabel: "Request Callout",
-      confirmationHeading: "Want a version of this for your business?",
-      businessSteps: [
-        { title: "Incoming request received", body: "The job details land in one place, not spread across calls and texts." },
-        { title: "Automated response sent", body: "The customer is acknowledged immediately, day or night." },
-        { title: "Job scheduled on the calendar", body: "The callout is slotted against real team availability." },
-        { title: "Reminder triggered", body: "A reminder goes out ahead of the visit automatically." },
-      ],
-      emptyStateBody: "No demo requests yet. Use “Request a Callout” to see how a record appears here.",
-    },
-    finalCta: {
-      heading: "What would this journey look like for your business?",
-      cta: { label: "Request a Call", href: "/contact" },
-    },
-  },
-
+export const industryDemos: Record<"clinics" | "consulting", IndustryDemoContent> = {
   clinics: {
     slug: "clinics",
     seo: {

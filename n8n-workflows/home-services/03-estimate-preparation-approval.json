@@ -1,0 +1,145 @@
+{
+  "name": "WALKFLOW Demo — Home Services: Estimate Preparation and Approval",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -240],
+      "parameters": {
+        "width": 480,
+        "height": 260,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles record_inspection_outcome (completed -> drafts an estimate), approve_estimate, record_estimate_decision and prepare_revised_estimate. The Function node must port buildEstimate()/reviseEstimate() from src/components/demo/home-services/engine.ts so pricing scenarios match Preview Mode exactly — never invent numbers independently."
+      }
+    },
+    {
+      "id": "webhook-estimate",
+      "name": "Webhook — estimate actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "home-services/estimate", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [220, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "draft_from_inspection", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_inspection_outcome", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "approve_estimate", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "approve_estimate", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "record_decision", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "record_estimate_decision", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "prepare_revised", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "prepare_revised_estimate", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "draft-estimate",
+      "name": "Draft Estimate (port of engine.ts buildEstimate)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, -200],
+      "parameters": {
+        "functionCode": "// TODO: port buildEstimate() from engine.ts. Only runs when the inspection outcome is 'completed' — other outcomes are handled by 02's error/next-step path, not here.\nreturn items;"
+      }
+    },
+    {
+      "id": "insert-estimate",
+      "name": "Insert Estimate (pending-approval)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, -200],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_estimates",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { request_id: $json.body.input.requestRecordId, ...$json.scenario, status: \"pending-approval\", revised: false } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "approve-estimate",
+      "name": "Update Estimate (awaiting-customer)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, -60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_estimates?id=eq.{{ $json.body.input.estimateId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"awaiting-customer\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only proceed if the estimate's current status is 'pending-approval'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "record-decision",
+      "name": "Update Estimate (decision)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_estimates?id=eq.{{ $json.body.input.estimateId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: $json.body.input.decision, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: when decision is 'accepted', also trigger job creation (see 04-job-progression-invoice.json) — the two workflows should be chained via an Execute Workflow node here once both are tested.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "revise-estimate",
+      "name": "Revise Estimate (port of engine.ts reviseEstimate)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 180],
+      "parameters": {
+        "functionCode": "// TODO: port reviseEstimate() from engine.ts, then PATCH the same row back to status 'pending-approval' with revised: true.\nreturn items;"
+      }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [900, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — estimate actions": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Draft Estimate (port of engine.ts buildEstimate)", "type": "main", "index": 0 }],
+        [{ "node": "Update Estimate (awaiting-customer)", "type": "main", "index": 0 }],
+        [{ "node": "Update Estimate (decision)", "type": "main", "index": 0 }],
+        [{ "node": "Revise Estimate (port of engine.ts reviseEstimate)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Draft Estimate (port of engine.ts buildEstimate)": { "main": [[{ "node": "Insert Estimate (pending-approval)", "type": "main", "index": 0 }]] },
+    "Insert Estimate (pending-approval)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Estimate (awaiting-customer)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Estimate (decision)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Revise Estimate (port of engine.ts reviseEstimate)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,157 @@
+{
+  "name": "WALKFLOW Demo — Home Services: Inspection Scheduling",
+  "nodes": [
+    {
+      "id": "note-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, -220],
+      "parameters": {
+        "width": 480,
+        "height": 240,
+        "content": "PREPARED, NOT TESTED. Same credential/webhook-secret setup as 01-request-capture-assignment.json.\n\nHandles four contract.ts actions on one webhook, routed by `action`: request_inspection, confirm_inspection, cancel_inspection, reschedule_inspection. The Switch node must enforce the same stage-order guards as session.ts's demoReducer (e.g. confirm_inspection only valid when status is 'requested')."
+      }
+    },
+    {
+      "id": "webhook-inspection",
+      "name": "Webhook — inspection actions",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": { "path": "home-services/inspection", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+    },
+    {
+      "id": "load-inspection",
+      "name": "Load Current Inspection",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_inspections?id=eq.{{ $json.body.input.inspectionId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "route-action",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [440, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            { "outputKey": "request_inspection", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "request_inspection", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "confirm_inspection", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "confirm_inspection", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "cancel_inspection", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "cancel_inspection", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "reschedule_inspection", "conditions": { "conditions": [{ "leftValue": "={{ $json.body.action }}", "rightValue": "reschedule_inspection", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "insert-inspection",
+      "name": "Insert Inspection (requested)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -180],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_inspections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { request_id: $json.body.input.requestRecordId, slot_iso: $json.body.input.slotIso, status: \"requested\" } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "confirm-inspection",
+      "name": "Update Inspection (confirmed)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_inspections?id=eq.{{ $json.body.input.inspectionId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"confirmed\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "notes": "TODO: guard — only proceed if Load Current Inspection returned status 'requested', else return error code 'out_of_order'.",
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "cancel-inspection",
+      "name": "Update Inspection (cancelled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 60],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_inspections?id=eq.{{ $json.body.input.inspectionId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"cancelled\", updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "reschedule-inspection",
+      "name": "Update Inspection (rescheduled)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 180],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://YOUR-PROJECT.supabase.co/rest/v1/demo_home_services_inspections?id=eq.{{ $json.body.input.inspectionId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { status: \"requested\", slot_iso: $json.body.input.slotIso, updated_at: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-supabase", "name": "walkflow-demo-supabase" } }
+    },
+    {
+      "id": "respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [960, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { requestId: $json.body.requestId, status: \"accepted\" } }}" }
+    }
+  ],
+  "connections": {
+    "Webhook — inspection actions": { "main": [[{ "node": "Load Current Inspection", "type": "main", "index": 0 }]] },
+    "Load Current Inspection": { "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]] },
+    "Route by Action": {
+      "main": [
+        [{ "node": "Insert Inspection (requested)", "type": "main", "index": 0 }],
+        [{ "node": "Update Inspection (confirmed)", "type": "main", "index": 0 }],
+        [{ "node": "Update Inspection (cancelled)", "type": "main", "index": 0 }],
+        [{ "node": "Update Inspection (rescheduled)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Insert Inspection (requested)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Inspection (confirmed)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Inspection (cancelled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
+    "Update Inspection (rescheduled)": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}
