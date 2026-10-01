@@ -8,8 +8,7 @@ export const realEstateDemoHero = {
   eyebrow: "Concept Demonstration",
   heading: "Help a buyer move from browsing to a useful enquiry.",
   body: "Explore a property website prototype, then see how matching, agent handoff and viewing requests could connect around it.",
-  primaryCta: { label: "Start Sample Journey", href: "#interactive-demo" },
-  secondaryCta: { label: "Request a Call", href: "/contact" },
+  cta: { label: "Book a Consultation", href: "/contact" },
   notice:
     "Sample properties and demonstration content. This is not a live estate agency. No real purchase or viewing is arranged through this demo.",
 };
@@ -40,7 +39,7 @@ export const realEstateDemoExplainer = {
 
 export const realEstateDemoFinalCta = {
   heading: "What would this journey look like for your agency?",
-  cta: { label: "Request a Call", href: "/contact" },
+  cta: { label: "Book a Consultation", href: "/contact" },
 };
 
 /** Approved interface microcopy for demonstration states (site-wide, section 27 of the content pack). */
@@ -54,7 +53,6 @@ export const demoStrings = {
   sampleReminderLabel: "Example reminder — not sent",
   sampleAppointmentLabel: "Example viewing request — no appointment booked",
   completionHeading: "You’ve reached the end of this sample journey. Want to discuss a version for your business?",
-  requestACall: "Request a Call",
 };
 
 export const demoTabs = [

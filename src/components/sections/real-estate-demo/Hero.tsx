@@ -19,11 +19,8 @@ export function Hero() {
             {realEstateDemoHero.heading}
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/60">{realEstateDemoHero.body}</p>
-          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button href={realEstateDemoHero.primaryCta.href}>{realEstateDemoHero.primaryCta.label}</Button>
-            <Button href={realEstateDemoHero.secondaryCta.href} variant="secondary-on-dark">
-              {realEstateDemoHero.secondaryCta.label}
-            </Button>
+          <div className="mt-8 flex justify-center">
+            <Button href={realEstateDemoHero.cta.href}>{realEstateDemoHero.cta.label}</Button>
           </div>
           <p className="mx-auto mt-7 max-w-lg rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white/70">
             {realEstateDemoHero.notice}

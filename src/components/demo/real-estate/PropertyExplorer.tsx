@@ -19,6 +19,11 @@ const INITIAL_VISIBLE_COUNT = 3;
 const selectClass =
   "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white [color-scheme:dark] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
 const labelClass = "block text-xs font-semibold uppercase tracking-wide text-white/50";
+// Explicit dark background + light text on every <option>, not just the
+// closed select box: [color-scheme:dark] alone isn't honoured by every
+// browser/OS combination for the opened options popup, so this guarantees
+// a readable dark listbox regardless.
+const optionClass = "bg-navy-deep text-white";
 
 export const initialFilters: Filters = {
   listingType: "any",
@@ -69,9 +74,9 @@ export function PropertyExplorer({
             value={filters.listingType}
             onChange={(e) => update("listingType", e.target.value as Filters["listingType"])}
           >
-            <option value="any">Any</option>
-            <option value="buy">Buy</option>
-            <option value="rent">Rent</option>
+            <option value="any" className={optionClass}>Any</option>
+            <option value="buy" className={optionClass}>Buy</option>
+            <option value="rent" className={optionClass}>Rent</option>
           </select>
         </div>
         <div>
@@ -84,9 +89,9 @@ export function PropertyExplorer({
             value={filters.neighbourhood}
             onChange={(e) => update("neighbourhood", e.target.value)}
           >
-            <option value="any">All areas</option>
+            <option value="any" className={optionClass}>All areas</option>
             {neighbourhoods.map((n) => (
-              <option key={n} value={n}>
+              <option key={n} value={n} className={optionClass}>
                 {n}
               </option>
             ))}
@@ -102,9 +107,9 @@ export function PropertyExplorer({
             value={filters.maxBudget ?? "any"}
             onChange={(e) => update("maxBudget", e.target.value === "any" ? null : Number(e.target.value))}
           >
-            <option value="any">No maximum</option>
+            <option value="any" className={optionClass}>No maximum</option>
             {budgetOptions.map((b) => (
-              <option key={b.value} value={b.value}>
+              <option key={b.value} value={b.value} className={optionClass}>
                 {b.label}
               </option>
             ))}
@@ -120,9 +125,9 @@ export function PropertyExplorer({
             value={filters.minBedrooms}
             onChange={(e) => update("minBedrooms", Number(e.target.value))}
           >
-            <option value={0}>Any</option>
+            <option value={0} className={optionClass}>Any</option>
             {bedroomOptions.map((n) => (
-              <option key={n} value={n}>
+              <option key={n} value={n} className={optionClass}>
                 {n}+
               </option>
             ))}
@@ -138,9 +143,9 @@ export function PropertyExplorer({
             value={filters.propertyType}
             onChange={(e) => update("propertyType", e.target.value as Filters["propertyType"])}
           >
-            <option value="any">All types</option>
+            <option value="any" className={optionClass}>All types</option>
             {propertyTypes.map((t) => (
-              <option key={t} value={t}>
+              <option key={t} value={t} className={optionClass}>
                 {t}
               </option>
             ))}

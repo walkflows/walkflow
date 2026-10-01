@@ -17,7 +17,6 @@ export default function RealEstateDemoPage() {
   return (
     <>
       <Hero />
-      <Journey />
       <section className="bg-navy-deep py-20 sm:py-28">
         <Container>
           <Reveal>
@@ -35,6 +34,7 @@ export default function RealEstateDemoPage() {
         </Container>
       </section>
       <Explainer />
+      <Journey />
       <FinalCta />
     </>
   );

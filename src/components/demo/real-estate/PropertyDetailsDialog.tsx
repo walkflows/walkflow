@@ -73,16 +73,16 @@ export function PropertyDetailsDialog({
               <span className="text-xs">{demoStrings.sampleMessageLabel}</span>
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <ButtonEl variant="secondary-on-dark" className="min-w-0 flex-1 text-center leading-tight" onClick={onClose}>
+              <ButtonEl variant="secondary-on-dark" className="min-w-0 flex-1 whitespace-nowrap" onClick={onClose}>
                 Close
               </ButtonEl>
               <ButtonEl
-                className="min-w-0 flex-1 text-center leading-tight"
+                className="min-w-0 flex-1 whitespace-nowrap"
                 onClick={() => {
                   onRequestViewing(property.id);
                 }}
               >
-                Request a viewing
+                Arrange Viewing
               </ButtonEl>
             </div>
           </div>

@@ -3,6 +3,30 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES.** Remote added and pushed as of Session 26: `https://github.com/walkflows/walkflow` (branch `master`). Deployed via Vercel to a `*.vercel.app` preview link (no custom domain yet). Sessions 27–29's work below is committed locally only where stated — check each entry before assuming it's pushed.
 
+## Session 34 (2026-10-01) — Real Estate demo page: renamed viewing CTA, hardened dropdown contrast, reordered sections, consolidated consultation CTAs
+
+Four scoped fixes to `/demos/real-estate` only, following user screenshots of two bugs plus two explicit content/layout changes.
+
+**Dropdown readability, more robustly this time.** Session 33's `[color-scheme:dark]` fix wasn't enough on its own — the Maximum Budget dropdown (and others) still rendered unreadable for the user. Added an explicit `bg-navy-deep text-white` className directly on every `<option>` element across `PropertyExplorer.tsx`, `EnquiryForm.tsx` and `ViewingPanel.tsx` (every filter, the Stage 1 enquiry form, and the Stage 4 property/slot/reschedule pickers) — this doesn't rely on the browser/OS honouring `color-scheme` for the options popup, since explicit `background-color`/`color` on `<option>` is well-supported in Chrome/Edge/Firefox directly. Verified via computed styles: every option on every select now resolves to `rgb(10,10,10)` background / `rgb(255,255,255)` text. `color-scheme:dark` was kept too (still useful for the closed-field chrome and Safari). Scoped to this page only — `ContactForm.tsx`'s Select (a different, already-working light-popup/dark-text approach) and `IndustryInteractiveDemo.tsx` were deliberately left untouched this round.
+
+**"Request a viewing" → "Arrange Viewing".** Renamed on both `PropertyCard.tsx` and `PropertyDetailsDialog.tsx` (not the Stage 4 form's "Request This Viewing" submit button or the Journey section's step-4 copy, both textually distinct from the exact phrase asked to be renamed). Also reverted Session 31's 2-line wrap treatment on these buttons (`leading-tight`/forced wrap) back to a single line with `whitespace-nowrap` — the shorter label comfortably fits one line at every breakpoint now, confirmed down to 2-column tablet width where it's tightest.
+
+**Section order changed** to Hero → Try the interactive demo → What is being demonstrated → The business problem/intended journey (unchanged combined `Journey` component) → final consultation CTA → footer — previously the problem/journey section sat right after the hero, before the demo. Just a reorder in `page.tsx`; no component changed internally.
+
+**Consultation CTAs consolidated.** `realEstateDemoHero` lost its two-button `primaryCta`/`secondaryCta` pair (was "Start Sample Journey" + "Request a Call") in favour of one `cta: { label: "Book a Consultation", href: "/contact" }`, and `Hero.tsx` now renders a single centered button — this is the hero's own marketing CTA only; the interactive demo's actual "Start Sample Journey" trigger button (inside `RealEstateDemo.tsx`, which genuinely starts the six-stage journey) was deliberately left alone, since removing it would break the demo rather than simplify marketing copy. `realEstateDemoFinalCta.cta.label` also changed to "Book a Consultation". Deleted `demoStrings.requestACall`, which had been dead code since Session 32 removed its only caller.
+
+**Verified**: `typecheck`/`lint`/`build` all clean (39 routes, unchanged). Confirmed live via Playwright at 1440/768/390px: section order correct, hero shows one centered button, "Arrange Viewing" renders on one line at every width including the tightest 2-column tablet card, every option element across all three files' selects computes to the dark-bg/light-text pair, zero console errors/warnings throughout.
+
+**Not committed/pushed yet** — ready for review; no explicit deploy instruction accompanied this round.
+
+## Session 33 (2026-10-01) — Dropdown contrast fix (v1) and "Request a viewing" button wrap
+
+First pass at two bugs reported from screenshots: native `<select>` dropdowns rendering invisible white-on-white options (fixed site-wide on every affected select — real estate demo, industry demo — with `[color-scheme:dark]`), and the "Request a viewing" button (renamed from "Book viewing" in Session 30) stretching the property-card button row wide since `flex-1` siblings don't shrink below their content's natural width by default. Fixed with `min-w-0` plus letting the longer label wrap onto two lines. **Session 34 above supersedes both**: the dropdown fix needed the more robust explicit per-option styling, and the button fix was reverted to one line after the button was renamed to the shorter "Arrange Viewing."
+
+Verified live via Playwright at 1440/390px: dropdowns confirmed `color-scheme: dark` on every select across both demo pages; "Request a viewing" wrapped cleanly to two lines; zero console errors.
+
+**Committed (`922e067`) and pushed** — Vercel auto-deployed to production, confirmed live.
+
 ## Session 32 (2026-09-30) — Real Estate demo rebuilt as a full six-stage interactive journey (Preview Mode)
 
 A ChatGPT-drafted brief asked for the `/demos/real-estate` demo to become a complete interactive business-automation demonstration with a six-stage journey (Enquiry → Matching → Agent Assignment → Viewing Request → After the Viewing → Next Step), a "what happened automatically" panel, an Agent View, and a real n8n + Supabase backend. You then explicitly scoped this down before I built anything backend-dependent: **build it in clearly labelled Preview Mode, no n8n/Supabase credentials, prepare integration code and workflow files for later connection, missing credentials must never cause errors, and don't enable Connected Mode until it's actually configured and tested.** Everything below follows that instruction — this is a Preview-Mode-only build with dormant, unwired prep files alongside it.

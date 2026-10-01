@@ -14,6 +14,7 @@ const selectClass =
   "w-full rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white [color-scheme:dark] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
 const inputClass = selectClass;
 const labelClass = "block text-xs font-semibold uppercase tracking-wide text-white/50";
+const optionClass = "bg-navy-deep text-white";
 
 export type EnquiryFormValues = Requirements & { name: string; email: string };
 
@@ -64,8 +65,8 @@ export function EnquiryForm({
             defaultValue={prefill?.listingType ?? "buy"}
             className={`${selectClass} mt-1.5`}
           >
-            <option value="buy">Buying</option>
-            <option value="rent">Renting</option>
+            <option value="buy" className={optionClass}>Buying</option>
+            <option value="rent" className={optionClass}>Renting</option>
           </select>
         </div>
         <div>
@@ -78,9 +79,9 @@ export function EnquiryForm({
             defaultValue={prefill?.neighbourhood ?? "any"}
             className={`${selectClass} mt-1.5`}
           >
-            <option value="any">No preference</option>
+            <option value="any" className={optionClass}>No preference</option>
             {neighbourhoods.map((n) => (
-              <option key={n} value={n}>
+              <option key={n} value={n} className={optionClass}>
                 {n}
               </option>
             ))}
@@ -96,9 +97,9 @@ export function EnquiryForm({
             defaultValue={prefill?.maxBudget ?? "any"}
             className={`${selectClass} mt-1.5`}
           >
-            <option value="any">No maximum</option>
+            <option value="any" className={optionClass}>No maximum</option>
             {budgetOptions.map((b) => (
-              <option key={b.value} value={b.value}>
+              <option key={b.value} value={b.value} className={optionClass}>
                 {b.label}
               </option>
             ))}
@@ -114,9 +115,9 @@ export function EnquiryForm({
             defaultValue={prefill?.minBedrooms ?? 0}
             className={`${selectClass} mt-1.5`}
           >
-            <option value={0}>Any</option>
+            <option value={0} className={optionClass}>Any</option>
             {bedroomOptions.map((n) => (
-              <option key={n} value={n}>
+              <option key={n} value={n} className={optionClass}>
                 {n}+
               </option>
             ))}
@@ -132,9 +133,9 @@ export function EnquiryForm({
             defaultValue={prefill?.propertyType ?? "any"}
             className={`${selectClass} mt-1.5`}
           >
-            <option value="any">Any type</option>
+            <option value="any" className={optionClass}>Any type</option>
             {propertyTypes.map((t) => (
-              <option key={t} value={t}>
+              <option key={t} value={t} className={optionClass}>
                 {t}
               </option>
             ))}
@@ -151,7 +152,7 @@ export function EnquiryForm({
             className={`${selectClass} mt-1.5`}
           >
             {timelineOptions.map((t) => (
-              <option key={t.value} value={t.value}>
+              <option key={t.value} value={t.value} className={optionClass}>
                 {t.label}
               </option>
             ))}

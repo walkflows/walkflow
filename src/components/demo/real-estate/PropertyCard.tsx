@@ -46,11 +46,11 @@ export function PropertyCard({
           {property.bathrooms === 1 ? "" : "s"}
         </p>
         <div className="mt-5 flex flex-1 items-end gap-2.5">
-          <ButtonEl variant="secondary-on-dark" size="sm" className="min-w-0 flex-1 text-center leading-tight" onClick={() => onViewDetails(property.id)}>
+          <ButtonEl variant="secondary-on-dark" size="sm" className="min-w-0 flex-1 whitespace-nowrap" onClick={() => onViewDetails(property.id)}>
             View details
           </ButtonEl>
-          <ButtonEl size="sm" className="min-w-0 flex-1 text-center leading-tight" onClick={() => onRequestViewing(property.id)}>
-            Request a viewing
+          <ButtonEl size="sm" className="min-w-0 flex-1 whitespace-nowrap" onClick={() => onRequestViewing(property.id)}>
+            Arrange Viewing
           </ButtonEl>
         </div>
       </div>
