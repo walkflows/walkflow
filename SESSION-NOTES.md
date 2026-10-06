@@ -3,6 +3,20 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES.** Remote added and pushed as of Session 26: `https://github.com/walkflows/walkflow` (branch `master`). Deployed via Vercel to a `*.vercel.app` preview link (no custom domain yet). Sessions 27–29's work below is committed locally only where stated — check each entry before assuming it's pushed.
 
+## Session 38 (2026-10-06) — Homepage: Industry Solutions + Demos merged; Services CTA removed; website chat assistant and WhatsApp button added
+
+**Homepage merge.** The separate Demo Showcase section is removed. Its four demo links now sit inside the four existing large Industry Solutions cards as a "View Demo" button next to "Explore Solution", with a small workflow line on each card. Section label is "Industry Solutions + Demos", with the supporting sentence under the heading and the top "Explore Industry Solutions" button removed. A single line under the grid links to Book a Consultation (`/contact`). Card copy is the brief’s; the layout, images and card styling are unchanged, and the action rows align across each row. Hero’s "Explore Our Solutions" and the Final CTA’s "See How It Works" previously pointed at `#demos`; both now point at `#industries` so they still scroll somewhere. The Final CTA button keeps its label because only the Services one was asked to go.
+
+**Services.** The "See How It Works" button is removed from OUR SERVICES. Nothing replaces it.
+
+**Website chat assistant (WALKFLOW Assistant).** Floating bottom-right panel, mounted once in the root layout. Answers come from a rule engine (`src/lib/chat/respond.ts`) that only uses the site’s own copy. It routes to Contact for anything the site doesn’t state (prices, timelines, guarantees, results, contract terms, integrations, availability), asks one clarifying question with service chips for pricing, answers ordinary criticism normally, gives a brief scope reply to abusive, explicit, threatening, malicious or prompt-injection messages, and gives an off-topic reply to anything unrelated. `POST /api/chat` validates the body (single `message` field, trimmed, max 500 characters, 2 KB body cap) and has a best-effort per-instance rate limit (20 requests/minute). No AI provider or credential is configured, and nothing is called. The provider seam and the steps to add one are in `docs/website-chat-and-whatsapp.md`.
+
+**WhatsApp button.** Reads `NEXT_PUBLIC_WHATSAPP_URL` (documented in `.env.example`, no value). Hidden when unset or when the value isn’t a `wa.me` / `api.whatsapp.com` link. No placeholder number is in the code. Stacked above the chat launcher with 12px spacing.
+
+**Verified.** `typecheck`, `lint` and `build` pass (build passes without the WhatsApp variable). The chat question matrix returned the intended routing for each case, including validation and rate-limit responses. Browser checks at 1440, 390 and 320px: no horizontal overflow, panel in view, keyboard send and Escape-to-close with focus returned to the launcher, chip sending, zero console errors, and no overlap with footer controls. There is no automated test runner in this repo, so no test suite was run.
+
+**Not committed or pushed.** Preview link not generated yet.
+
 ## Session 37 (2026-10-01) — Consulting demo rebuilt as a two-path, six-stage engagement journey (QUES Consulting), Preview Mode
 
 Replaced the generic shared `/demos/consulting` template — the last page still on it — with a bespoke demo, completing the migration started in Sessions 32/35/36. The brief referenced "the connected consulting journey described in the main prompt" and "the fuller consulting process from the main prompt" several times, but no such separate main prompt was ever supplied in this conversation; the six-stage journey, its two paths, and the finite follow-up design below were synthesised from the brief's explicit instructions, QUES's real supplied content, and the established three-demo pattern — flagging this honestly rather than implying it came from a document that was never seen.

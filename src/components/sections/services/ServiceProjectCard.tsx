@@ -9,8 +9,7 @@ import { cx } from "@/lib/utils";
  * the PLACEHOLDER note on `ProjectItem` in content/services.ts) — the
  * visible badge (`project.classification`, defaulting to "Concept
  * Project") is what keeps a visitor from mistaking this for commissioned
- * client work, reusing the same honesty convention as the homepage's
- * `demoShowcase` ("Concept demonstration").
+ * client work.
  *
  * The whole tile is a single `<Link>` to a real, working project-detail
  * route (`/services/<service>/projects/<project>`) — never a dead link or

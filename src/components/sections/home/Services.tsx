@@ -1,9 +1,8 @@
 import { services } from "@/content/home";
-import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ExploreLink } from "@/components/ui/ExploreLink";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconArrowRight, IconAutomation, IconMail, IconMobile, IconWebsite } from "@/components/ui/icons";
+import { IconAutomation, IconMail, IconMobile, IconWebsite } from "@/components/ui/icons";
 
 const icons = {
   automation: IconAutomation,
@@ -17,23 +16,17 @@ export function Services() {
     <section id={services.id} className="scroll-mt-24 border-t border-white/10 bg-navy-deep py-20 sm:py-28">
       <Container>
         <Reveal>
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="inline-block rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
-                {services.eyebrow}
-              </p>
-              <h2 className="mt-4 text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">
-                {services.headingLines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </h2>
-            </div>
-            <Button href={services.cta.href} className="flex-none">
-              {services.cta.label}
-              <IconArrowRight />
-            </Button>
+          <div>
+            <p className="inline-block rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
+              {services.eyebrow}
+            </p>
+            <h2 className="mt-4 text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">
+              {services.headingLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </h2>
           </div>
         </Reveal>
 

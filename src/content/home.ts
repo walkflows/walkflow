@@ -17,7 +17,7 @@ export const hero = {
   heading: "Make it easier for customers to choose you.",
   body: "We build websites that earn attention and automations that handle follow-ups, helping you turn more enquiries into customers.",
   primaryCta: { label: "Request a Call", href: "/contact" },
-  secondaryCta: { label: "Explore Our Solutions", href: "#demos" },
+  secondaryCta: { label: "Explore Our Solutions", href: "#industries" },
 };
 
 /**
@@ -25,10 +25,9 @@ export const hero = {
  * "Getting an enquiry is only the beginning." problem statement and the
  * two-service showcase below it — this is now the only services
  * presentation on the homepage). `id: "solutions"` is kept as an anchor
- * even though Hero's "Explore Our Solutions" now points at the Demo
- * Showcase section instead (#demos) per explicit instruction — left in
- * place in case anything else links here later. Each item's `icon` key is looked up against the icon
- * map in Services.tsx; each `cta.href` matches the corresponding entry
+ * even though Hero's "Explore Our Solutions" now points at the merged
+ * Industry Solutions + Demos section (#industries). Each item's `icon` key
+ * is looked up against the icon map in Services.tsx; each `cta.href` matches the corresponding entry
  * under Services in `mainNav` (src/content/navigation.ts) so the card link
  * and the nav dropdown item lead to the same place.
  */
@@ -36,8 +35,6 @@ export const services = {
   id: "solutions",
   eyebrow: "OUR SERVICES",
   headingLines: ["Get more enquiries.", "Make the next steps easier."],
-  // Session 29: every homepage "Request a Call" button becomes "See How It Works", linking to the Demos section.
-  cta: { label: "See How It Works", href: "#demos" },
   items: [
     {
       id: "automation",
@@ -136,37 +133,50 @@ export const whyWalkflow = {
   ],
 };
 
-/** Section 5: equally-weighted industry cards. Add entries here to extend the grid. */
+/**
+ * Industry Solutions and Demo Projects, merged into one section. Each card
+ * links to its industry solution (`href`) and its demo project (`demoHref`).
+ * Add entries here to extend the grid.
+ */
 export const industries = {
-  eyebrow: "Industry solutions",
+  eyebrow: "Industry Solutions + Demos",
   headingLines: ["Start with the problem your business", "knows too well."],
+  supportingLine: "Explore how we help businesses in your industry — then see the customer journey in action.",
   cards: [
     {
       title: "Real Estate",
-      body: "Turn property interest into useful enquiries and organised viewing requests.",
+      body: "Turn property interest into organised enquiries and viewing requests.",
+      workflow: ["Enquiry", "Property Match", "Viewing", "Follow-up"],
       href: "/industries/real-estate",
+      demoHref: "/demos/real-estate",
       image: "/industries/real-estate.jpg",
     },
     {
       title: "Home Services",
-      body: "Collect clearer job details and keep inspections, estimates and follow-ups in view.",
+      body: "Capture service requests and keep inspections, quotes and follow-ups organised.",
+      workflow: ["Request", "Qualification", "Inspection", "Quote"],
       href: "/industries/home-services",
+      demoHref: "/demos/home-services",
       image: "/industries/home-services-hvac-plumbing.jpg",
     },
     {
       title: "Clinics",
-      body: "Make consultation enquiries and appointment administration easier for reception.",
+      body: "Make appointment enquiries, confirmations and reminders easier to manage.",
+      workflow: ["Request", "Confirmation", "Reminder", "Appointment"],
       href: "/industries/clinics",
+      demoHref: "/demos/clinics",
       image: "/industries/clinics.jpg",
     },
     {
       title: "Consulting Firms",
-      body: "Bring discovery calls, proposal follow-ups and onboarding into a clearer process.",
+      body: "Bring enquiries, discovery calls, proposals and onboarding into one clear process.",
+      workflow: ["Enquiry", "Discovery", "Proposal", "Onboarding"],
       href: "/industries/consulting",
+      demoHref: "/demos/consulting",
       image: "/industries/consulting-firms.jpg",
     },
   ],
-  cta: { label: "Explore Industry Solutions", href: "/industries" },
+  bottomLead: "Not sure what fits your business?",
 };
 
 /**
@@ -211,51 +221,6 @@ export const journey = {
 } as const;
 
 export type JourneyStageId = (typeof journey.stages)[number]["id"];
-
-/** Section 6: compact demo showcase. Real estate is the only working demo so far. */
-export const demoShowcase = {
-  eyebrow: "Demos",
-  heading: "See a concept in action",
-  body: "Four working concept demos — sample data, an interactive customer flow and a business-side view for each industry.",
-  items: [
-    {
-      id: "real-estate",
-      label: "Real Estate",
-      body: "Browse sample listings, share requirements and request a viewing.",
-      status: "simulated" as const,
-      statusLabel: "Concept demonstration",
-      href: "/demos/real-estate",
-      cta: "Explore the Real Estate Demo",
-    },
-    {
-      id: "home-services",
-      label: "Home Services",
-      body: "Request a callout as a customer, then see the same request from the business side.",
-      status: "simulated" as const,
-      statusLabel: "Concept demonstration",
-      href: "/demos/home-services",
-      cta: "Explore Home Services",
-    },
-    {
-      id: "clinics",
-      label: "Clinics",
-      body: "Book a sample appointment, then see the same booking from the clinic side.",
-      status: "simulated" as const,
-      statusLabel: "Concept demonstration",
-      href: "/demos/clinics",
-      cta: "Explore Clinics",
-    },
-    {
-      id: "consulting",
-      label: "Consulting Firms",
-      body: "Request a discovery call, then see the same enquiry from the firm side.",
-      status: "simulated" as const,
-      statusLabel: "Concept demonstration",
-      href: "/demos/consulting",
-      cta: "Explore Consulting",
-    },
-  ],
-};
 
 export const process = {
   eyebrow: "OUR PROCESS",
@@ -329,7 +294,7 @@ export const faq = {
 export const finalCta = {
   heading: "What would you like your business to do better?",
   body: "A clearer website? Easier enquiry handling? Less time spent on follow-ups? Tell us where things feel difficult. Let’s work out the next step.",
-  // Session 29: "Request a Call" → "See How It Works" (→ #demos), now the secondary button — Book a Consultation renders first. See FinalCta.tsx.
-  cta: { label: "See How It Works", href: "#demos" },
+  // Session 29: "Request a Call" → "See How It Works" (→ #demos), now the secondary button — Book a Consultation renders first. See FinalCta.tsx. Session 38: #demos anchor retargeted to the merged Industry Solutions + Demos section.
+  cta: { label: "See How It Works", href: "#industries" },
   note: "Send a short enquiry, and we’ll contact you to arrange a conversation. No account needed.",
 };

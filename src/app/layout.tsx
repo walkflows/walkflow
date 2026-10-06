@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FloatingWidgets } from "@/components/chat/FloatingWidgets";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ScrollRestoration } from "@/components/layout/ScrollRestoration";
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <FloatingWidgets />
       </body>
     </html>
   );

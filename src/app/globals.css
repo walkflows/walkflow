@@ -24,6 +24,8 @@
   --color-orange-hover: #e8850f;
   /* Text/accents on DARK backgrounds (active nav pill, dark-section eyebrows). */
   --color-orange-light: #ffb65c;
+  /* WhatsApp identity green, used only by the floating WhatsApp contact button. White glyph on it is ~3:1, enough for a non-text control. */
+  --color-whatsapp: #1da851;
   --color-navy-deep: #0a0a0a;
   --color-navy: #141414;
   --color-navy-light: #242424;

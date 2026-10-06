@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { DemoShowcase } from "@/components/sections/home/DemoShowcase";
 import { FAQ } from "@/components/sections/home/FAQ";
 import { FinalCta } from "@/components/sections/home/FinalCta";
 import { Hero } from "@/components/sections/home/Hero";
@@ -16,17 +15,16 @@ export const metadata: Metadata = {
 };
 
 /**
- * Session 29: required section order — Hero (with the Who We Work With
- * slider built in), Industry Solutions, Demos, Our Services, Why WALKFLOW,
- * How We Work, Platforms & Tools, FAQs, final Book a Consultation CTA, then
- * the global footer. See SESSION-NOTES.md for what moved from where.
+ * Session 38: Industry Solutions and Demos are one merged section (Industries),
+ * so the separate Demo Showcase section is gone. Order: Hero, Industry
+ * Solutions + Demos, Our Services, Why WALKFLOW, How We Work, Platforms &
+ * Tools, FAQs, final Book a Consultation CTA, then the global footer.
  */
 export default function HomePage() {
   return (
     <>
       <Hero />
       <Industries />
-      <DemoShowcase />
       <Services />
       <WhyWalkflow />
       <Process />
