@@ -101,10 +101,13 @@ export const footerNav = {
     { label: "Web Design", href: "/services/web-design" },
     { label: "Mobile App Development", href: "/services/mobile-app-development" },
   ],
-  legal: [
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Cookie Policy", href: "/cookies" },
-    { label: "Website Terms", href: "/terms" },
-    { label: "Accessibility", href: "/accessibility" },
-  ],
+  /**
+   * Legal links are removed until the policy pages are approved and built
+   * (CLAUDE.md: no unapproved policy drafts in production, no broken links).
+   * Restore these entries together with the /privacy, /cookies, /terms and
+   * /accessibility routes:
+   *   Privacy Policy → /privacy · Cookie Policy → /cookies ·
+   *   Website Terms → /terms · Accessibility → /accessibility
+   */
+  legal: [] as { label: string; href: string }[],
 };

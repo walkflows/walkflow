@@ -119,16 +119,15 @@ export function Footer() {
           <p>
             © {year} {site.name}. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 xl:mr-44">
-            {footerNav.legal.map((link) => (
-              <Link key={link.href} href={link.href} className="hover:text-white">
-                {link.label}
-              </Link>
-            ))}
-            <button type="button" className="hover:text-white" data-cookie-settings>
-              Cookie Settings
-            </button>
-          </div>
+          {footerNav.legal.length > 0 && (
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 xl:mr-44">
+              {footerNav.legal.map((link) => (
+                <Link key={link.href} href={link.href} className="hover:text-white">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
         </Container>
       </div>
     </footer>
