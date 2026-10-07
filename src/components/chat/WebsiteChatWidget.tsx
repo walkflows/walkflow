@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { chatCopy, chatLinks } from "@/content/chat-assistant";
 import { IconChat, IconClose } from "@/components/ui/icons";
 import type { ChatApiResponse, ChatLink, ChatReply } from "@/lib/chat/types";
@@ -17,7 +17,7 @@ type Message = {
 
 const welcomeMessage: Message = { id: 0, from: "assistant", text: chatCopy.welcome, suggestions: chatCopy.starters };
 
-export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
+export function WebsiteChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([welcomeMessage]);
   const [draft, setDraft] = useState("");
@@ -159,8 +159,6 @@ export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
           </form>
         </motion.section>
       )}
-
-      {whatsApp}
 
       <button
         ref={launcherRef}
