@@ -284,7 +284,7 @@ export function Header() {
 
         <nav
           aria-label="Main"
-          className="hidden items-center justify-center gap-1 justify-self-center rounded-full border border-white/10 bg-white/[0.04] p-1.5 lg:flex"
+          className="hidden items-center justify-center gap-1 justify-self-center rounded-full border border-white/10 bg-white/[0.04] p-1.5 xl:flex"
         >
           {mainNav.map((item) =>
             item.children ? (
@@ -308,7 +308,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center justify-end gap-3">
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <Button href={consultationCta.href}>
               {consultationCta.label}
               <IconArrowRight />
@@ -318,7 +318,7 @@ export function Header() {
           <button
             ref={menuToggleRef}
             type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-white lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-white xl:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             onClick={() => setMobileOpen((v) => !v)}
@@ -339,7 +339,7 @@ export function Header() {
         {mobileOpen && (
           <motion.div
             id="mobile-menu"
-            className="max-h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden border-t border-white/10 bg-navy-deep lg:hidden"
+            className="max-h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden border-t border-white/10 bg-navy-deep xl:hidden"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

@@ -29,10 +29,11 @@ export function Process() {
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {process.eyebrow}
             </span>
-            <h2 className="mt-4 text-[clamp(1.75rem,4.2vw,3rem)] leading-[1.15] text-white">
-              {process.headingLines.map((line) => (
-                <span key={line} className="block sm:whitespace-nowrap">
+            <h2 className="mt-4 text-balance text-[clamp(1.75rem,4.2vw,3rem)] leading-[1.15] text-white">
+              {process.headingLines.map((line, index, lines) => (
+                <span key={line} className="min-[1200px]:block min-[1200px]:whitespace-nowrap">
                   {line}
+                  {index < lines.length - 1 ? " " : null}
                 </span>
               ))}
             </h2>

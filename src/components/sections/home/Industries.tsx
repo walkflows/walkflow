@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment } from "react";
 import { consultationCta } from "@/content/navigation";
 import { industries } from "@/content/home";
 import { Button } from "@/components/ui/Button";
@@ -18,10 +17,11 @@ export function Industries() {
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {industries.eyebrow}
             </span>
-            <h2 className="mt-4 text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">
-              {industries.headingLines.map((line) => (
-                <span key={line} className="block sm:whitespace-nowrap">
+            <h2 className="mt-4 text-balance text-[clamp(2rem,4.2vw,3rem)] leading-[1.15] text-white">
+              {industries.headingLines.map((line, index, lines) => (
+                <span key={line} className="min-[1200px]:block min-[1200px]:whitespace-nowrap">
                   {line}
+                  {index < lines.length - 1 ? " " : null}
                 </span>
               ))}
             </h2>
@@ -52,14 +52,14 @@ export function Industries() {
                   <p className="mt-2.5 text-sm leading-relaxed text-white/60">{card.body}</p>
                   <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/45">
                     {card.workflow.map((step, index) => (
-                      <Fragment key={step}>
-                        {index > 0 && (
-                          <span aria-hidden className="text-orange/70">
+                      <span key={step} className="whitespace-nowrap">
+                        {step}
+                        {index < card.workflow.length - 1 && (
+                          <span aria-hidden className="ml-2 text-orange/70">
                             →
                           </span>
                         )}
-                        <span>{step}</span>
-                      </Fragment>
+                      </span>
                     ))}
                   </p>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-4 pt-5">

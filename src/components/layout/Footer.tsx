@@ -115,11 +115,11 @@ export function Footer() {
       </Reveal>
 
       <div className="border-t border-white/10">
-        <Container className="flex flex-col gap-4 py-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <Container className="flex flex-col gap-4 py-6 pb-24 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between xl:pb-6">
           <p>
             © {year} {site.name}. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 xl:mr-44">
             {footerNav.legal.map((link) => (
               <Link key={link.href} href={link.href} className="hover:text-white">
                 {link.label}
