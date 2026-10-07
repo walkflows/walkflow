@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { chatCopy, chatLinks } from "@/content/chat-assistant";
 import { IconChat, IconClose } from "@/components/ui/icons";
 import type { ChatApiResponse, ChatLink, ChatReply } from "@/lib/chat/types";
@@ -17,13 +17,14 @@ type Message = {
 
 const welcomeMessage: Message = { id: 0, from: "assistant", text: chatCopy.welcome, suggestions: chatCopy.starters };
 
-export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
+export function WebsiteChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([welcomeMessage]);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
   const nextId = useRef(1);
   const inFlight = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -40,6 +41,23 @@ export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [messages, pending]);
+
+  // Close on an outside click/tap — anywhere that isn't the launcher or the
+  // open panel. `pointerdown` (not `click`) so the closing happens before
+  // the target's own click fires, without ever calling preventDefault: a nav
+  // link or the WhatsApp button still receives its normal click right after.
+  // Attached only while open, and only once per open (not per render).
+  useEffect(() => {
+    if (!open) return;
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (containerRef.current && target instanceof Node && !containerRef.current.contains(target)) {
+        close();
+      }
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open]);
 
   function close() {
     setOpen(false);
@@ -84,7 +102,7 @@ export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+    <div ref={containerRef} className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {open && (
         <motion.section
           id={panelId}
@@ -159,8 +177,6 @@ export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
           </form>
         </motion.section>
       )}
-
-      {whatsApp}
 
       <button
         ref={launcherRef}
