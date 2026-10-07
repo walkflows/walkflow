@@ -1,4 +1,10 @@
 export type EnquiryPayload = {
+  /**
+   * Stable reference for ONE submission: the same value is sent again on a
+   * retry, so n8n saves it only once; a new value is created only after a
+   * successful send (see ContactForm.tsx).
+   */
+  submissionId: string;
   name: string;
   email: string;
   company: string;
@@ -26,43 +32,72 @@ export type EnquiryPayload = {
   whatsappNumber?: string;
 };
 
-/** Thrown when no real submission backend is configured yet — see submitEnquiry below. */
+export type EnquiryFieldErrors = Partial<Record<keyof EnquiryPayload, string>>;
+
+/** The server could not take enquiries (missing configuration, or n8n refused the connection). */
 export class EnquiryNotConfiguredError extends Error {
   constructor() {
-    super("Enquiry submission is not configured yet.");
+    super("Enquiry submission is not configured.");
     this.name = "EnquiryNotConfiguredError";
   }
 }
 
+/** The details were rejected; `fieldErrors` says which fields to fix. Nothing was saved. */
+export class EnquiryInvalidError extends Error {
+  constructor(public fieldErrors: EnquiryFieldErrors) {
+    super("Enquiry details were rejected.");
+    this.name = "EnquiryInvalidError";
+  }
+}
+
 /**
- * Sends an enquiry to WALKFLOW.
- *
- * UNCONFIGURED BY DEFAULT — no backend is wired up yet, so this always
- * throws EnquiryNotConfiguredError, and the form shows an honest "not
- * connected" state instead of a fake success. Per CLAUDE.md: a click,
- * timeout or unconfigured integration must never produce a fake success.
- *
- * TODO: wire a real submission handler here. Preferred approach (per
- * CLAUDE.md): POST to a validated server route (e.g. `src/app/api/enquiry/
- * route.ts`) that re-validates the payload server-side and inserts into
- * Supabase with RLS blocking public reads/updates/deletes — never insert
- * into Supabase directly from the browser with a privileged key. A
- * third-party form endpoint (Formspree or similar) is a reasonable
- * short-term alternative if Supabase isn't set up yet.
- *
- * Example once a server route exists:
- *
- *   const res = await fetch("/api/enquiry", {
- *     method: "POST",
- *     headers: { "Content-Type": "application/json" },
- *     body: JSON.stringify(payload),
- *   });
- *   if (!res.ok) throw new Error("Enquiry submission failed");
- *
- * Once real submission is wired, delete the throw below (and the
- * `unconfigured` status branch + copy in ContactForm.tsx / content/contact.ts
- * become dead code that can be removed too).
+ * The enquiry was not confirmed as saved. `uncertain` = no clear answer (it may
+ * have been saved); retrying with the same submissionId is safe either way.
  */
-export async function submitEnquiry(_payload: EnquiryPayload): Promise<void> {
-  throw new EnquiryNotConfiguredError();
+export class EnquirySendError extends Error {
+  constructor(public reason: "not_saved" | "uncertain" | "rate_limited") {
+    super("Enquiry was not confirmed as saved.");
+    this.name = "EnquirySendError";
+  }
+}
+
+/**
+ * Sends an enquiry through the site's own server route (/api/enquiry), which
+ * forwards it to n8n. Resolves only when the enquiry is confirmed as saved;
+ * `duplicate` = this exact submission had already been saved by an earlier try.
+ */
+export async function submitEnquiry(payload: EnquiryPayload, timeoutMs = 30_000): Promise<{ duplicate: boolean }> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res: Response;
+  try {
+    res = await fetch("/api/enquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+  } catch {
+    throw new EnquirySendError("uncertain");
+  } finally {
+    clearTimeout(timer);
+  }
+
+  let body: { ok?: boolean; duplicate?: boolean; code?: string; fieldErrors?: EnquiryFieldErrors } = {};
+  try {
+    body = await res.json();
+  } catch {
+    body = {};
+  }
+  if (res.ok && body.ok === true) return { duplicate: body.duplicate === true };
+  if (body.code === "invalid") throw new EnquiryInvalidError(body.fieldErrors ?? {});
+  if (body.code === "not_configured") throw new EnquiryNotConfiguredError();
+  if (body.code === "not_saved" || body.code === "rate_limited") throw new EnquirySendError(body.code);
+  throw new EnquirySendError("uncertain");
+}
+
+/** A fresh submission reference (URL-safe, 16–64 characters as n8n requires). */
+export function newSubmissionId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return `web-${crypto.randomUUID()}`;
+  return `web-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 14)}`;
 }

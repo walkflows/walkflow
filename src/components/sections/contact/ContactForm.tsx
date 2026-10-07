@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -14,7 +14,15 @@ import {
 import { ButtonEl } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { cx } from "@/lib/utils";
-import { EnquiryNotConfiguredError, submitEnquiry, type EnquiryPayload } from "@/lib/enquiry";
+import { getWhatsAppHref } from "@/lib/whatsapp";
+import {
+  EnquiryInvalidError,
+  EnquiryNotConfiguredError,
+  EnquirySendError,
+  newSubmissionId,
+  submitEnquiry,
+  type EnquiryPayload,
+} from "@/lib/enquiry";
 
 type Values = {
   name: string;
@@ -50,15 +58,34 @@ const initialValues: Values = {
 };
 
 type FieldErrors = Partial<
-  Record<"name" | "email" | "company" | "service" | "industry" | "otherIndustry" | "timing" | "message" | "whatsappNumber", string>
+  Record<
+    "name" | "email" | "company" | "website" | "service" | "industry" | "otherIndustry" | "timing" | "message" | "whatsappNumber",
+    string
+  >
 >;
 
 type Status = "idle" | "submitting" | "success" | "error" | "unconfigured";
+type ErrorKind = "not_saved" | "uncertain" | "rate_limited" | "invalid";
+const FIELD_KEYS = [
+  "name",
+  "email",
+  "company",
+  "website",
+  "service",
+  "industry",
+  "otherIndustry",
+  "timing",
+  "message",
+  "whatsappNumber",
+] as const;
+
+/** Field length limits — the same numbers the server and the WALKFLOW BUSINESS n8n checker enforce. */
+const MAX = { name: 120, email: 254, company: 150, role: 100, website: 200, otherIndustry: 100, whatsappNumber: 24 } as const;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Sensible international phone check: an optional leading +, then 7–15 digits (E.164's max length),
-// with spaces/dashes/parentheses allowed for readability but stripped before counting.
-const PHONE_RE = /^\+?[0-9\s().-]{7,20}$/;
+// International phone check: a leading + and country code, then 7–15 digits in total (E.164's max length),
+// with spaces/dashes/parentheses allowed for readability but stripped before counting. Same rule as n8n.
+const PHONE_RE = /^\+[0-9\s().-]{6,23}$/;
 
 const fieldClass =
   "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-[border-color,box-shadow] duration-200 ease-out focus:border-orange/60 focus:outline-none focus:shadow-[0_0_0_4px_rgba(255,153,28,0.15)] aria-[invalid=true]:border-red-400/60";
@@ -104,6 +131,12 @@ export function ContactForm() {
   const [values, setValues] = useState<Values>(() => ({ ...initialValues, service: preselectedService }));
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
+  const [errorKind, setErrorKind] = useState<ErrorKind>("not_saved");
+  const [duplicate, setDuplicate] = useState(false);
+  // One reference per submission: kept across retries (so n8n saves it once), replaced only after a confirmed save.
+  const submissionId = useRef<string | null>(null);
+  // Synchronous guard: a double click before React re-renders still sends only once.
+  const inFlight = useRef(false);
   const idPrefix = useId();
   const reduceMotion = useReducedMotion();
 
@@ -117,6 +150,7 @@ export function ContactForm() {
     if (!v.email.trim()) next.email = "Please enter your email address.";
     else if (!EMAIL_RE.test(v.email.trim())) next.email = "Please enter a valid email address.";
     if (!v.company.trim()) next.company = "Please enter your company name.";
+    if (v.website.trim() && /\s/.test(v.website.trim())) next.website = "Website URL must not contain spaces.";
     if (!v.service.trim()) next.service = "Please select a service.";
     if (!v.industry.trim()) next.industry = "Please select your industry.";
     else if (v.industry === "other" && !v.otherIndustry.trim()) next.otherIndustry = "Please specify your industry.";
@@ -126,7 +160,7 @@ export function ContactForm() {
       const digitsOnly = v.whatsappNumber.replace(/[^0-9]/g, "");
       if (!v.whatsappNumber.trim()) next.whatsappNumber = "Please enter your WhatsApp number.";
       else if (!PHONE_RE.test(v.whatsappNumber.trim()) || digitsOnly.length < 7 || digitsOnly.length > 15) {
-        next.whatsappNumber = "Please enter a valid phone number, including your country code.";
+        next.whatsappNumber = "Please enter your number starting with + and your country code.";
       }
     }
     return next;
@@ -147,6 +181,8 @@ export function ContactForm() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    // A second click while the first send is still running does nothing.
+    if (status === "submitting" || inFlight.current) return;
     // Honeypot: a bot filled a field real visitors never see — quietly drop it, no error shown.
     if (values.hpField.trim()) return;
 
@@ -154,9 +190,12 @@ export function ContactForm() {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
+    inFlight.current = true;
     setStatus("submitting");
+    if (!submissionId.current) submissionId.current = newSubmissionId();
     try {
-      await submitEnquiry({
+      const result = await submitEnquiry({
+        submissionId: submissionId.current,
         name: values.name.trim(),
         email: values.email.trim(),
         company: values.company.trim(),
@@ -170,11 +209,28 @@ export function ContactForm() {
         method: values.method,
         ...(values.method === "whatsapp" ? { whatsappNumber: values.whatsappNumber.trim() } : {}),
       });
+      // Only reached once n8n has confirmed the enquiry is saved in the WALKFLOW BUSINESS sheet.
+      setDuplicate(result.duplicate);
       setStatus("success");
       setValues(initialValues);
       setErrors({});
+      submissionId.current = null;
     } catch (err) {
-      setStatus(err instanceof EnquiryNotConfiguredError ? "unconfigured" : "error");
+      // Answers are kept in the form whatever went wrong.
+      if (err instanceof EnquiryNotConfiguredError) {
+        setStatus("unconfigured");
+      } else if (err instanceof EnquiryInvalidError) {
+        const next: FieldErrors = {};
+        for (const key of FIELD_KEYS) if (err.fieldErrors[key]) next[key] = err.fieldErrors[key];
+        setErrors(next);
+        setErrorKind("invalid");
+        setStatus("error");
+      } else {
+        setErrorKind(err instanceof EnquirySendError ? err.reason : "uncertain");
+        setStatus("error");
+      }
+    } finally {
+      inFlight.current = false;
     }
   }
 
@@ -183,7 +239,17 @@ export function ContactForm() {
       <Reveal>
         <div className="rounded-3xl border border-orange/25 bg-orange/[0.06] p-8 text-center sm:p-10">
           <p className="text-xl font-semibold text-white">{contactForm.successHeading}</p>
-          <p className="mt-2 leading-relaxed text-white/70">{contactForm.successBody}</p>
+          <p className="mt-2 leading-relaxed text-white/70">{duplicate ? contactForm.successDuplicateBody : contactForm.successBody}</p>
+          <p className="mt-6 text-sm leading-relaxed text-white/70">{contactForm.bookingPrompt}</p>
+          <a
+            href={contactForm.bookingLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center justify-center rounded-xl border border-orange/50 px-5 py-2.5 text-sm font-semibold text-orange transition-colors duration-200 ease-out hover:bg-orange hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange/60"
+          >
+            {contactForm.bookingLinkLabel}
+            <span className="sr-only"> (opens Google appointment booking in a new tab)</span>
+          </a>
         </div>
       </Reveal>
     );
@@ -218,6 +284,7 @@ export function ContactForm() {
         error={errors.name}
         required
         autoComplete="name"
+        maxLength={MAX.name}
       />
 
       <Field
@@ -231,6 +298,7 @@ export function ContactForm() {
         required
         type="email"
         autoComplete="email"
+        maxLength={MAX.email}
       />
 
       <Field
@@ -242,6 +310,7 @@ export function ContactForm() {
         error={errors.company}
         required
         autoComplete="organization"
+        maxLength={MAX.company}
       />
 
       <Field
@@ -251,6 +320,7 @@ export function ContactForm() {
         value={values.role}
         onChange={(v) => update("role", v)}
         autoComplete="organization-title"
+        maxLength={MAX.role}
       />
 
       <Field
@@ -259,7 +329,9 @@ export function ContactForm() {
         placeholder={contactForm.fields.website.placeholder}
         value={values.website}
         onChange={(v) => update("website", v)}
+        error={errors.website}
         autoComplete="url"
+        maxLength={MAX.website}
       />
 
       <Select
@@ -303,6 +375,7 @@ export function ContactForm() {
                   onChange={(v) => update("otherIndustry", v)}
                   error={errors.otherIndustry}
                   required
+                  maxLength={MAX.otherIndustry}
                 />
               </div>
             </motion.div>
@@ -396,7 +469,7 @@ export function ContactForm() {
                     `${idPrefix}-whatsapp-helper`,
                     errors.whatsappNumber && `${idPrefix}-whatsapp-error`,
                   )}
-                  maxLength={24}
+                  maxLength={MAX.whatsappNumber}
                   className={cx(fieldClass, "mt-2")}
                 />
                 <p id={`${idPrefix}-whatsapp-helper`} className={helperClass}>
@@ -410,20 +483,55 @@ export function ContactForm() {
       </fieldset>
 
       {status === "unconfigured" && (
-        <p role="status" className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white/70">
-          {contactForm.unconfiguredBody}
-        </p>
+        <div role="status" className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white/70">
+          <p>{contactForm.unconfiguredBody}</p>
+          <AlternativeContact />
+        </div>
       )}
       {status === "error" && (
-        <p role="alert" className="rounded-2xl border border-red-400/25 bg-red-400/[0.06] p-4 text-sm leading-relaxed text-red-300">
-          {contactForm.errorBody}
-        </p>
+        <div role="alert" className="rounded-2xl border border-red-400/25 bg-red-400/[0.06] p-4 text-sm leading-relaxed text-red-300">
+          <p>{contactForm.errorMessages[errorKind]}</p>
+          {errorKind !== "invalid" && <AlternativeContact />}
+        </div>
       )}
 
       <ButtonEl type="submit" disabled={submitting} className="self-start">
         {submitting ? contactForm.submittingLabel : contactForm.submitLabel}
       </ButtonEl>
     </form>
+  );
+}
+
+/**
+ * Other ways to reach WALKFLOW, shown only when the enquiry was not sent.
+ * WhatsApp appears only when NEXT_PUBLIC_WHATSAPP_URL is configured.
+ */
+function AlternativeContact() {
+  const whatsAppHref = getWhatsAppHref();
+  return (
+    <div className="mt-4 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:flex-wrap">
+      <p className="w-full text-white/70">{contactForm.alternativeIntro}</p>
+      {whatsAppHref && (
+        <a
+          href={whatsAppHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/20 px-4 text-sm font-semibold text-white transition-colors duration-200 ease-out hover:border-orange hover:text-orange focus-visible:outline-2 focus-visible:outline-orange"
+        >
+          {contactForm.alternativeWhatsAppLabel}
+          <span className="sr-only"> (opens WhatsApp in a new tab)</span>
+        </a>
+      )}
+      <a
+        href={contactForm.bookingLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/20 px-4 text-sm font-semibold text-white transition-colors duration-200 ease-out hover:border-orange hover:text-orange focus-visible:outline-2 focus-visible:outline-orange"
+      >
+        {contactForm.bookingLinkLabel}
+        <span className="sr-only"> (opens Google appointment booking in a new tab)</span>
+      </a>
+    </div>
   );
 }
 
@@ -498,6 +606,7 @@ function Field({
   required,
   type = "text",
   autoComplete,
+  maxLength = 300,
 }: {
   id: string;
   label: string;
@@ -509,6 +618,7 @@ function Field({
   required?: boolean;
   type?: string;
   autoComplete?: string;
+  maxLength?: number;
 }) {
   const helperId = helperText ? `${id}-helper` : undefined;
   const errorId = error ? `${id}-error` : undefined;
@@ -527,7 +637,7 @@ function Field({
         aria-invalid={Boolean(error)}
         aria-describedby={cx(helperId, errorId) || undefined}
         autoComplete={autoComplete}
-        maxLength={300}
+        maxLength={maxLength}
         className={cx(fieldClass, "mt-2")}
       />
       {helperText && (

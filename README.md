@@ -22,7 +22,15 @@ Next.js (App Router) + TypeScript + Tailwind CSS v4, with Motion for React for r
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and fill in values once Supabase/PostHog are ready to connect. Until then, the enquiry form and analytics remain intentionally unconfigured — see `CLAUDE.md`.
+Copy `.env.example` to `.env.local` and fill in values. Analytics remain unconfigured until PostHog is connected — see `CLAUDE.md`.
+
+### Contact form → n8n
+
+The form posts to `/api/enquiry` (`src/app/api/enquiry/route.ts`, rules in `src/lib/enquiry-server.ts`), which validates, rate-limits (best effort, per server instance) and forwards to the WALKFLOW BUSINESS n8n webhook with the `X-WalkFlow-Secret` header. Success is shown only after n8n confirms the enquiry is saved in Google Sheets; a retry reuses the same submission reference, so it is never saved twice. After success the visitor is offered the Google booking link (nothing is booked automatically).
+
+Server-only variables (never `NEXT_PUBLIC_`): `N8N_ENQUIRY_WEBHOOK_URL`, `N8N_ENQUIRY_SECRET` (must equal the n8n "Header Auth account" value). Locally they go in `.env.local`; on Vercel add them under Project › Settings › Environment Variables. Without them the form says it is unavailable and sends nothing. The n8n workflow must be published for the webhook to answer.
+
+Test the route without touching n8n: `npm run build` then `node scripts/test-enquiry.mjs` (uses a local stand-in for n8n).
 
 ## Known issue to resolve with the source logo files
 

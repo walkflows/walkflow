@@ -111,14 +111,27 @@ export const contactForm = {
   submittingLabel: "Sending...",
   successHeading: "Message sent",
   successBody: "Thanks — we'll be in touch within 24 hours.",
-  errorBody: "Something went wrong sending that. Please try again, or reach out directly.",
+  /** Shown when this exact submission had already been saved by an earlier try (e.g. a retry after a timeout). */
+  successDuplicateBody: "We already have this enquiry — it arrived on an earlier try, so it was not sent twice. We'll be in touch within 24 hours.",
+  /** Offered only after a confirmed save. Booking stays the visitor's choice; nothing is booked automatically. */
+  bookingPrompt: "Prefer to pick a time now? You can book a free discovery call.",
+  bookingLinkLabel: "Book a discovery call",
+  bookingLink: "https://calendar.app.google/dHUmkFHdw3jxz6se9",
+  errorMessages: {
+    invalid: "Please check the highlighted fields and try again. Nothing was sent.",
+    not_saved: "We couldn't save your enquiry just now, so nothing was sent. Your answers are still here — please try again in a moment.",
+    uncertain:
+      "We couldn't confirm your enquiry arrived. Your answers are still here — please try again. If it did arrive, it won't be saved twice.",
+    rate_limited: "Too many enquiries were sent from here in a short time. Please wait a few minutes and try again — your answers are still here.",
+  },
   /**
-   * Shown instead of a fake success state when no real submission backend is
-   * wired yet (see src/lib/enquiry.ts). Honest, developer-facing — never
-   * presented as if the enquiry was actually received. Remove the whole
-   * `unconfigured` status branch in ContactForm.tsx once a real endpoint is
-   * connected; this copy then becomes dead and can go too.
+   * Shown instead of a fake success state when the server cannot take
+   * enquiries (missing configuration, or n8n refused the connection — see
+   * src/lib/enquiry-server.ts). Never presented as if the enquiry was received.
    */
   unconfiguredBody:
-    "This form isn't connected to a backend yet, so nothing was sent. (Developer note: wire a real submission handler in src/lib/enquiry.ts.)",
+    "Our enquiry form isn't available right now, so nothing was sent. Your answers are still here — please try again later.",
+  /** Shown beside the error or unavailable message, with the links below. */
+  alternativeIntro: "Prefer not to wait? You can reach us another way:",
+  alternativeWhatsAppLabel: "Message us on WhatsApp",
 };
