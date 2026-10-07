@@ -97,7 +97,7 @@ export function WebsiteChatWidget({ whatsApp }: { whatsApp?: ReactNode }) {
           onKeyDown={(event) => {
             if (event.key === "Escape") close();
           }}
-          className="flex max-h-[min(34rem,calc(100dvh-10rem))] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/10 bg-navy shadow-[var(--shadow-card)]"
+          className="flex max-h-[min(34rem,calc(100dvh-10rem))] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-orange bg-navy shadow-[0_20px_45px_-24px_rgba(0,0,0,0.45),0_0_28px_-12px_rgba(255,153,28,0.45)]"
         >
           <header className="flex items-start justify-between gap-3 border-b border-white/10 bg-navy-deep px-5 py-4">
             <div className="min-w-0">

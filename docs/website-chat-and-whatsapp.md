@@ -23,8 +23,10 @@ No AI provider, API key or external service is configured or called.
 
 | Purpose | File |
 | --- | --- |
-| Copy, starter questions, reply text, link labels | `src/content/chat-assistant.ts` |
-| Answer rules (safety, criticism, booking, pricing, navigation) | `src/lib/chat/respond.ts` |
+| UI copy, safety replies, criticism answers, uncertain-topic list | `src/content/chat-assistant.ts` |
+| Website knowledge, generated from the site's content modules | `src/lib/chat/knowledge.ts` |
+| Keyword search over that knowledge (stemming, synonyms, scoring) | `src/lib/chat/retrieve.ts` |
+| Answer rules (safety, criticism, booking, founder, cost, navigation, then search) | `src/lib/chat/respond.ts` |
 | Request/response types | `src/lib/chat/types.ts` |
 | API route (validation, rate limit) | `src/app/api/chat/route.ts` |
 | Per-client rate limiter | `src/lib/chat/rate-limit.ts` |
@@ -32,8 +34,36 @@ No AI provider, API key or external service is configured or called.
 | WhatsApp button | `src/components/chat/WhatsAppWidget.tsx` |
 | WhatsApp URL check | `src/lib/whatsapp.ts` |
 
-Reply text lives in the content file, not in the rules, so copy can change
-without touching matching logic.
+Answers come from the website's own content. `knowledge.ts` reads an explicit
+allow-list of content modules (About, Home, Services, Industries, Demos, Web
+Design projects, Contact) and keeps only body-text fields. Titles, labels,
+links and questions are not used as answers, and the following are excluded
+on purpose: unverified homepage statistics, client-review placeholders,
+PLACEHOLDER service projects, and the sample-business catalogues behind the
+demos (fictional listings, clinic staff, QUES session prices). Editing a page's
+copy in its content module updates the chat with no second edit.
+
+Structured answers read named fields directly: the founder (`aboutHero`), the
+service and industry lists, the company description and cost/process answers
+from the Home FAQ and process steps.
+
+Question matching is keyword-based with stemming and a small synonym list
+(for example "owner" or "runs" to founder, "redesign" to web design). Answers
+need at least two matching terms, or one rare term in a question heading.
+When a visitor names a service or industry, the search is limited to that
+topic's pages.
+
+## Footer "Follow us" links
+
+The footer and the Contact page read `site.social` in `src/content/site.ts`:
+LinkedIn, TikTok and Instagram. WhatsApp is not listed there; it has its own
+floating button.
+
+- Set `href` to the real `https://` profile URL for LinkedIn, TikTok or Instagram.
+- While `href` is `null`, the icon shows as a non-link "coming soon" marker
+  (the same treatment as the About page's LinkedIn icon). No placeholder profile
+  is linked.
+- The Contact page shows a "Follow Us" card only when at least one URL is set.
 
 ## Adding the WhatsApp link
 

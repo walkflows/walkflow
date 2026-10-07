@@ -20,13 +20,15 @@ export const site = {
     confirmed: true,
   },
   /**
-   * Placeholder destinations — real profile URLs aren't set up yet. Kept as
-   * "#" (rather than omitted) so the footer icons are ready to become real
-   * links the moment accounts exist, per explicit instruction.
+   * Social profile links for the footer "Follow us" group and the Contact
+   * page card. Set `href` to the real https:// profile URL once it exists.
+   * While `href` is null the footer shows that icon as a non-link "coming
+   * soon" marker, so no visitor is sent to a placeholder profile. WhatsApp is
+   * not listed here: it has its own floating button (NEXT_PUBLIC_WHATSAPP_URL).
    */
   social: [
-    { id: "whatsapp", label: "WhatsApp", href: "#" },
-    { id: "linkedin", label: "LinkedIn", href: "#" },
-    { id: "instagram", label: "Instagram", href: "#" },
+    { id: "linkedin", label: "LinkedIn", href: null as string | null },
+    { id: "tiktok", label: "TikTok", href: null as string | null },
+    { id: "instagram", label: "Instagram", href: null as string | null },
   ],
 };

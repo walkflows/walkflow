@@ -3,11 +3,11 @@ import { contactHero } from "@/content/contact";
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconInstagram, IconLinkedin, IconMail, IconMapPin, IconPeople, IconPhone, IconSchedule, IconWhatsapp } from "@/components/ui/icons";
+import { IconInstagram, IconLinkedin, IconMail, IconMapPin, IconPeople, IconPhone, IconSchedule, IconTiktok } from "@/components/ui/icons";
 
-const socialIcons: Record<string, typeof IconWhatsapp> = {
-  whatsapp: IconWhatsapp,
+const socialIcons: Record<string, typeof IconLinkedin> = {
   linkedin: IconLinkedin,
+  tiktok: IconTiktok,
   instagram: IconInstagram,
 };
 
@@ -78,7 +78,7 @@ function buildCards(): Card[] {
     });
   }
 
-  const realSocial = site.social.filter((profile) => profile.href && profile.href !== "#");
+  const realSocial = site.social.filter((profile): profile is typeof profile & { href: string } => Boolean(profile.href));
   if (realSocial.length > 0) {
     cards.push({
       id: "social",

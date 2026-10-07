@@ -1,11 +1,10 @@
-import { faq, industries, process as projectProcess, services } from "@/content/home";
+import { finalCta } from "@/content/home";
 
 /**
- * Copy for the site-wide WALKFLOW assistant. Every factual answer below is
- * taken from, or deliberately limited to, what the website already says.
- * Anything the site does not state (prices, timelines, guarantees, client
- * results, contract terms, integrations, availability) is routed to the
- * Contact page rather than answered. See src/lib/chat/respond.ts for matching.
+ * Copy for the WALKFLOW Assistant. Factual answers come from the site's own
+ * content modules (see src/lib/chat/knowledge.ts), so this file holds only
+ * UI text, safety replies and the few answers that do not exist on the site
+ * as written copy.
  */
 export const chatCopy = {
   title: "WALKFLOW Assistant",
@@ -35,6 +34,7 @@ export const chatLinks = {
   contactWalkflow: { label: "CONTACT WALKFLOW →", href: "/contact" },
   viewServices: { label: "VIEW SERVICES →", href: "/#solutions" },
   about: { label: "ABOUT WALKFLOW →", href: "/about" },
+  founder: { label: "MEET THE FOUNDER →", href: "/about" },
 };
 
 export const chatReplies = {
@@ -43,14 +43,9 @@ export const chatReplies = {
   uncertain: "I’m not completely sure about that. Please contact the WALKFLOW team so we can give you the right answer.",
   vague: "That depends on your business and what you need. The best next step is to send us the details.",
   greeting: "Hi! Ask me about WALKFLOW’s services, industry solutions, demo projects or how to book a consultation.",
-  company: faq.items[0].answer,
-  whoWeWorkWith: faq.items[1].answer,
-  booking:
-    "Send a short enquiry, and we’ll contact you to arrange a conversation. No account needed. This chat can’t confirm a call time, so the team will do that by email.",
-  pricing:
-    "Pricing depends on scope. A single service is priced differently from a full connected system, and we give a clear quote after a discovery call.",
-  servicePrompt: "Which service are you interested in?",
-  process: `How a project usually runs: ${projectProcess.steps.map((step, i) => `${i + 1}. ${step.title}`).join(" ")}.`,
+  booking: `${finalCta.note} This chat can’t confirm a call time, so the team will arrange it with you by email.`,
+  demos: "Our demo projects show sample customer journeys for four industries, using sample data. They are not live systems.",
+  work: "Our Web Design page shows example website builds, and each demo project shows a sample customer journey. These are examples of how we work, not client results.",
   criticism: {
     automationFailure:
       "Project updates happen by email or calls, and agreed features are tested together before launch. For how problems would be handled in your setup, please contact the team.",
@@ -61,56 +56,7 @@ export const chatReplies = {
     whyWalkflow:
       "Our approach is to put your business first, give you a clear scope and price before work begins, and stay involved at every step. You can read more on our About page.",
   },
-  uncertainTopics: /\b(guarantee[ds]?|warrant(y|ies)|refund|contract|terms|policy|policies|sla|results?|case stud\w*|testimonials?|reviews?|clients?|portfolio|availability|available (on|for|this|next)|timelines?|how long|turnaround|deadlines?|calendar|integrat\w*|zapier|hubspot|salesforce|gohighlevel|go high level|api|certif\w*|accredit\w*|insurance|scam|legit\w*)\b/,
-  services: {
-    automation:
-      "We connect your tools, organise customer details and automate routine follow-ups. We can also add AI chatbots or voice agents to help capture enquiries while your team is busy. What’s possible depends on your tools and processes, so the best next step is to tell us where your team loses the most time.",
-    web: "We build business websites, landing pages and online stores that explain your offer and make it easy to enquire, book or buy. If you're thinking about a redesign, tell us what isn't working on the current site.",
-    email: services.items[1].body,
-    mobile: services.items[3].body,
-    list: `We offer ${services.items.map((item) => item.title).join(", ")}.`,
-  },
-  industries: {
-    overview: "We have industry solutions for four types of business. Pick one to see how it works.",
-    demoOverview: "Our demo projects show sample customer journeys for four industries. They use sample data and are not live systems.",
-  },
+  /** Topics the website does not answer. Matched before any website search, so they are never guessed. */
+  uncertainTopics:
+    /\b(guarantee[ds]?|warrant(y|ies)|refunds?|contracts?|terms|polic(y|ies)|insurance|certif\w*|accredit\w*|integrat\w*|zapier|hubspot|salesforce|gohighlevel|go high level|calendar|availability|available (on|for|this|next)|scam|legit\w*|how many|years? of experience|reviews?|testimonials?|case stud\w*|track record|(clients?|customers?) do you have)\b/,
 };
-
-export const chatTopics = {
-  automation: {
-    pattern: /\b(automat\w*|crm|chatbot|voice agent|follow[- ]?ups?|workflows?)\b/,
-    reply: chatReplies.services.automation,
-    link: { label: "BUSINESS AUTOMATION & CRM →", href: services.items[0].cta.href },
-  },
-  web: {
-    pattern: /\b(web ?design|web ?site|redesign|landing pages?|online store|e-?commerce|shop)\b/,
-    reply: chatReplies.services.web,
-    link: { label: "WEB DESIGN →", href: services.items[2].cta.href },
-  },
-  email: {
-    pattern: /\b(email|newsletters?|campaigns?|welcome emails?)\b/,
-    reply: chatReplies.services.email,
-    link: { label: "EMAIL MARKETING →", href: services.items[1].cta.href },
-  },
-  mobile: {
-    pattern: /\b(mobile|apps?|ios|android)\b/,
-    reply: chatReplies.services.mobile,
-    link: { label: "MOBILE APP DEVELOPMENT →", href: services.items[3].cta.href },
-  },
-};
-
-/** Keyword patterns per industry card title. Routes come from `industries`, never hardcoded here. */
-export const industryPatterns: Record<string, RegExp> = {
-  "Real Estate": /\b(real estate|property|properties|estate agents?|letting)\b/,
-  "Home Services": /\b(home services?|hvac|plumb\w*|roof\w*|call-?outs?|tradespeople|tradesmen)\b/,
-  Clinics: /\b(clinics?|dental|dentists?|medical|physio\w*|healthcare|health care)\b/,
-  "Consulting Firms": /\b(consult\w*|advisory)\b/,
-};
-
-export const industryTopics = industries.cards.map((card) => ({
-  title: card.title,
-  pattern: industryPatterns[card.title],
-  body: card.body,
-  solutionHref: card.href,
-  demoHref: card.demoHref,
-}));

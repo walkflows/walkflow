@@ -3,6 +3,28 @@
 **Project location:** `C:\Users\USER\Downloads\WALKFLOW`
 **Git backup: YES.** Remote added and pushed as of Session 26: `https://github.com/walkflows/walkflow` (branch `master`). Deployed via Vercel to a `*.vercel.app` preview link (no custom domain yet). Sessions 27–29's work below is committed locally only where stated — check each entry before assuming it's pushed.
 
+## Session 40 (2026-10-07) — Chat answer refinement, open-panel orange outline, footer social links
+
+**Chat.** Broad questions now answer with the page's own SEO description (leading slogan lines dropped), rather than a single FAQ line. Redesign and "improve my existing website" questions combine the Web Design summary with the site's existing-website FAQ. Demo questions name the relevant demo's intro and link the matching Demo Project page, including "see" or "show" questions about an industry. Timeline questions search the named topic's pages first, then fall back to the general timeline wording. Cost answers use the Home FAQ. Statistics and reviews questions go to Contact. Safety rules are unchanged. No new dependency and no external model.
+
+**Open chat panel.** The panel's 1px border is WALKFLOW orange (#FF991C), with a faint orange glow over the existing card shadow. Radius, size and interior are unchanged.
+
+**Footer.** "Follow us" shows LinkedIn, TikTok and Instagram only; WhatsApp was removed from the group. No real social URLs exist yet, so each icon is a non-link "coming soon" marker until its `href` is set in `src/content/site.ts`. The Contact page's "Follow Us" card stays hidden until at least one URL is set.
+
+**Known limits.** The hero's carousel and background watermark cause 9px of horizontal overflow at 768px. This was present before this session and was not changed. Keyword matching can still give terse answers.
+
+## Session 39 (2026-10-07) — Chat assistant answers from the website's own content
+
+**Why founder questions failed.** The assistant only had hand-written rules for a few topics (services, industries, demos, company). Nothing searched the About content, where Joshua Ayomide is named as founder, so "Who is the founder?" fell through to the generic "not sure" reply.
+
+**What changed.** A knowledge layer (`src/lib/chat/knowledge.ts`) is generated at build from the same content modules the pages render from: About, Home, the four service pages, the four industry pages, the four demo intros, Web Design project copy and Contact. Only body-text fields are read, and placeholder statistics, client-review placeholders, PLACEHOLDER projects and sample-business catalogues (listings, clinic staff, QUES session prices) are excluded on purpose. `retrieve.ts` does keyword search with stemming, a small synonym list and two-term matching. `respond.ts` answers structured questions (founder, service and industry lists, company, cost, process, contact) from named content fields and falls back to search, then to the Contact route. The duplicated service, industry, process and pricing copy in `chat-assistant.ts` was removed.
+
+**No system prompt.** There is no model in the chat, so there is no system prompt. The rules and the safety checks play that role. `docs/website-chat-and-whatsapp.md` has the guidance for a future provider.
+
+**Tested.** `/api/chat` was run against the 15 brief questions, the founder variations and the earlier safety, validation and rate-limit cases. Founder questions, services, industries, demos, web design, email, mobile apps, contact, and the "not sure" routing for guarantees, refunds, HubSpot and SEO-type gaps all returned the expected answer. No placeholder figures or sample-business prices leaked. Typecheck and lint pass. The chat was checked in the browser at 1440px and 390px with no overflow.
+
+**Known limits.** Keyword matching can give terse answers (for example, "Can you redesign my current site?" returns one short service sentence). Generic timeline and automation questions can quote a single service's timing. Nothing is committed or deployed yet.
+
 ## Session 38 (2026-10-06) — Homepage: Industry Solutions + Demos merged; Services CTA removed; website chat assistant and WhatsApp button added
 
 **Homepage merge.** The separate Demo Showcase section is removed. Its four demo links now sit inside the four existing large Industry Solutions cards as a "View Demo" button next to "Explore Solution", with a small workflow line on each card. Section label is "Industry Solutions + Demos", with the supporting sentence under the heading and the top "Explore Industry Solutions" button removed. A single line under the grid links to Book a Consultation (`/contact`). Card copy is the brief’s; the layout, images and card styling are unchanged, and the action rows align across each row. Hero’s "Explore Our Solutions" and the Final CTA’s "See How It Works" previously pointed at `#demos`; both now point at `#industries` so they still scroll somewhere. The Final CTA button keeps its label because only the Services one was asked to go.

@@ -5,10 +5,10 @@ import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconMail, IconMapPin, IconPhone, IconWhatsapp, IconLinkedin, IconInstagram } from "@/components/ui/icons";
+import { IconMail, IconMapPin, IconPhone, IconLinkedin, IconInstagram, IconTiktok } from "@/components/ui/icons";
 import { HomeLogoLink } from "./HomeLogoLink";
 
-const socialIcons = { whatsapp: IconWhatsapp, linkedin: IconLinkedin, instagram: IconInstagram };
+const socialIcons: Record<string, typeof IconLinkedin> = { linkedin: IconLinkedin, tiktok: IconTiktok, instagram: IconInstagram };
 
 /** Session 29: heading colour set to brand orange (#FF991C via the `text-orange` token) on the three footer columns explicitly named in the brief. */
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
@@ -84,12 +84,25 @@ export function Footer() {
           <h3 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-white/60">Follow us</h3>
           <div className="mt-4 flex items-center gap-3">
             {site.social.map((profile) => {
-              const Icon = socialIcons[profile.id as keyof typeof socialIcons];
+              const Icon = socialIcons[profile.id];
+              if (!profile.href) {
+                return (
+                  <span
+                    key={profile.id}
+                    aria-label={`${profile.label} link coming soon`}
+                    className="flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-full border border-white/10 text-white/25"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                );
+              }
               return (
                 <Link
                   key={profile.id}
                   href={profile.href}
-                  aria-label={profile.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${profile.label} (opens in a new tab)`}
                   className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/75 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-orange hover:text-orange"
                 >
                   <Icon className="h-4 w-4" />

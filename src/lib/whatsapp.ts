@@ -1,11 +1,12 @@
-const ALLOWED_PREFIXES = ["https://wa.me/", "https://api.whatsapp.com/"];
+const WHATSAPP_LINK = /^https:\/\/(wa\.me\/\d{8,15}|api\.whatsapp\.com\/send\?phone=\d{8,15})$/;
 
 /**
- * Returns the WhatsApp chat link set in NEXT_PUBLIC_WHATSAPP_URL, or null
- * when it is unset or is not a WhatsApp link. The WhatsApp button renders
- * nothing when this returns null, so no placeholder number ever reaches a page.
+ * Returns the link in NEXT_PUBLIC_WHATSAPP_URL when it is a WhatsApp link
+ * with a digits-only phone number (https://wa.me/<country code and number>),
+ * otherwise null. WhatsAppWidget is not rendered on null, so placeholder
+ * text never reaches a page.
  */
 export function getWhatsAppHref(): string | null {
   const value = process.env.NEXT_PUBLIC_WHATSAPP_URL?.trim() ?? "";
-  return ALLOWED_PREFIXES.some((prefix) => value.startsWith(prefix)) ? value : null;
+  return WHATSAPP_LINK.test(value) ? value : null;
 }
