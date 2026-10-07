@@ -24,6 +24,7 @@ export function WebsiteChatWidget() {
   const [pending, setPending] = useState(false);
   const nextId = useRef(1);
   const inFlight = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -40,6 +41,23 @@ export function WebsiteChatWidget() {
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [messages, pending]);
+
+  // Close on an outside click/tap — anywhere that isn't the launcher or the
+  // open panel. `pointerdown` (not `click`) so the closing happens before
+  // the target's own click fires, without ever calling preventDefault: a nav
+  // link or the WhatsApp button still receives its normal click right after.
+  // Attached only while open, and only once per open (not per render).
+  useEffect(() => {
+    if (!open) return;
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (containerRef.current && target instanceof Node && !containerRef.current.contains(target)) {
+        close();
+      }
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open]);
 
   function close() {
     setOpen(false);
@@ -84,7 +102,7 @@ export function WebsiteChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+    <div ref={containerRef} className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {open && (
         <motion.section
           id={panelId}
