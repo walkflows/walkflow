@@ -5,10 +5,10 @@ import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconMail, IconMapPin, IconPhone, IconLinkedin, IconInstagram, IconTiktok } from "@/components/ui/icons";
+import { IconMail, IconPhone, IconLinkedin, IconInstagram, IconTiktok, IconYoutube } from "@/components/ui/icons";
 import { HomeLogoLink } from "./HomeLogoLink";
 
-const socialIcons: Record<string, typeof IconLinkedin> = { linkedin: IconLinkedin, tiktok: IconTiktok, instagram: IconInstagram };
+const socialIcons: Record<string, typeof IconLinkedin> = { linkedin: IconLinkedin, tiktok: IconTiktok, instagram: IconInstagram, youtube: IconYoutube };
 
 /** Session 29: heading colour set to brand orange (#FF991C via the `text-orange` token) on the three footer columns explicitly named in the brief. */
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
@@ -58,10 +58,6 @@ export function Footer() {
 
         <div>
           <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">Connect with Us</h3>
-          {/*
-            Placeholder contact details (src/content/site.ts `contact`) — not
-            Joshua's real email/phone/address yet. See CLAUDE.md/SESSION-NOTES.md.
-          */}
           <ul className="mt-4 flex flex-col gap-3">
             <li className="flex items-start gap-2.5 text-sm text-white/85">
               <IconMail className="mt-0.5 h-4 w-4 flex-none text-orange" />
@@ -75,13 +71,10 @@ export function Footer() {
                 {site.contact.phone}
               </a>
             </li>
-            <li className="flex items-start gap-2.5 text-sm text-white/85">
-              <IconMapPin className="mt-0.5 h-4 w-4 flex-none text-orange" />
-              <span>{site.contact.address}</span>
-            </li>
           </ul>
 
-          <h3 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-white/60">Follow us</h3>
+          {/* Session 8 Oct 2026: "Follow us" recoloured to match the other footer headings' brand orange (was text-white/60). */}
+          <h3 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-orange">Follow us</h3>
           <div className="mt-4 flex items-center gap-3">
             {site.social.map((profile) => {
               const Icon = socialIcons[profile.id];

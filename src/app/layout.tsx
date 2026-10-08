@@ -7,6 +7,11 @@ import { unbounded, manrope, caveat } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  // Official domain (not yet connected — see the DNS plan). Once walkflow.tech
+  // resolves to this deployment, every page's canonical/OG URL is correct
+  // without further changes; until then this only affects generated URLs,
+  // not what domain visitors actually reach.
+  metadataBase: new URL("https://walkflow.tech"),
   title: {
     default: "WALKFLOW | Web Design & AI Automation",
     template: "%s | WALKFLOW",

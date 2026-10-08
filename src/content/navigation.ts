@@ -91,7 +91,8 @@ export const consultationCta = { label: "Book a Consultation", href: "/contact" 
 export const footerNav = {
   industries: [
     { label: "Real Estate", href: "/industries/real-estate" },
-    { label: "Home Services – HVAC & Plumbing", href: "/industries/home-services" },
+    // Shortened for the footer only (8 Oct 2026) — the header's Industry Solutions/Demo Projects dropdowns keep the fuller "Home Services – HVAC & Plumbing" label.
+    { label: "Home Services", href: "/industries/home-services" },
     { label: "Clinics", href: "/industries/clinics" },
     { label: "Consulting Firms", href: "/industries/consulting" },
   ],
@@ -102,12 +103,12 @@ export const footerNav = {
     { label: "Mobile App Development", href: "/services/mobile-app-development" },
   ],
   /**
-   * Legal links are removed until the policy pages are approved and built
-   * (CLAUDE.md: no unapproved policy drafts in production, no broken links).
-   * Restore these entries together with the /privacy, /cookies, /terms and
-   * /accessibility routes:
-   *   Privacy Policy → /privacy · Cookie Policy → /cookies ·
-   *   Website Terms → /terms · Accessibility → /accessibility
+   * Privacy Policy approved and added 8 Oct 2026. Cookie Policy, Website
+   * Terms and Accessibility stay out (CLAUDE.md: no unapproved policy
+   * drafts in production, no broken links) until each has its own approved
+   * page — add them here, same pattern, once they do:
+   *   Cookie Policy → /cookies · Website Terms → /terms ·
+   *   Accessibility → /accessibility
    */
-  legal: [] as { label: string; href: string }[],
+  legal: [{ label: "Privacy Policy", href: "/privacy" }] as { label: string; href: string }[],
 };

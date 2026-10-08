@@ -65,14 +65,8 @@ export const aboutHero = {
   // Session 29: replaced the old four-tag set with exactly these three, in this order, per explicit instruction.
   tags: ["Web Designer", "AI Automation Specialist", "Content Writer"],
   cta: { label: "Book a Consultation", href: "/contact" },
-  /**
-   * Session 29: LinkedIn placeholder, explicitly requested ahead of having a
-   * real URL. `null` renders a non-interactive icon with an accessible
-   * "coming soon" description in AboutHero.tsx — never an `href="#"` or an
-   * invented profile link. Set this to the real profile URL once supplied
-   * and the icon becomes a real external link automatically.
-   */
-  linkedinUrl: null as string | null,
+  /** Real profile URL, supplied 8 Oct 2026. */
+  linkedinUrl: "https://www.linkedin.com/in/walkflow" as string | null,
   /**
    * Session 22: swapped to the "walkflow founder" asset (a branded-tee
    * headshot Joshua added to `about us/`) in place of the earlier casual

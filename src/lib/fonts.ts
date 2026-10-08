@@ -1,5 +1,4 @@
 import localFont from "next/font/local";
-import { Manrope, Caveat } from "next/font/google";
 
 /**
  * Heading font — Unbounded, self-hosted from the local files the user added
@@ -27,16 +26,34 @@ export const unbounded = localFont({
   display: "swap",
 });
 
-export const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+/**
+ * Manrope and Caveat are self-hosted here (same pattern as Unbounded above),
+ * not fetched at build time via next/font/google. That fetch started failing
+ * in this environment — Turbopack's own font-resolution step couldn't
+ * complete even though plain network access (curl, Node's fetch, the
+ * already-running dev server) all worked fine, traced to a local
+ * antivirus TLS-inspection component interfering with Turbopack's Rust HTTP
+ * client specifically. Rather than touch any security/antivirus setting,
+ * the two files below were downloaded once (via Node's fetch, unaffected by
+ * that issue) from Google's own CDN — the exact bytes next/font/google would
+ * otherwise have fetched at every build — and are now bundled like any other
+ * local asset. Both are Google's official variable-font files (OFL
+ * licensed, same as the static Unbounded files above): Google's CSS API
+ * serves every requested static weight from the SAME physical file for
+ * these two families, so one file per family covers the full weight range
+ * actually used on the site, declared here as a `weight` range per Next's
+ * localFont variable-font support.
+ */
+export const manrope = localFont({
+  src: "../../Manrope font family/Manrope-Variable.woff2",
+  weight: "200 800",
   variable: "--font-manrope",
   display: "swap",
 });
 
-export const caveat = Caveat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+export const caveat = localFont({
+  src: "../../Caveat font family/Caveat-Variable.woff2",
+  weight: "400 700",
   variable: "--font-caveat",
   display: "swap",
 });

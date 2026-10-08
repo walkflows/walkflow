@@ -294,7 +294,8 @@ export const faq = {
 export const finalCta = {
   heading: "What would you like your business to do better?",
   body: "A clearer website? Easier enquiry handling? Less time spent on follow-ups? Tell us where things feel difficult. Let’s work out the next step.",
-  // Session 29: "Request a Call" → "See How It Works" (→ #demos), now the secondary button — Book a Consultation renders first. See FinalCta.tsx. Session 38: #demos anchor retargeted to the merged Industry Solutions + Demos section.
-  cta: { label: "See How It Works", href: "#industries" },
+  // Session 29: "Request a Call" → "See How It Works" (→ #demos), now the secondary button — Book a Consultation renders first. See FinalCta.tsx.
+  // Updated: relabelled "Industry Solutions" and pointed at the real overview page (/industries, all four industries) instead of the homepage anchor.
+  cta: { label: "Industry Solutions", href: "/industries" },
   note: "Send a short enquiry, and we’ll contact you to arrange a conversation. No account needed.",
 };

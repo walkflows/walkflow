@@ -3,12 +3,13 @@ import { contactHero } from "@/content/contact";
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconInstagram, IconLinkedin, IconMail, IconMapPin, IconPeople, IconPhone, IconSchedule, IconTiktok } from "@/components/ui/icons";
+import { IconInstagram, IconLinkedin, IconMail, IconPeople, IconPhone, IconSchedule, IconTiktok, IconYoutube } from "@/components/ui/icons";
 
 const socialIcons: Record<string, typeof IconLinkedin> = {
   linkedin: IconLinkedin,
   tiktok: IconTiktok,
   instagram: IconInstagram,
+  youtube: IconYoutube,
 };
 
 type Card = { id: string; wide?: boolean; content: React.ReactNode };
@@ -39,14 +40,6 @@ function buildCards(): Card[] {
           <a href={`tel:${site.contact.phone.replace(/[^+\d]/g, "")}`} className="hover:text-orange">
             {site.contact.phone}
           </a>
-        </InfoCard>
-      ),
-    });
-    cards.push({
-      id: "address",
-      content: (
-        <InfoCard icon={IconMapPin} label="Address">
-          <span>{site.contact.address}</span>
         </InfoCard>
       ),
     });
