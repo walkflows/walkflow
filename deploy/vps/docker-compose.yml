@@ -1,0 +1,70 @@
+# WALKFLOW website on the Hostinger VPS. Project name keeps it fully separate from the n8n stack.
+# Usage (see deploy.sh):  WALKFLOW_IMAGE=walkflow-web:<commit> docker compose up -d
+# Secrets come from <env>/web.env (chmod 600, never in Git, never baked into the image).
+name: walkflow-web-${WALKFLOW_ENV:-staging}
+
+services:
+  web:
+    image: ${WALKFLOW_IMAGE:?set WALKFLOW_IMAGE, e.g. walkflow-web:abc1234}
+    restart: unless-stopped
+    # format: raw = values are used exactly as written (no $ interpolation, no quote handling), so a secret with
+    # $ # " backslash or similar characters reaches the container unchanged.
+    env_file:
+      - path: ${WALKFLOW_ENV_FILE:?set by deploy.sh}
+        format: raw
+    # Loopback only: reachable by Caddy on this host, not from the internet or other containers' hosts.
+    ports:
+      - "127.0.0.1:${WALKFLOW_WEB_PORT:-3100}:3000"
+    networks: [internal]
+    depends_on:
+      redis:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    volumes:
+      - web_cache:/app/.next/cache
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    cpus: 1.0
+    mem_limit: 1g
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  redis:
+    # Private rate-limit store: no published ports, only reachable on the internal network.
+    image: redis:7-alpine
+    restart: unless-stopped
+    # format: raw = values are used exactly as written (no $ interpolation, no quote handling), so a secret with
+    # $ # " backslash or similar characters reaches the container unchanged.
+    env_file:
+      - path: ${WALKFLOW_ENV_FILE:?set by deploy.sh}
+        format: raw
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\" --maxmemory 64mb --maxmemory-policy volatile-ttl --save ''"]
+    networks: [internal]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+    # Run as the image's unprivileged "redis" user (uid/gid 999) from the start; no capabilities needed.
+    user: "999:999"
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    cpus: 0.25
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options: { max-size: "5m", max-file: "2" }
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  web_cache:
+  redis_data:

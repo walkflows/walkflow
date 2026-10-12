@@ -1,0 +1,21 @@
+# PROPOSED (Phase 2, NOT applied): production site block for the WALKFLOW website on the VPS.
+# Apply only at cutover, after the DNS records for walkflow.tech / www.walkflow.tech point at this server.
+# Security headers (CSP, HSTS, ...) come from the app (next.config.ts) and are passed through unchanged.
+# Caddy obtains public Let's Encrypt certificates automatically and redirects HTTP to HTTPS.
+# Both hostnames serve the site directly, exactly as on Vercel today (canonical URLs are already walkflow.tech).
+walkflow.tech, www.walkflow.tech {
+	header -Server
+	# The app answers 413 itself for bodies over its own limits (8 KB enquiry, 2 KB chat). Caddy only guards against
+	# huge uploads: a declared size of 1,000,000+ bytes gets 413 here; undeclared (chunked) bodies are capped at 1 MB.
+	@hugebody header_regexp Content-Length ^[0-9]{7,}$
+	respond @hugebody 413
+	request_body {
+		max_size 1MB
+	}
+	reverse_proxy 127.0.0.1:3101 {
+		# Overwrite (never append) with the real connecting address; the app trusts only this header.
+		header_up X-WF-Client-IP {remote_host}
+		header_up -X-Forwarded-For
+		header_up -X-Real-IP
+	}
+}

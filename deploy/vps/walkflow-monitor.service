@@ -1,0 +1,9 @@
+[Unit]
+Description=WALKFLOW website health check
+After=docker.service caddy.service
+
+[Service]
+Type=oneshot
+Environment=WALKFLOW_ENV=production
+Environment=WALKFLOW_PUBLIC_HOST=walkflow.tech
+ExecStart=/opt/walkflow-web/monitor.sh

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { chatCopy } from "@/content/chat-assistant";
 import { isRateLimited } from "@/lib/chat/rate-limit";
 import { trustedClientIp } from "@/lib/client-ip";
+import { readLimitedText } from "@/lib/read-body";
 import { sharedRateLimit } from "@/lib/shared-rate-limit";
 import { respond } from "@/lib/chat/respond";
 import type { ChatApiResponse } from "@/lib/chat/types";
@@ -29,8 +30,9 @@ export async function POST(request: NextRequest): Promise<Response> {
     return errorResponse("rate_limited", chatCopy.rateLimited, 429);
   }
 
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) return errorResponse("too_large", chatCopy.tooLong, 413);
+  const body = await readLimitedText(request, MAX_BODY_BYTES);
+  if (!body.ok) return errorResponse("too_large", chatCopy.tooLong, 413);
+  const raw = body.text;
 
   let payload: unknown;
   try {
@@ -43,6 +45,6 @@ export async function POST(request: NextRequest): Promise<Response> {
   if (!message) return errorResponse("invalid_message", "Enter a question to send.", 400);
   if (message.length > MAX_MESSAGE_LENGTH) return errorResponse("too_long", chatCopy.tooLong, 400);
 
-  const body: ChatApiResponse = { reply: respond(message) };
-  return NextResponse.json(body, { headers: { "Cache-Control": "no-store" } });
+  const reply: ChatApiResponse = { reply: respond(message) };
+  return NextResponse.json(reply, { headers: { "Cache-Control": "no-store" } });
 }

@@ -1,0 +1,38 @@
+# STAGING site block for the WALKFLOW website. Append to /etc/caddy/Caddyfile (validate first:
+# `caddy validate --config /etc/caddy/Caddyfile`, then `systemctl reload caddy`; reload is graceful and
+# does not restart n8n). Reachable ONLY from your Tailscale devices; everyone else gets a plain 404.
+# Addressed by the VPS's Tailscale IP because Caddy does not auto-manage certificates for *.ts.net names.
+# `tls internal` uses Caddy's own local CA (browsers warn until its root certificate is trusted, or until a
+# staging.walkflow.tech DNS record is added; see docs/vps-deployment.md).
+https://100.65.217.96 {
+	tls internal
+	header {
+		X-Robots-Tag "noindex, nofollow, noarchive"
+		-Server
+	}
+
+	@tailnet remote_ip 100.64.0.0/10 fd7a:115c:a1e0::/48 ::ffff:100.64.0.0/106
+	handle @tailnet {
+		handle /robots.txt {
+			respond "User-agent: *
+Disallow: /
+" 200
+		}
+		# The app answers 413 itself for bodies over its own limits (8 KB enquiry, 2 KB chat). Caddy only guards against
+		# huge uploads: a declared size of 1,000,000+ bytes gets 413 here; undeclared (chunked) bodies are capped at 1 MB.
+		@hugebody header_regexp Content-Length ^[0-9]{7,}$
+		respond @hugebody 413
+		request_body {
+			max_size 1MB
+		}
+		reverse_proxy 127.0.0.1:3100 {
+			# Overwrite (never append) with the real connecting address; the app trusts only this header.
+			header_up X-WF-Client-IP {remote_host}
+			header_up -X-Forwarded-For
+			header_up -X-Real-IP
+		}
+	}
+	handle {
+		respond "Not found" 404
+	}
+}

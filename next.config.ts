@@ -42,6 +42,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Self-hosted Docker build (deploy/vps/build.sh sets BUILD_STANDALONE=1). Unset on Vercel, so
+  // the Vercel build is unchanged.
+  ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

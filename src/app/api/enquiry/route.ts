@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { trustedClientIp } from "@/lib/client-ip";
+import { readLimitedText } from "@/lib/read-body";
 import { enquiryRateLimited, forwardEnquiry, validateEnquiry, type FieldErrors } from "@/lib/enquiry-server";
 import { sharedRateLimit } from "@/lib/shared-rate-limit";
 
@@ -19,8 +20,9 @@ export type EnquiryApiResponse =
 const reply = (body: EnquiryApiResponse, status: number) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
 export async function POST(request: NextRequest): Promise<Response> {
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) return reply({ ok: false, code: "too_large" }, 413);
+  const body = await readLimitedText(request, MAX_BODY_BYTES);
+  if (!body.ok) return reply({ ok: false, code: "too_large" }, 413);
+  const raw = body.text;
 
   let payload: unknown;
   try {
