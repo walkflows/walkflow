@@ -21,7 +21,7 @@ export const privacySeo = {
 export const privacyIntro = {
   eyebrow: "Privacy",
   heading: "Privacy Policy",
-  lastUpdated: "8 October 2026",
+  lastUpdated: "12 October 2026",
   summary:
     "This policy explains what information WALKFLOW collects through this website and our enquiry process, how our own automation tools use it, including Google Gmail, Sheets, Drive and Calendar, and the choices you have.",
 };
