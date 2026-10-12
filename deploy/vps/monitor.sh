@@ -11,11 +11,15 @@ problems=0
 say() { echo "$(date -u +%FT%TZ) $*" | tee -a "$LOG"; }
 bad() { say "PROBLEM: $*"; problems=$((problems+1)); }
 
+# Safety: this script may restart ONLY the two WALKFLOW website containers of the named environment. It never
+# touches n8n or any other project's containers (n8n is only read via its health URL below).
+case "$ENVNAME" in production|staging) ;; *) echo "invalid WALKFLOW_ENV '$ENVNAME'" >&2; exit 2 ;; esac
+may_restart() { [[ "$1" =~ ^walkflow-web-(production|staging)-(web|redis)-1$ ]]; }
 for c in "walkflow-web-$ENVNAME-web-1" "walkflow-web-$ENVNAME-redis-1"; do
   st=$(docker inspect -f '{{.State.Health.Status}}' "$c" 2>/dev/null || echo missing)
   if [ "$st" != healthy ]; then
     bad "$c is $st"
-    [ "$st" = unhealthy ] && docker restart "$c" >/dev/null 2>&1 && say "restarted $c"
+    if [ "$st" = unhealthy ] && may_restart "$c"; then docker restart "$c" >/dev/null 2>&1 && say "restarted $c"; fi
   fi
 done
 
