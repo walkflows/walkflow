@@ -10,7 +10,7 @@
       "parameters": {
         "width": 480,
         "height": 320,
-        "content": "PREPARED, NOT TESTED.\n\nMirrors n8n-workflows/clinics/01-*.json's setup exactly:\n1. Import into n8n.\n2. Create credential 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>) — never the anon key.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL.\n4. Require header 'x-walkflow-webhook-secret' matching N8N_WEBHOOK_SECRET on the Webhook node's Authentication.\n5. Activate, copy the production webhook URL into N8N_CONSULTING_WEBHOOK_URL, then test end to end before enabling Connected Mode.\n\nCorresponds to src/lib/consulting-demo/contract.ts action 'submit_request'. The Function node below must port assignConsultant() from src/components/demo/consulting/engine.ts so Connected Mode and Preview Mode never disagree. A 'project' path request is always routed to the custom-project consultant, never a service specialist."
+        "content": "PREPARED, NOT TESTED.\n\nMirrors n8n-workflows/clinics/01-*.json's setup exactly:\n1. Import into n8n.\n2. Create credential 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>) — never the anon key.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL.\n4. Create a Header Auth credential 'walkflow-demo-webhook-secret' (Name: x-walkflow-webhook-secret, Value: N8N_WEBHOOK_SECRET). The Webhook node is already set to Header Auth with it; confirm it is selected after import and that a request without the header is rejected before activating.\n5. Activate, copy the production webhook URL into N8N_CONSULTING_WEBHOOK_URL, then test end to end before enabling Connected Mode.\n\nCorresponds to src/lib/consulting-demo/contract.ts action 'submit_request'. The Function node below must port assignConsultant() from src/components/demo/consulting/engine.ts so Connected Mode and Preview Mode never disagree. A 'project' path request is always routed to the custom-project consultant, never a service specialist."
       }
     },
     {
@@ -19,7 +19,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [0, 0],
-      "parameters": { "path": "consulting/request", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+      "parameters": { "path": "consulting/request", "httpMethod": "POST", "responseMode": "responseNode", "authentication": "headerAuth", "options": {} },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-webhook-secret", "name": "walkflow-demo-webhook-secret" } }
     },
     {
       "id": "validate-input",

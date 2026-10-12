@@ -47,3 +47,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# security review reports contain sensitive findings - keep out of this public repo
+/security-reports/

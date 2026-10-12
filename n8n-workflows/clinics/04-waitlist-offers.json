@@ -19,7 +19,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [0, 0],
-      "parameters": { "path": "clinics/waitlist", "httpMethod": "POST", "responseMode": "responseNode", "options": {} }
+      "parameters": { "path": "clinics/waitlist", "httpMethod": "POST", "responseMode": "responseNode", "authentication": "headerAuth", "options": {} },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-webhook-secret", "name": "walkflow-demo-webhook-secret" } }
     },
     {
       "id": "route-action",
