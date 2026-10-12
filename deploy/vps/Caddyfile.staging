@@ -17,7 +17,7 @@ https://100.65.217.96 {
 			respond "User-agent: *\nDisallow: /\n" 200
 		}
 		request_body {
-			max_size 256KB
+			max_size 64KB
 		}
 		reverse_proxy 127.0.0.1:3100 {
 			# Overwrite (never append) with the real connecting address; the app trusts only this header.
