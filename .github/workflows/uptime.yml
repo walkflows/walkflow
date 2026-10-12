@@ -5,6 +5,8 @@
 name: Uptime check
 
 on:
+  push:
+    branches: [uptime-monitoring]   # TEMPORARY: lets this branch run once for testing; removed before merging
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
