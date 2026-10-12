@@ -1,0 +1,63 @@
+# External uptime and certificate check for the public website. Free (GitHub-hosted, public repo), no secrets, only
+# reads public URLs. A failed run makes GitHub email the account that last edited this schedule; the run page lists
+# which check failed. Notes: GitHub may delay scheduled runs by several minutes at busy times, and pauses scheduled
+# workflows on a public repo after 60 days without repository activity (re-enable it in the Actions tab).
+name: Uptime check
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      path:
+        description: "Test path to request on walkflow.tech instead of / (used to prove failures are detected, e.g. /no-such-page)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check walkflow.tech
+        env:
+          TEST_PATH: ${{ github.event.inputs.path }}
+        run: |
+          set -u
+          fail=0
+          note() { echo "::error::$1"; fail=1; }
+          path="${TEST_PATH:-}"
+          if [ -n "$path" ] && ! printf '%s' "$path" | grep -Eq '^/[A-Za-z0-9_./-]{0,100}$'; then echo "invalid path input"; exit 2; fi
+
+          fetch() { # url -> sets code, body file, headers file
+            curl -sS --retry 2 --retry-delay 5 --retry-all-errors -m 20 -o body.html -D headers.txt -w '%{http_code} %{time_total}' "$1" || echo "000 0"
+          }
+
+          out=$(fetch "https://walkflow.tech${path:-/}"); code=${out% *}; secs=${out#* }
+          echo "walkflow.tech${path:-/} -> $code in ${secs}s"
+          [ "$code" = 200 ] || note "walkflow.tech${path:-/} returned $code (expected 200)"
+          if [ -z "$path" ]; then
+            grep -qi 'WALKFLOW' body.html || note "home page does not contain WALKFLOW"
+            grep -qi '^strict-transport-security:' headers.txt || note "HSTS header missing"
+            grep -qi '^content-security-policy:' headers.txt || note "Content-Security-Policy header missing"
+            if grep -qi '^x-robots-tag:.*noindex' headers.txt; then note "production is sending noindex"; fi
+          fi
+          awk -v s="$secs" 'BEGIN{exit !(s+0 > 8)}' && note "home page slow: ${secs}s"
+
+          for u in https://www.walkflow.tech/contact https://walkflow.tech/sitemap.xml https://walkflow.tech/robots.txt; do
+            c=$(curl -sS --retry 2 --retry-delay 5 --retry-all-errors -m 20 -o /dev/null -w '%{http_code}' "$u" || echo 000)
+            echo "$u -> $c"; [ "$c" = 200 ] || note "$u returned $c"
+          done
+
+          for host in walkflow.tech www.walkflow.tech; do
+            end=$(echo | openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+            if [ -z "$end" ]; then note "no certificate readable for $host"; continue; fi
+            days=$(( ( $(date -d "$end" +%s) - $(date +%s) ) / 86400 ))
+            echo "$host certificate valid for $days more days"
+            [ "$days" -ge 14 ] || note "$host certificate expires in $days days"
+          done
+
+          exit $fail
