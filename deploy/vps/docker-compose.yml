@@ -7,7 +7,11 @@ services:
   web:
     image: ${WALKFLOW_IMAGE:?set WALKFLOW_IMAGE, e.g. walkflow-web:abc1234}
     restart: unless-stopped
-    env_file: ${WALKFLOW_ENV_FILE:?set by deploy.sh}
+    # format: raw = values are used exactly as written (no $ interpolation, no quote handling), so a secret with
+    # $ # " backslash or similar characters reaches the container unchanged.
+    env_file:
+      - path: ${WALKFLOW_ENV_FILE:?set by deploy.sh}
+        format: raw
     # Loopback only: reachable by Caddy on this host, not from the internet or other containers' hosts.
     ports:
       - "127.0.0.1:${WALKFLOW_WEB_PORT:-3100}:3000"
@@ -33,7 +37,11 @@ services:
     # Private rate-limit store: no published ports, only reachable on the internal network.
     image: redis:7-alpine
     restart: unless-stopped
-    env_file: ${WALKFLOW_ENV_FILE:?set by deploy.sh}
+    # format: raw = values are used exactly as written (no $ interpolation, no quote handling), so a secret with
+    # $ # " backslash or similar characters reaches the container unchanged.
+    env_file:
+      - path: ${WALKFLOW_ENV_FILE:?set by deploy.sh}
+        format: raw
     command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\" --maxmemory 64mb --maxmemory-policy volatile-ttl --save ''"]
     networks: [internal]
     volumes:

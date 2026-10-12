@@ -26,6 +26,8 @@ Images stay on disk (about 0.6 GB each); remove old ones with `docker image rm w
 in chat), `CLIENT_IP_HEADER=x-wf-client-ip`, `REDIS_PASSWORD`/`REDIS_URL`. With the secret empty the form refuses to send (503 "not available") —
 this is how staging is kept from creating real enquiries.
 
+Place or clear the secret with `/opt/walkflow-web/set-secret.sh <env>` (or `... --clear`): it prompts with hidden input, writes the exact value (no escaping needed; `$`, `#`, quotes and backslashes are preserved because the Compose env file is read in `raw` format), recreates the containers and prints PASS/FAIL after comparing what was typed, the file and the running container for exact equality. The value is never displayed.
+
 ## Rate limits (same policy as on Vercel)
 `POST /api/enquiry`: 5 per 10 minutes per client address; `/api/chat`: 20 per minute. The client address is the one Caddy writes into
 `X-WF-Client-IP` (it overwrites anything the visitor sends); forged `x-forwarded-for`, `x-real-ip` and `x-wf-client-ip` headers are ignored.
