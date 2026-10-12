@@ -1,0 +1,28 @@
+# Runtime image for the self-hosted WALKFLOW website.
+# Built from the standalone output that build.sh produces in ./dist (the build itself runs in a
+# resource-limited throwaway container, so this image contains no source, no dev dependencies and
+# no secrets). Run as a non-root user.
+FROM node:24-bookworm-slim
+
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    NEXT_TELEMETRY_DISABLED=1
+
+WORKDIR /app
+COPY --chown=node:node dist/standalone/ ./
+COPY --chown=node:node dist/static/ ./.next/static/
+COPY --chown=node:node dist/public/ ./public/
+
+# Persistent image-optimisation cache lives on a volume mounted here.
+RUN mkdir -p /app/.next/cache && chown -R node:node /app/.next/cache
+
+ARG GIT_COMMIT=unknown
+LABEL org.opencontainers.image.revision=$GIT_COMMIT \
+      org.opencontainers.image.source=https://github.com/walkflows/walkflow
+
+USER node
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/robots.txt').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["node", "server.js"]

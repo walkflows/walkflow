@@ -1,0 +1,31 @@
+# STAGING site block for the WALKFLOW website. Append to /etc/caddy/Caddyfile (validate first:
+# `caddy validate --config /etc/caddy/Caddyfile`, then `systemctl reload caddy`; reload is graceful and
+# does not restart n8n). Reachable ONLY from your Tailscale devices; everyone else gets a plain 404.
+# `tls internal` uses Caddy's own local CA (browsers warn until its root is trusted, or until Tailscale
+# HTTPS certificates are enabled / a staging.walkflow.tech DNS record is added; see docs/vps-deployment.md).
+walkflow-vps.tailc35762.ts.net {
+	tls internal
+	header {
+		X-Robots-Tag "noindex, nofollow, noarchive"
+		-Server
+	}
+
+	@tailnet remote_ip 100.64.0.0/10 fd7a:115c:a1e0::/48 ::ffff:100.64.0.0/106
+	handle @tailnet {
+		handle /robots.txt {
+			respond "User-agent: *\nDisallow: /\n" 200
+		}
+		request_body {
+			max_size 256KB
+		}
+		reverse_proxy 127.0.0.1:3100 {
+			# Overwrite (never append) with the real connecting address; the app trusts only this header.
+			header_up X-WF-Client-IP {remote_host}
+			header_up -X-Forwarded-For
+			header_up -X-Real-IP
+		}
+	}
+	handle {
+		respond "Not found" 404
+	}
+}
