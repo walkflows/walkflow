@@ -43,8 +43,9 @@ services:
       interval: 15s
       timeout: 3s
       retries: 5
+    # Run as the image's unprivileged "redis" user (uid/gid 999) from the start; no capabilities needed.
+    user: "999:999"
     cap_drop: [ALL]
-    cap_add: [SETUID, SETGID, CHOWN]
     security_opt: ["no-new-privileges:true"]
     cpus: 0.25
     mem_limit: 128m
