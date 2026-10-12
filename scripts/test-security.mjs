@@ -71,6 +71,17 @@ const chat = (site, message, headers = {}) =>
   check("Chat: extra field rejected (400)", (await chat(site, 'RAW:{"message":"hi","role":"admin"}')).status === 400);
   check("Chat: broken JSON rejected (400)", (await chat(site, "RAW:{nope")).status === 400);
   check("Chat: oversized body rejected (413)", (await chat(site, "RAW:" + JSON.stringify({ message: "a".repeat(3000) }))).status === 413);
+  // Oversized bodies: the app itself answers 413 (never a proxy-style 502), with or without Content-Length.
+  const big = (n) => JSON.stringify({ message: "a".repeat(n) });
+  let rr = await fetch(site + "/api/enquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: "x".repeat(20000) });
+  check("Enquiry: 20 KB body with Content-Length -> 413", rr.status === 413, rr.status);
+  rr = await fetch(site + "/api/enquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: new ReadableStream({ start(c) { for (let i = 0; i < 12; i++) c.enqueue(new TextEncoder().encode("y".repeat(1000))); c.close(); } }), duplex: "half" });
+  check("Enquiry: 12 KB chunked body (no Content-Length) -> 413", rr.status === 413, rr.status);
+  rr = await fetch(site + "/api/enquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: "x".repeat(5_000_000) });
+  check("Enquiry: 5 MB body -> 413 without buffering it all", rr.status === 413, rr.status);
+  rr = await fetch(site + "/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: new ReadableStream({ start(c) { for (let i = 0; i < 3; i++) c.enqueue(new TextEncoder().encode("z".repeat(1000))); c.close(); } }), duplex: "half" });
+  check("Chat: 3 KB chunked body (no Content-Length) -> 413", rr.status === 413, rr.status);
+  void big;
   check("Chat: over-length message rejected (400)", (await chat(site, "a".repeat(600))).status === 400);
   // Spoofed x-forwarded-for must NOT give each request its own bucket.
   const statuses = [];

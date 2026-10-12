@@ -44,17 +44,20 @@ await new Promise((r) => redis.listen(4597, "127.0.0.1", r));
 async function start(port, env) {
   const e = { ...process.env, ...env };
   for (const k of ["N8N_ENQUIRY_WEBHOOK_URL", "N8N_ENQUIRY_SECRET", "VERCEL", "ENQUIRY_TEST_RECEIVER", "UPSTASH_REDIS_REST_URL", "KV_REST_API_URL"]) delete e[k];
-  const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(port), "-H", "127.0.0.1"], { env: e, stdio: "ignore" });
+  const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(port), "-H", "127.0.0.1"], { env: e, stdio: ["ignore", "pipe", "pipe"] });
+  const logs = { text: "" };
+  child.stdout.on("data", (d) => (logs.text += d));
+  child.stderr.on("data", (d) => (logs.text += d));
   const site = `http://127.0.0.1:${port}`;
   for (let i = 0; i < 80; i++) { try { await fetch(site + "/robots.txt"); break; } catch { await new Promise((r) => setTimeout(r, 500)); } }
-  return { child, site };
+  return { child, site, logs };
 }
 const chat = (site, headers) => fetch(site + "/api/chat", { method: "POST", headers: { "Content-Type": "application/json", ...headers }, body: JSON.stringify({ message: "hello" }) }).then((r) => r.status);
 const enquiry = (site, n, headers) => fetch(site + "/api/enquiry", { method: "POST", headers: { "Content-Type": "application/json", ...headers }, body: JSON.stringify({ submissionId: `synthetic-selfhost-${n}-abcdefgh`, name: "Synthetic", email: "s@example.com", company: "C", service: "web-design", industry: "clinics", timing: "asap", message: "synthetic", method: "email" }) }).then((r) => r.status);
 const ENV = { CLIENT_IP_HEADER: "x-wf-client-ip", REDIS_URL: `redis://:${PASSWORD}@127.0.0.1:4597` };
 
 // ---- Run 1: Redis backend, trusted proxy header ----
-let { child, site } = await start(3111, ENV);
+let { child, site, logs: _l1 } = await start(3111, ENV);
 let s = [];
 for (let i = 0; i < 22; i++) s.push(await chat(site, { "x-wf-client-ip": "203.0.113.10", "x-forwarded-for": `198.51.100.${i}`, "x-real-ip": `198.51.100.${i}` }));
 check("Chat: 20 allowed, then 429, even though x-forwarded-for / x-real-ip were forged on every request", s.slice(0, 20).every((x) => x === 200) && s[20] === 429 && s[21] === 429, s);
@@ -72,16 +75,25 @@ check("After an app restart the same client is still limited (state is in Redis)
 check("...and a new client is not", (await enquiry(site, 100, { "x-wf-client-ip": "203.0.113.21" })) === 503);
 child.kill();
 
-// ---- Run 3: Redis down -> safe in-memory fallback, nothing breaks ----
+// ---- Run 3: Redis down -> safe in-memory fallback, one warning, automatic recovery ----
 redisUp = false;
-({ child, site } = await start(3113, ENV));
+let logs;
+({ child, site, logs } = await start(3113, ENV));
+const t0 = Date.now();
 s = []; for (let i = 0; i < 22; i++) s.push(await chat(site, { "x-wf-client-ip": "203.0.113.30" }));
 check("Redis down: requests still answered (no outage) and the in-memory limit still applies (429 after 20)", s.slice(0, 20).every((x) => x === 200) && s[20] === 429, s);
+check("Redis down: dead store is skipped after the first failure (22 requests finished quickly, not 22 x timeout)", Date.now() - t0 < 12000, Date.now() - t0);
+check("Redis down: exactly one warning logged, with no request data", (logs.text.match(/shared store unavailable/g) || []).length === 1 && !logs.text.includes("203.0.113"), logs.text.slice(-300));
+redisUp = true;
+await new Promise((r) => setTimeout(r, 11000)); // longer than the 10 s retry pause
+const before = keysSeen.filter((k) => k === "walkflow:rl:chat:203.0.113.31").length;
+await chat(site, { "x-wf-client-ip": "203.0.113.31" });
+check("Redis back: shared counting resumes automatically (counter appears in Redis) and recovery is logged once", keysSeen.filter((k) => k === "walkflow:rl:chat:203.0.113.31").length === before + 1 && (logs.text.match(/shared store recovered/g) || []).length === 1, logs.text.slice(-300));
 child.kill();
 
 // ---- Run 4: wrong password -> treated as unavailable, fallback ----
 redisUp = true;
-({ child, site } = await start(3114, { ...ENV, REDIS_URL: "redis://:wrong@127.0.0.1:4597" }));
+({ child, site, logs } = await start(3114, { ...ENV, REDIS_URL: "redis://:wrong@127.0.0.1:4597" }));
 check("Wrong Redis password: falls back to in-memory (still answers)", (await chat(site, { "x-wf-client-ip": "203.0.113.40" })) === 200);
 child.kill();
 

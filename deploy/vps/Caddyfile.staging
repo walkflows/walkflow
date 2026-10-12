@@ -18,8 +18,12 @@ https://100.65.217.96 {
 Disallow: /
 " 200
 		}
+		# The app answers 413 itself for bodies over its own limits (8 KB enquiry, 2 KB chat). Caddy only guards against
+		# huge uploads: a declared size of 1,000,000+ bytes gets 413 here; undeclared (chunked) bodies are capped at 1 MB.
+		@hugebody header_regexp Content-Length ^[0-9]{7,}$
+		respond @hugebody 413
 		request_body {
-			max_size 64KB
+			max_size 1MB
 		}
 		reverse_proxy 127.0.0.1:3100 {
 			# Overwrite (never append) with the real connecting address; the app trusts only this header.

@@ -19,6 +19,26 @@ import net from "node:net";
 export type RateLimitResult = "limited" | "allowed" | "unavailable";
 
 const TIMEOUT_MS = 1500;
+// Failure handling: after one failed attempt the store is skipped for RETRY_AFTER_MS (so a dead store costs
+// one slow request, not one per visitor), then the next request tries it again. Recovery is automatic and
+// needs no restart. The first failure and the recovery are each logged once (no request data in the line).
+const RETRY_AFTER_MS = 10_000;
+let storeDownUntil = 0;
+let storeMarkedDown = false;
+const markDown = () => {
+  storeDownUntil = Date.now() + RETRY_AFTER_MS;
+  if (!storeMarkedDown) {
+    storeMarkedDown = true;
+    console.warn("[rate-limit] shared store unavailable; using the weaker in-memory limiter until it recovers");
+  }
+};
+const markUp = () => {
+  storeDownUntil = 0;
+  if (storeMarkedDown) {
+    storeMarkedDown = false;
+    console.info("[rate-limit] shared store recovered; shared limits active again");
+  }
+};
 
 function restStore(): { url: string; token: string } | null {
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
@@ -90,8 +110,13 @@ export async function sharedRateLimit(bucket: string, key: string, max: number, 
 
   const target = redisTarget();
   if (target) {
+    if (Date.now() < storeDownUntil) return "unavailable";
     const count = await redisIncr(target, redisKey, windowSeconds);
-    if (count === null || !Number.isFinite(count)) return "unavailable";
+    if (count === null || !Number.isFinite(count)) {
+      markDown();
+      return "unavailable";
+    }
+    markUp();
     return count > max ? "limited" : "allowed";
   }
 
