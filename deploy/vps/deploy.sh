@@ -12,7 +12,7 @@ docker image inspect "walkflow-web:$SHORT" >/dev/null || { echo "image walkflow-
 # Loopback ports: staging 3100, production 3101 (production is not started in Phase 1).
 PORT=3100; [ "$ENVNAME" = production ] && PORT=3101
 cd "$DIR"
-[ -f current.image ] && cp current.image previous.image || true
+if [ -f current.image ] && [ "$(cat current.image)" != "walkflow-web:$SHORT" ]; then cp current.image previous.image; fi  # keep the rollback target when only settings change
 echo "walkflow-web:$SHORT" > current.image
 export WALKFLOW_ENV_FILE="$DIR/web.env" WALKFLOW_ENV="$ENVNAME" WALKFLOW_IMAGE="walkflow-web:$SHORT" WALKFLOW_WEB_PORT="$PORT"
 docker compose -f "$BASE/docker-compose.yml" --env-file /dev/null up -d --remove-orphans
