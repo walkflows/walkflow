@@ -58,18 +58,28 @@ The app reads request bodies with a hard cap (enquiry 8 KB, chat 2 KB) and answe
 Content-Length. Caddy adds a coarse guard: a declared size of 1,000,000+ bytes gets 413 at the proxy and undeclared (chunked) bodies are capped
 at 1 MB. (Caddy 2.6 reports a body over its own cap as 502, which is why the app's cap is lower and normal oversized requests never reach it.)
 
+## Where is my change? (saved vs live)
+| Step | What happened | Is it live for visitors? |
+|---|---|---|
+| Claude Code edits files on your PC | Only on your computer | **No** |
+| Branch pushed / pull request opened on GitHub | Saved on GitHub; a Vercel *preview* may appear (private) | **No** |
+| Pull request merged into `master` | Saved on GitHub as the official version; Vercel's standby copy rebuilds | **No** (visitors are served from the Hostinger server) |
+| `release.sh production master` run on the server, ends with `RESULT: PASS` | The server builds the code and replaces the website container | **YES, live now** (usually within 2 minutes) |
+| `release.sh` ends with `RESULT: FAIL` | The server rolled back by itself | No (the previous version is still live) |
+Only the last PASS step changes what visitors see. Until you run it, `master` on GitHub can be ahead of the live site (this is normal).
+
 ## Publishing website changes (how it works now)
 **Deployment is MANUAL. Nothing publishes automatically when you merge.**
 1. **Edit** with Claude Code on your PC. Ask for a branch (never edit `master` directly), for example "make the change on a new branch and open a pull request".
 2. **Review and merge on GitHub:** open the pull request, read what changed, and merge it into `master`. Branch protection requires the "Vercel" check
    (and blocks force-pushes and deleting `master`). Merging only updates the code in GitHub; the live site does not change yet.
 3. **Publish to the live site:** open PowerShell (Tailscale running) and run
-   `ssh root@100.65.217.96`, then `/opt/walkflow-web/release.sh production master`.
+   `ssh root@<vps>` (the server address you use over Tailscale), then `/opt/walkflow-web/release.sh production master`.
    The script builds exactly that code in a capped container (about 1.5 minutes), swaps in the new website container (a few seconds of interruption),
    runs a smoke test against the live site (home, contact, sitemap, 404, security headers, request limits, n8n health, no noindex) and
    **rolls back by itself if any check fails**. It ends with `RESULT: PASS` or `RESULT: FAIL`.
 4. **Check it** in a browser and watch UptimeRobot stay green. To undo a published release at any time: `/opt/walkflow-web/rollback.sh production`.
-5. For risky changes, try them first on staging (tailnet only): `/opt/walkflow-web/release.sh staging <branch-or-sha>` then open `https://100.65.217.96/` .
+5. For risky changes, try them first on staging (tailnet only): `/opt/walkflow-web/release.sh staging <branch-or-sha>` then open `https://<vps>/` .
 The enquiry secret is never in Git; change it only with `/opt/walkflow-web/set-secret.sh production`.
 
 ## Vercel during the rollback period
