@@ -10,7 +10,7 @@
       "parameters": {
         "width": 460,
         "height": 300,
-        "content": "PREPARED, NOT TESTED.\n\nThis workflow is not imported into any live n8n instance yet. Before use:\n1. Import this file into n8n (Workflows > Import from File).\n2. Create a Supabase credential named 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>). Never use the anon key here.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL with the real Supabase project ref.\n4. Set this workflow's Webhook node to require the header 'x-walkflow-webhook-secret' matching N8N_WEBHOOK_SECRET (see .env.example) — configure this under the Webhook node's Authentication option.\n5. Activate the workflow, copy its production webhook URL into N8N_REAL_ESTATE_WEBHOOK_URL, then test end to end before enabling Connected Mode on the website.\n\nCorresponds to src/lib/real-estate-demo/contract.ts action 'submit_requirements'."
+        "content": "PREPARED, NOT TESTED.\n\nThis workflow is not imported into any live n8n instance yet. Before use:\n1. Import this file into n8n (Workflows > Import from File).\n2. Create a Supabase credential named 'walkflow-demo-supabase' (Header Auth: apikey + Authorization: Bearer <service_role key>). Never use the anon key here.\n3. Replace YOUR-PROJECT in every HTTP Request node's URL with the real Supabase project ref.\n4. Create a second Header Auth credential named 'walkflow-demo-webhook-secret' (Name: x-walkflow-webhook-secret, Value: the same secret as N8N_WEBHOOK_SECRET in .env.example). This workflow's Webhook node is already set to Header Auth with that credential, so confirm it is selected after import and check that a request without the header is rejected (401/403) before activating.\n5. Activate the workflow, copy its production webhook URL into N8N_REAL_ESTATE_WEBHOOK_URL, then test end to end before enabling Connected Mode on the website.\n\nCorresponds to src/lib/real-estate-demo/contract.ts action 'submit_requirements'."
       }
     },
     {
@@ -23,8 +23,10 @@
         "path": "real-estate/enquiry",
         "httpMethod": "POST",
         "responseMode": "responseNode",
+        "authentication": "headerAuth",
         "options": {}
-      }
+      },
+      "credentials": { "httpHeaderAuth": { "id": "walkflow-demo-webhook-secret", "name": "walkflow-demo-webhook-secret" } }
     },
     {
       "id": "validate-input",

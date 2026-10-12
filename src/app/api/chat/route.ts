@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { chatCopy } from "@/content/chat-assistant";
 import { isRateLimited } from "@/lib/chat/rate-limit";
+import { trustedClientIp } from "@/lib/client-ip";
+import { sharedRateLimit } from "@/lib/shared-rate-limit";
 import { respond } from "@/lib/chat/respond";
 import type { ChatApiResponse } from "@/lib/chat/types";
 
@@ -10,11 +12,6 @@ const MAX_BODY_BYTES = 2048;
 function errorResponse(code: string, message: string, status: number) {
   const body: ChatApiResponse = { error: { code, message } };
   return NextResponse.json(body, { status });
-}
-
-function clientKey(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0]?.trim() || "unknown";
 }
 
 function readMessage(payload: unknown): string | null {
@@ -27,7 +24,8 @@ function readMessage(payload: unknown): string | null {
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
-  if (isRateLimited(clientKey(request))) {
+  const client = trustedClientIp(request.headers);
+  if ((await sharedRateLimit("chat", client, 20, 60)) === "limited" || isRateLimited(client)) {
     return errorResponse("rate_limited", chatCopy.rateLimited, 429);
   }
 

@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { trustedClientIp } from "@/lib/client-ip";
 import { enquiryRateLimited, forwardEnquiry, validateEnquiry, type FieldErrors } from "@/lib/enquiry-server";
+import { sharedRateLimit } from "@/lib/shared-rate-limit";
 
 /**
  * POST /api/enquiry — the contact form's only way out.
@@ -16,11 +18,6 @@ export type EnquiryApiResponse =
 
 const reply = (body: EnquiryApiResponse, status: number) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
-function clientKey(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0]?.trim() || "unknown";
-}
-
 export async function POST(request: NextRequest): Promise<Response> {
   const raw = await request.text();
   if (raw.length > MAX_BODY_BYTES) return reply({ ok: false, code: "too_large" }, 413);
@@ -35,7 +32,11 @@ export async function POST(request: NextRequest): Promise<Response> {
   const checked = validateEnquiry(payload);
   if (!checked.ok) return reply({ ok: false, code: "invalid", fieldErrors: checked.errors }, 400);
 
-  if (enquiryRateLimited(clientKey(request), checked.data.submissionId ?? "")) return reply({ ok: false, code: "rate_limited" }, 429);
+  // Shared (cross-instance) limit when a store is configured; the in-memory limiter always runs as well.
+  // Note: retries of one submission also count against the shared budget (5 per 10 minutes per client).
+  const client = trustedClientIp(request.headers);
+  const shared = await sharedRateLimit("enquiry", client, 5, 600);
+  if (shared === "limited" || enquiryRateLimited(client, checked.data.submissionId ?? "")) return reply({ ok: false, code: "rate_limited" }, 429);
 
   const result = await forwardEnquiry(checked.data);
   switch (result.kind) {
