@@ -14,7 +14,9 @@ https://100.65.217.96 {
 	@tailnet remote_ip 100.64.0.0/10 fd7a:115c:a1e0::/48 ::ffff:100.64.0.0/106
 	handle @tailnet {
 		handle /robots.txt {
-			respond "User-agent: *\nDisallow: /\n" 200
+			respond "User-agent: *
+Disallow: /
+" 200
 		}
 		request_body {
 			max_size 64KB
