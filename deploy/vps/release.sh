@@ -48,7 +48,12 @@ check "n8n still healthy"    200 "$(n8n_code)"
 if [ "$fail" != 0 ]; then
   echo "== 4/4 smoke test FAILED: rolling back to $PREV"
   if [ "$PREV" != none ]; then "$BASE/deploy.sh" "$ENVNAME" "${PREV#walkflow-web:}"; fi
-  echo "RESULT: FAIL - $ENVNAME is back on $PREV; the new image walkflow-web:$SHORT was NOT kept live"; exit 1
+  if [ "$PREV" = "walkflow-web:$SHORT" ]; then
+    echo "RESULT: FAIL - the smoke test failed, but the previous image is the same build ($SHORT), so there was nothing different to roll back to. Investigate before relying on this release."
+  else
+    echo "RESULT: FAIL - $ENVNAME is back on $PREV; the new image walkflow-web:$SHORT was NOT kept live"
+  fi
+  exit 1
 fi
 echo "== 4/4 done"
 echo "RESULT: PASS - $ENVNAME is now running walkflow-web:$SHORT (previous: $PREV; undo with: $BASE/rollback.sh $ENVNAME)"
