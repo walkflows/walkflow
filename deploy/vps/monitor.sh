@@ -19,16 +19,22 @@ for c in "walkflow-web-$ENVNAME-web-1" "walkflow-web-$ENVNAME-redis-1"; do
   fi
 done
 
-# The site as a visitor's browser would reach it, but locally (valid certificate required).
-code=$(curl -s -o /dev/null -m 15 -w '%{http_code}' --resolve "$HOST:443:127.0.0.1" "https://$HOST/robots.txt" || echo 000)
-[ "$code" = 200 ] || bad "https://$HOST/robots.txt via Caddy returned $code"
-
-end=$(echo | openssl s_client -servername "$HOST" -connect 127.0.0.1:443 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
-if [ -n "$end" ]; then
-  days=$(( ( $(date -d "$end" +%s) - $(date +%s) ) / 86400 ))
-  [ "$days" -ge 14 ] || bad "certificate for $HOST expires in $days days"
+if [ "${WALKFLOW_PRECUTOVER:-0}" = 1 ]; then
+  # Before DNS points here: check the app directly on its loopback port; public certificate checks do not apply yet.
+  code=$(curl -s -o /dev/null -m 15 -w '%{http_code}' "http://127.0.0.1:${WALKFLOW_APP_PORT:-3101}/robots.txt" || echo 000)
+  [ "$code" = 200 ] || bad "app on port ${WALKFLOW_APP_PORT:-3101} returned $code"
+  days="n/a (pre-cutover)"
 else
-  bad "no certificate readable for $HOST"
+  # The site as a visitor's browser would reach it, but locally (valid certificate required).
+  code=$(curl -s -o /dev/null -m 15 -w '%{http_code}' --resolve "$HOST:443:127.0.0.1" "https://$HOST/robots.txt" || echo 000)
+  [ "$code" = 200 ] || bad "https://$HOST/robots.txt via Caddy returned $code"
+  end=$(echo | openssl s_client -servername "$HOST" -connect 127.0.0.1:443 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+  if [ -n "$end" ]; then
+    days=$(( ( $(date -d "$end" +%s) - $(date +%s) ) / 86400 ))
+    [ "$days" -ge 14 ] || bad "certificate for $HOST expires in $days days"
+  else
+    bad "no certificate readable for $HOST"
+  fi
 fi
 
 used=$(df --output=pcent / | tail -1 | tr -dc 0-9)
