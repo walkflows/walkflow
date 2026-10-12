@@ -21,7 +21,7 @@ export const privacySeo = {
 export const privacyIntro = {
   eyebrow: "Privacy",
   heading: "Privacy Policy",
-  lastUpdated: "8 October 2026",
+  lastUpdated: "12 October 2026",
   summary:
     "This policy explains what information WALKFLOW collects through this website and our enquiry process, how our own automation tools use it, including Google Gmail, Sheets, Drive and Calendar, and the choices you have.",
 };
@@ -49,7 +49,7 @@ export const privacySections: PrivacySection[] = [
       "Emails you send us. When you email WALKFLOW, the message arrives in our Gmail inbox like any email.",
       "Ask WALKFLOW assistant. Questions you type are answered on our own website server using WALKFLOW’s published website content. They are not sent to any outside AI service and are not stored after your visit. The conversation exists only in your browser tab.",
       "WhatsApp and booking links. These take you to WhatsApp or Google. Their own privacy policies apply there.",
-      "Website hosting. Our website is hosted by Vercel, which keeps standard technical logs (such as IP address, time and page requested) to run and protect the service. We do not use analytics, advertising or tracking cookies on this website.",
+      "Website hosting. Our website runs on a private server that WALKFLOW rents from Hostinger, the same provider that hosts our private automation server. The server and Hostinger may keep standard technical logs (such as IP address, time and the page or service requested) to run and protect the service. To stop abuse, our server also keeps temporary request counters per IP address, for a short time, so that repeated rapid submissions can be refused; these counters are not linked to your name or your enquiry. We do not use analytics, advertising or tracking cookies on this website.",
     ],
   },
   {
@@ -98,8 +98,7 @@ export const privacySections: PrivacySection[] = [
       "We use these service providers to run our website and tools. Each handles information only to provide its service to us:",
       {
         list: [
-          "Vercel: hosts this website.",
-          "Hostinger: hosts WALKFLOW’s private automation server.",
+          "Hostinger: hosts this website and WALKFLOW’s private automation server.",
           "Google: Gmail, Google Sheets, Google Drive and Google Calendar, as described above.",
           "Supabase: private databases for business research and our demo tools.",
           "Telegram: private notifications to WALKFLOW about new activity or problems.",
