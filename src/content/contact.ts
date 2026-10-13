@@ -22,7 +22,7 @@
  */
 
 export const contactSeo = {
-  title: "Contact",
+  title: "Contact WALKFLOW",
   description:
     "Tell WALKFLOW what's slowing your business down. We'll get back to you within 24 hours to set up a discovery call.",
 };

@@ -22,7 +22,7 @@
  */
 
 export const aboutSeo = {
-  title: "About WALKFLOW",
+  title: "About Us",
   description:
     "WALKFLOW builds websites, writes the words that go on them, and wires up the automation behind them — so business owners can focus on the actual business.",
 };

@@ -20,9 +20,23 @@ export const metadata: Metadata = {
  * Solutions + Demos, Our Services, Why WALKFLOW, How We Work, Platforms &
  * Tools, FAQs, final Book a Consultation CTA, then the global footer.
  */
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "WALKFLOW",
+  url: "https://walkflow.tech",
+  logo: "https://walkflow.tech/icon2.png",
+  slogan: "Take the steps. Build the flow.",
+  description: homeSeo.description,
+};
+
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }}
+      />
       <Hero />
       <Industries />
       <Services />

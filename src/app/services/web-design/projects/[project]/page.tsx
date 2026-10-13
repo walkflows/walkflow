@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!found) return {};
   return {
     title: `${found.title} — Web Design`,
-    description: found.cardDescription,
+    description: `${found.title} web design project. ${found.cardDescription}`,
   };
 }
 
