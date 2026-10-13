@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function WebDesignPage() {
   return (
     <>
-      <ServiceHero {...content.hero} />
+      <ServiceHero {...content.hero} showAudience />
       <WebDesignProjectGallery />
       <ServiceWhatWeDo {...content.whatWeDo} />
       <ServiceWhyWalkflow {...content.whyWalkflow} />

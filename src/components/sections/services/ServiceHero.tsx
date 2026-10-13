@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -8,6 +9,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconArrowRight } from "@/components/ui/icons";
 
 const sequence = [0, 0.08, 0.16, 0.24];
+const audienceLink = "font-semibold text-orange underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
 
 /**
  * Centered hero: eyebrow/heading/body/buttons stacked and centered, with an
@@ -31,6 +33,7 @@ export function ServiceHero({
   image,
   primaryCta,
   secondaryCta,
+  showAudience,
 }: {
   eyebrow: string;
   heading: string;
@@ -38,6 +41,8 @@ export function ServiceHero({
   image?: { src: string; alt: string };
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+  /** Owner-approved 13 Oct 2026: one sentence naming the industries, each linking to its industry page. */
+  showAudience?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const d = (i: number) => (reduceMotion ? 0 : sequence[i]);
@@ -86,6 +91,21 @@ export function ServiceHero({
         >
           {body}
         </motion.p>
+
+        {showAudience && (
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(2) }}
+            className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white/60"
+          >
+            Designed for small and growing businesses in{" "}
+            <Link href="/industries/real-estate" className={audienceLink}>real estate</Link>,{" "}
+            <Link href="/industries/home-services" className={audienceLink}>home services (HVAC and plumbing)</Link>,{" "}
+            <Link href="/industries/clinics" className={audienceLink}>clinics</Link> and{" "}
+            <Link href="/industries/consulting" className={audienceLink}>consulting</Link>.
+          </motion.p>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 14 }}
