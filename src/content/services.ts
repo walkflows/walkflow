@@ -737,8 +737,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
      * and `public/videos/`). `classification` shows the owner-confirmed role
      * (13 Oct 2026): Geviti and Nuborrow "WALKFLOW contributed"; Wrkout and
      * Request IT "Built by WALKFLOW". Specific contributions are not itemised
-     * until the owner supplies them; the technology/scope lines on Geviti and
-     * Nuborrow predate this confirmation and are queued for the owner to check.
+     * until the owner supplies them; the technology/scope lines on Geviti, Nuborrow and
+     * Wrkout were removed at the owner's request on 13 Oct 2026 and not replaced.
      */
     projects: {
       eyebrow: "App Projects",
@@ -764,8 +764,6 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
             "Keep track of your personalised care plan.",
           ],
           featuresHeading: "Key Features",
-          technology: "Flutter for the mobile app · Node.js for the backend.",
-          technologyLabel: "Technology",
           videoSrc: "/videos/geviti-walkthrough.mp4",
           videoPoster: { src: "/images/app-development/geviti-showcase.png", alt: "Geviti app walkthrough preview" },
           videoLabel: "Watch App Walkthrough",
@@ -794,8 +792,6 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
             "Stay connected to support when considering your mortgage and home equity options.",
           ],
           featuresHeading: "Key Features",
-          technology: "Platform and mobile app development · CRM development · Digital marketing funnels · Google Ads landing pages.",
-          technologyLabel: "Project Scope",
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
@@ -823,8 +819,6 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
             "Connected web and mobile experiences for professionals and clients.",
           ],
           featuresHeading: "Key Features",
-          technology: "Next.js for the web app · Flutter for mobile · Firebase, NestJS and Neon for backend services and data · Vercel for deployment.",
-          technologyLabel: "Technology",
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
