@@ -120,9 +120,9 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
   "real-estate": {
     slug: "real-estate",
     seo: {
-      title: "Real Estate Solutions",
+      title: "Real Estate Websites & Enquiry Follow-up",
       description:
-        "Turn property interest into organised enquiries. WALKFLOW helps real estate teams capture requirements, route viewing requests and follow up without dropped conversations.",
+        "Help property seekers find listings and request viewings while your team keeps every enquiry organised. Web design and automation for real estate businesses.",
     },
     hero: {
       eyebrow: "Real Estate",
@@ -244,9 +244,9 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
   "home-services": {
     slug: "home-services",
     seo: {
-      title: "Home Services Solutions — HVAC & Plumbing",
+      title: "HVAC & Plumbing Websites and Job Requests",
       description:
-        "Get clearer job requests and fewer missed follow-ups. WALKFLOW helps HVAC and plumbing businesses route requests, collect job details and keep estimates moving.",
+        "Make it easy for customers to request a repair, quote or inspection and get clearer job details. Web design and automation for HVAC and plumbing businesses.",
     },
     hero: {
       eyebrow: "Home Services — HVAC & Plumbing",
@@ -363,9 +363,9 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
   clinics: {
     slug: "clinics",
     seo: {
-      title: "Clinic Solutions",
+      title: "Clinic Websites & Appointment Requests",
       description:
-        "Make it easier for patients to ask, book and return. WALKFLOW helps clinics collect appointment enquiries and keep patients informed, without adding admin.",
+        "Help prospective patients understand your services, request appointments and get reminders, with less admin for your team. Administrative workflows only.",
     },
     hero: {
       eyebrow: "Clinics",
@@ -487,9 +487,9 @@ export const industryPages: Record<IndustrySlug, IndustryPageContent> = {
   consulting: {
     slug: "consulting",
     seo: {
-      title: "Consulting Firm Solutions",
+      title: "Consulting Firm Websites & Enquiry Process",
       description:
-        "Turn interest in your expertise into qualified conversations. WALKFLOW helps consulting firms organise discovery calls, proposal follow-ups and onboarding.",
+        "Give prospects a clear way to explain what they need, and your team a reliable process for discovery calls, proposals and onboarding.",
     },
     hero: {
       eyebrow: "Consulting Firms",

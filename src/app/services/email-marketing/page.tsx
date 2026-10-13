@@ -13,7 +13,7 @@ const content = servicePages["email-marketing"];
 const emailToolIds = ["activecampaign", "brevo", "mailchimp", "klaviyo"];
 
 export const metadata: Metadata = {
-  title: content.seo.title,
+  title: content.seo.searchTitle ?? content.seo.title,
   description: content.seo.description,
 };
 

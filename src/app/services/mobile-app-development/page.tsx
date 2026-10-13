@@ -13,7 +13,7 @@ const content = servicePages["mobile-app-development"];
 const appToolIds = ["expo", "flutter", "flutterflow", "bubble", "supabase"];
 
 export const metadata: Metadata = {
-  title: content.seo.title,
+  title: content.seo.searchTitle ?? content.seo.title,
   description: content.seo.description,
 };
 

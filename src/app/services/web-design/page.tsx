@@ -13,7 +13,7 @@ const content = servicePages["web-design"];
 const webDesignToolIds = ["framer", "shopify", "squarespace", "wix", "webflow", "wordpress"];
 
 export const metadata: Metadata = {
-  title: content.seo.title,
+  title: content.seo.searchTitle ?? content.seo.title,
   description: content.seo.description,
 };
 

@@ -13,7 +13,7 @@ const content = servicePages["business-automation-crm"];
 const automationToolIds = ["gohighlevel", "make", "n8n", "chatgpt", "claude"];
 
 export const metadata: Metadata = {
-  title: content.seo.title,
+  title: content.seo.searchTitle ?? content.seo.title,
   description: content.seo.description,
 };
 

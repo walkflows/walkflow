@@ -78,7 +78,7 @@ export type ReviewItem = { quote: string; name: string; role: string };
 
 export type ServicePageContent = {
   slug: ServiceSlug;
-  seo: { title: string; description: string };
+  seo: { title: string; description: string; /** Search-result title; `title` stays the short name used by project pages. */ searchTitle?: string };
   hero: {
     eyebrow: string;
     heading: string;
@@ -140,7 +140,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "business-automation-crm",
     seo: {
       title: "Business Automation & CRM",
-      description: "Less chasing. More getting things done. WALKFLOW connects your forms, customer records and follow-ups so your team can keep work moving.",
+      searchTitle: "AI Automation & CRM for Small Businesses",
+      description: "Connect your forms, customer records and follow-ups to help your team respond faster and reduce missed enquiries. Practical automation for small and growing businesses.",
     },
     hero: {
       eyebrow: "Business Automation & CRM",
@@ -302,7 +303,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "email-marketing",
     seo: {
       title: "Email Marketing",
-      description: "Give interested customers a reason to come back. WALKFLOW writes, designs and sets up emails that answer questions and keep your business in mind.",
+      searchTitle: "Email Marketing & Automated Follow-up",
+      description: "Welcome emails, follow-ups and newsletters written, designed and set up for your business, so interested customers hear from you again.",
     },
     hero: {
       eyebrow: "Email Marketing",
@@ -565,7 +567,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "web-design",
     seo: {
       title: "Web Design",
-      description: "Make your website a reason to choose you. WALKFLOW builds websites that show the value of your work and make it easy to enquire, book or buy.",
+      searchTitle: "Web Design for Small Businesses",
+      description: "Business websites built to make it easy for customers to enquire, book or buy. WALKFLOW designs and builds clear, fast websites for small and growing companies.",
     },
     hero: {
       eyebrow: "Web Design",
@@ -692,7 +695,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "mobile-app-development",
     seo: {
       title: "Mobile App Development",
-      description: "Turn your app idea into something people can use. WALKFLOW plans and builds mobile apps around the tasks people need to complete.",
+      description: "Plan, design and build an iPhone and Android app around the tasks your users need to complete, from first version to release support.",
     },
     hero: {
       eyebrow: "Mobile App Development",
