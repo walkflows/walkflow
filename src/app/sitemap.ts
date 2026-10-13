@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { servicePages } from "@/content/services";
 import { privacyOpenItems } from "@/content/privacy";
+import { webDesignProjects } from "@/content/web-design-projects";
 
 const BASE = "https://walkflow.tech";
 
@@ -26,12 +27,17 @@ const staticRoutes = [
 /**
  * Only service project pages WITHOUT a `devNote` ("PLACEHOLDER — REPLACE
  * BEFORE PUBLISHING" in content/services.ts) are listed — those still need
- * real assets before it makes sense to ask Google to index them.
+ * real assets before it makes sense to ask Google to index them (the same
+ * pages are also marked noindex, see the project page's generateMetadata).
+ * Web design has its own route and its own content file; every case study
+ * there is a finished page, so all are listed.
  */
 function projectRoutes(): string[] {
-  return Object.values(servicePages).flatMap((service) =>
-    service.projects.items.filter((item) => !item.devNote).map((item) => `/services/${service.slug}/projects/${item.slug}`),
-  );
+  const generic = Object.values(servicePages)
+    .filter((service) => service.slug !== "web-design")
+    .flatMap((service) => service.projects.items.filter((item) => !item.devNote).map((item) => `/services/${service.slug}/projects/${item.slug}`));
+  const webDesign = webDesignProjects.map((project) => `/services/web-design/projects/${project.slug}`);
+  return [...generic, ...webDesign];
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -41,8 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // this keeps the sitemap consistent with that rather than contradicting it.
   if (privacyOpenItems.length === 0) routes.push("/privacy");
 
-  return routes.map((path) => ({
-    url: `${BASE}${path}`,
-    lastModified: new Date(),
-  }));
+  // No lastModified on purpose: a build-time timestamp on every URL is not a real
+  // "last changed" date and search engines learn to ignore it.
+  return routes.map((path) => ({ url: `${BASE}${path}` }));
 }

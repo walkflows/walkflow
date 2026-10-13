@@ -91,6 +91,17 @@ The enquiry secret is never in Git; change it only with `/opt/walkflow-web/set-s
   days, not months. Nothing is deleted automatically; proposed rollback period: 7 days (until 19 October 2026).
 - If Vercel is ever disconnected, the "Vercel" required check in `master`'s branch protection must be changed first, or merges will be blocked.
 
+## SEO and speed building blocks (added October 2026)
+- **Preferred address:** https://walkflow.tech. `www.walkflow.tech` answers only with a permanent 308 redirect to the same path and query on the apex
+  (Caddy block in `deploy/vps/Caddyfile.production.proposed`; apply on the server with `deploy/vps/apply-www-redirect.sh`, which backs up, validates,
+  reloads, checks and rolls back by itself). Every page also names itself in a canonical tag (`alternates.canonical` in `src/app/layout.tsx`).
+- **Sitemap** (`src/app/sitemap.ts`): lists every public page that is finished; placeholder concept pages (`devNote` in `src/content/services.ts`) are left out
+  and are marked `noindex`. When a new page or case study is added, check it appears in `/sitemap.xml` after the release.
+- **Page descriptions and sharing previews:** each page's `metadata` (or `generateMetadata`) supplies its own description; project pages can use a `metaDescription`
+  field. The sharing image is `src/app/opengraph-image.jpg` (also used for Twitter/X).
+- **Small icons and fonts:** `scripts/brand/make-icons.mjs` rebuilds the favicon/app icons and the sharing image from the approved logo files;
+  `scripts/brand/subset-fonts.sh` rebuilds the Latin web fonts in `src/fonts/` from the licensed originals (OFL kept next to them).
+
 ## Monitoring and routine care
 - **UptimeRobot** (external, 5-minute checks, email alerts) on https://walkflow.tech/ and https://www.walkflow.tech/contact.
 - **GitHub "Uptime check"** workflow (secondary): every 10 minutes when GitHub runs its scheduler; run it by hand from the Actions tab at any time.

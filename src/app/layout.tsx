@@ -7,11 +7,14 @@ import { unbounded, manrope, caveat } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  // Official domain (not yet connected — see the DNS plan). Once walkflow.tech
-  // resolves to this deployment, every page's canonical/OG URL is correct
-  // without further changes; until then this only affects generated URLs,
-  // not what domain visitors actually reach.
+  // https://walkflow.tech is the preferred address (www redirects to it at the
+  // web server). Every page's canonical and social-sharing URL is built from this.
   metadataBase: new URL("https://walkflow.tech"),
+  // "./" = the canonical URL of the page being rendered (https://walkflow.tech/<path>),
+  // so each indexable page names itself as the preferred version.
+  alternates: { canonical: "./" },
+  openGraph: { type: "website", siteName: "WALKFLOW", locale: "en_GB", url: "./" },
+  twitter: { card: "summary_large_image" },
   title: {
     default: "WALKFLOW | Web Design & AI Automation",
     template: "%s | WALKFLOW",
