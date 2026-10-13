@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!found) return {};
   return {
     title: `${found.projectItem.title} — ${found.service.seo.title}`,
-    description: found.projectItem.description,
+    description: found.projectItem.metaDescription || found.projectItem.description,
+    // Placeholder concept pages stay reachable but are kept out of search until real content replaces them.
+    ...(found.projectItem.devNote ? { robots: { index: false, follow: true } } : {}),
   };
 }
 

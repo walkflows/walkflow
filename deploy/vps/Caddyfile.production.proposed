@@ -1,9 +1,16 @@
-# PROPOSED (Phase 2, NOT applied): production site block for the WALKFLOW website on the VPS.
-# Apply only at cutover, after the DNS records for walkflow.tech / www.walkflow.tech point at this server.
+# Production site blocks for the WALKFLOW website on the VPS (as applied on 12 October 2026, plus the www redirect below).
 # Security headers (CSP, HSTS, ...) come from the app (next.config.ts) and are passed through unchanged.
 # Caddy obtains public Let's Encrypt certificates automatically and redirects HTTP to HTTPS.
-# Both hostnames serve the site directly, exactly as on Vercel today (canonical URLs are already walkflow.tech).
-walkflow.tech, www.walkflow.tech {
+
+# https://walkflow.tech is the preferred address. www answers only with a permanent redirect that keeps the path
+# and the query string (308 = permanent, like 301, but a POST stays a POST). It still needs its own certificate,
+# which Caddy keeps renewing automatically.
+www.walkflow.tech {
+	header Strict-Transport-Security "max-age=63072000"
+	redir https://walkflow.tech{uri} 308
+}
+
+walkflow.tech {
 	header -Server
 	# The app answers 413 itself for bodies over its own limits (8 KB enquiry, 2 KB chat). Caddy only guards against
 	# huge uploads: a declared size of 1,000,000+ bytes gets 413 here; undeclared (chunked) bodies are capped at 1 MB.

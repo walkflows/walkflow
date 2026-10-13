@@ -13,14 +13,21 @@ import localFont from "next/font/local";
  * Bold, ExtraBold, Black, the variable font) is left unused — add another
  * `src` entry here if a heavier face is ever deliberately needed.
  *
+ * Performance (Oct 2026): the site loads src/fonts/*-latin.woff2, repacked from
+ * those same original TTF files by scripts/brand/subset-fonts.sh (about 365 KB ->
+ * 32 KB per weight). Outlines, spacing and kerning of the kept Latin characters
+ * are unchanged; only unused scripts were dropped. The original TTFs stay in
+ * "Unbounded font family/" as the source, and the OFL licence text is kept next
+ * to the web fonts (src/fonts/OFL-Unbounded.txt).
+ *
  * This is still self-identified as WALKFLOW's own choice, not a verified
  * match to any reference — see the reference-inspection note in
  * SESSION-NOTES.md.
  */
 export const unbounded = localFont({
   src: [
-    { path: "../../Unbounded font family/static/Unbounded-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../../Unbounded font family/static/Unbounded-Medium.ttf", weight: "500", style: "normal" },
+    { path: "../fonts/Unbounded-Regular-latin.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/Unbounded-Medium-latin.woff2", weight: "500", style: "normal" },
   ],
   variable: "--font-unbounded",
   display: "swap",
