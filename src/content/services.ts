@@ -750,7 +750,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
       items: [
         {
           slug: "geviti",
-          metaDescription: "Geviti telehealth app case study: care-team support, health results and tracking, and connected-device data in one app, built with Flutter and Node.js.",
+          metaDescription: "Geviti telehealth app: care-team support, health results and tracking, and connected-device data in one place.",
           title: "Geviti",
           detailTitle: "GEVITI — TELEHEALTH APP",
           headline: "Keep your care team close and your health information together.",
@@ -781,7 +781,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         },
         {
           slug: "nuborrow",
-          metaDescription: "Nuborrow mortgage companion app case study: your application, mortgage details and credit profile on iPhone and iPad, plus platform and CRM work.",
+          metaDescription: "Nuborrow mortgage companion app for iPhone and iPad: your application, mortgage details and credit profile in one place.",
           title: "Nuborrow",
           detailTitle: "NUBORROW — MORTGAGE PLATFORM & COMPANION APP",
           headline: "Keep your mortgage details close and your next step clear.",
@@ -809,7 +809,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         },
         {
           slug: "wrkout",
-          metaDescription: "Wrkout fitness and wellness platform case study: trainers share trusted product recommendations and earn commissions across web and mobile.",
+          metaDescription: "Wrkout fitness and wellness platform: trainers share trusted product recommendations and earn commissions, on web and mobile.",
           title: "Wrkout",
           detailTitle: "WRKOUT — FITNESS & WELLNESS PLATFORM",
           headline: "Turn trusted recommendations into new opportunities.",
@@ -843,7 +843,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
         },
         {
           slug: "request-it",
-          metaDescription: "Request IT digital services marketplace case study: browse freelancer profiles, send requests, message and hire through one app.",
+          metaDescription: "Request IT digital services marketplace app: browse freelancer profiles, send requests, message and hire in one place.",
           title: "Request IT",
           detailTitle: "REQUEST IT — DIGITAL SERVICES MARKETPLACE",
           headline: "Find the right help. Get your next project moving.",
