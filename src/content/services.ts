@@ -731,17 +731,11 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
      * assets from a new "App Development/" folder (one showcase image, one
      * or more ordered inner case-study images, and — Geviti only — a
      * walkthrough video, all copied into `public/images/app-development/`
-     * and `public/videos/`). `classification: "App Development Project"`
-     * is used for all four rather than "Concept Project" or "Independent
-     * design concept" — it's lifted directly from a label already printed
-     * on the Geviti asset itself, and stays accurate without over- or
-     * under-stating WALKFLOW's role. Attribution varies by project: Geviti
-     * and Nuborrow's own supplied artwork explicitly credits WALKFLOW
-     * ("Built by WALKFLOW" / "WALKFLOW APP DEVELOPMENT" / "Our
-     * Capabilities"); Wrkout's case-study slides carry a WALKFLOW logo on
-     * every page; Request IT's supplied assets carry no WALKFLOW mark at
-     * all — flagged in the session's completion report rather than
-     * asserting a contribution the files don't confirm.
+     * and `public/videos/`). `classification` shows the owner-confirmed role
+     * (13 Oct 2026): Geviti and Nuborrow "WALKFLOW contributed"; Wrkout and
+     * Request IT "Built by WALKFLOW". Specific contributions are not itemised
+     * until the owner supplies them; the technology/scope lines on Geviti and
+     * Nuborrow predate this confirmation and are queued for the owner to check.
      */
     projects: {
       eyebrow: "App Projects",
@@ -773,7 +767,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
           videoPoster: { src: "/images/app-development/geviti-showcase.png", alt: "Geviti app walkthrough preview" },
           videoLabel: "Watch App Walkthrough",
           externalHref: null,
-          classification: "App Development Project",
+          classification: "WALKFLOW contributed",
           screens: [
             { src: "/images/app-development/geviti-inner-1.png", alt: "Geviti app screens — overview and highlights", width: 941, height: 1672 },
             { src: "/images/app-development/geviti-inner-2.png", alt: "Geviti app case study — process and core features", width: 941, height: 1672 },
@@ -802,7 +796,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
-          classification: "App Development Project",
+          classification: "WALKFLOW contributed",
           screens: [
             { src: "/images/app-development/nuborrow-inner-1.png", alt: "Nuborrow app case study — overview and capabilities", width: 941, height: 1672 },
           ],
@@ -831,7 +825,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
-          classification: "App Development Project",
+          classification: "Built by WALKFLOW",
           screens: [
             { src: "/images/app-development/wrkout-inner-1.png", alt: "Wrkout case study — overview and process", width: 941, height: 1672 },
             { src: "/images/app-development/wrkout-inner-2.png", alt: "Wrkout case study — search and discover user flow", width: 941, height: 1672 },
@@ -864,7 +858,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
           videoSrc: null,
           videoPoster: null,
           externalHref: null,
-          classification: "App Development Project",
+          classification: "Built by WALKFLOW",
           screens: [
             { src: "/images/app-development/requestit-inner-1.png", alt: "Request IT app case study — key screens", width: 1122, height: 1402 },
           ],
