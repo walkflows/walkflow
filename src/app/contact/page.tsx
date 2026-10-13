@@ -25,8 +25,8 @@ export default function ContactPage() {
           </Reveal>
 
           <div className="mt-10">
-            {/* useSearchParams (for the ?service= preselect) requires a Suspense boundary in a statically-rendered route. */}
-            <Suspense fallback={null}>
+            {/* useSearchParams (for the ?service= preselect) requires a Suspense boundary in a statically-rendered route. The fallback reserves the form height (about 1230px) so the footer does not jump when the form mounts. */}
+            <Suspense fallback={<div aria-hidden="true" className="min-h-[1230px]" />}>
               <ContactForm />
             </Suspense>
           </div>
