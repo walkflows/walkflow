@@ -273,7 +273,7 @@ export function Header() {
             alt={media.logoOnBlack.alt}
             width={160}
             height={160}
-            className="h-10 w-10 object-contain"
+            className="h-10 w-10 rounded-lg object-contain"
             priority
           />
           <span className="font-heading text-lg font-bold">

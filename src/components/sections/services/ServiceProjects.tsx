@@ -11,6 +11,7 @@ export function ServiceProjects({
   serviceSlug,
   tileAspect,
   showSummary,
+  columns = 2,
 }: {
   /** Session 26 — defaults to "Projects" so every page except App Development ("App Projects") renders exactly as before. */
   eyebrow?: string;
@@ -21,6 +22,8 @@ export function ServiceProjects({
   /** Session 24, extended Session 26 — see ServiceProjectCard.tsx. Omitted by every page except Email Marketing and App Development, which render exactly as before. */
   tileAspect?: "4/3" | "square" | "16/9";
   showSummary?: boolean;
+  /** Desktop columns (tablet stays at two, mobile at one). Six automations sit best as 3 x 2; every other page keeps the default of 2. */
+  columns?: 2 | 3;
 }) {
   return (
     <section id="projects" className="scroll-mt-24 border-t border-white/10 bg-navy-deep py-20 sm:py-28">
@@ -35,10 +38,10 @@ export function ServiceProjects({
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6">
+        <div className={`mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6${columns === 3 ? " lg:grid-cols-3" : ""}`}>
           {items.map((project, i) => (
-            <Reveal key={project.slug} delay={i * 0.08} y={24}>
-              <ServiceProjectCard project={project} serviceSlug={serviceSlug} tileAspect={tileAspect} showSummary={showSummary} />
+            <Reveal key={project.slug} delay={i * 0.08} y={24} className={columns === 3 ? "h-full" : undefined}>
+              <ServiceProjectCard project={project} serviceSlug={serviceSlug} tileAspect={tileAspect} showSummary={showSummary} fillHeight={columns === 3} />
             </Reveal>
           ))}
         </div>

@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconArrowRight, IconChevronLeft } from "@/components/ui/icons";
 import { EmailDesignGallery } from "./EmailDesignGallery";
 import { AppScreenGallery } from "./AppScreenGallery";
+import { AutomationDetail } from "./AutomationDetail";
 
 /**
  * Shared project-detail page body, reused by every service's
@@ -26,6 +27,9 @@ import { AppScreenGallery } from "./AppScreenGallery";
  * (`videoLabel`) and a per-service `projectClosingCta` override.
  */
 export function ProjectDetail({ project, service }: { project: ProjectItem; service: ServicePageContent }) {
+  // Business Automation & CRM showcase projects have their own fixed layout.
+  if (project.automation) return <AutomationDetail project={project} service={service} />;
+
   const hasDesigns = Boolean(project.designs && project.designs.length > 0);
   const hasScreens = Boolean(project.screens && project.screens.length > 0);
   const closing = service.projectClosingCta;
