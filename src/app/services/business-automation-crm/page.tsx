@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export default function BusinessAutomationCrmPage() {
   return (
     <>
-      <ServiceHero {...content.hero} showAudience />
+      <ServiceHero {...content.hero} />
       <ServiceProjects {...content.projects} serviceSlug={content.slug} />
       <ServiceWhatWeDo {...content.whatWeDo} />
       <ServiceWhyWalkflow {...content.whyWalkflow} />
