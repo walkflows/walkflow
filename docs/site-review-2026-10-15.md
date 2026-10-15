@@ -39,3 +39,26 @@ Accessibility defects found by Lighthouse (proposed, not yet changed): logo `alt
 
 ## Production n8n
 Production is the **self-hosted n8n on the VPS** (`n8n.walkflow.tech`, tailnet only; health 200; Caddy block and recovery backups described in `vps-recovery.md`). The real webhook host and secret live only in `/opt/walkflow-web/production/web.env`, never in Git. The n8n account reachable from the review tooling is the **retired Cloud copy** (`walkflow.app.n8n.cloud`, five inactive workflows) and was not changed.
+
+## Performance and accessibility fixes (PR #23): method and results
+Method: Lighthouse 12, mobile, simulated Slow 4G + 4x CPU slowdown, run against https://walkflow.tech before (3 runs per page) and after (5 runs per page), medians reported. **Lab data, not real visitors.** The test PC was at 100% CPU from other applications, so timing-based numbers (blocking time, Speed Index) are noisy; treat them with caution.
+
+| Page (median) | Perf before -> after | LCP before -> after | Accessibility |
+|---|---|---|---|
+| Home | 63 -> 67 | 2.6 s -> 2.3 s | 99 -> 100 |
+| LEADFLOW project page | 62 -> 89 | 4.2 s -> 2.4 s | 99 -> 100 |
+| Contact | 80 -> 84 | 3.4 s -> 2.1 s | 94 -> 100 |
+
+What was measured and fixed:
+- Cause of the slow largest paint on Contact and LEADFLOW (and late text on Home): headline, intro and first images were sent in the HTML as `opacity:0` and only appeared after JavaScript downloaded and hydrated. They now use a CSS entrance that plays at first paint. Blocks that can be the largest paint use a rise-only entrance, because Chrome did not reliably register elements fading in from opacity 0 (2 of 3 test runs reported no LCP at all with a fade).
+- The footer-only Caveat font is no longer preloaded in front of the heading/body fonts.
+- Accessibility: logo image is decorative (`alt=""`) while the link keeps its name ("WALKFLOW home"); footer column titles are `h2`; dim step numerals 1.76:1 -> about 3.7:1; placeholder/select text 3.2:1 -> above 4.5:1.
+
+Not fixed / not proven:
+- **Home blocking time** is not shown to have improved: single runs ranged from 651 ms to 21,596 ms on the noisy PC. A CPU profile showed JavaScript is only about 200 ms; the rest is native rendering. A trace showed the page renders about 58 frames a second even when idle, because the hero industry carousel is moved by script on every frame (roughly a quarter of the main thread on a 4x-slower device, in many short frames rather than long tasks). Moving the carousel to a compositor-driven CSS animation would remove that, but it changes drag/pause behaviour and needs its own careful change and test.
+- Other pages with the same hide-until-JavaScript pattern (industry pages, About, demos) were not changed; the new `Reveal eager` option and `.enter` / `.enter-rise` classes are the way to fix them.
+- Real-visitor (field) data is still not verified.
+
+## Corrections to earlier statements in this review
+- **Email sender**: an earlier note said test emails would come from "your business Gmail". That was an inference from the retired n8n Cloud copy (its Send Email node uses a Gmail OAuth credential type). The production sender is **not verified**: the repo does not record it, and the domain's public mail records point to Hostinger (MX and SPF). Verify in the production n8n: open the workflow's "Send Email" node and read the credential type and From address. Do not change it on an assumption.
+- **Analytics**: cookieless tools are not automatically exempt from consent rules, and no tool excludes bots perfectly. No tool has been chosen. Before implementing one, check its current behaviour and the consent requirements for the countries your visitors are in.
