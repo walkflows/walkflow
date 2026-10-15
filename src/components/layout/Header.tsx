@@ -270,7 +270,7 @@ export function Header() {
         <HomeLogoLink className="flex items-center gap-2" ariaLabel={`${site.name} home`} onBeforeNavigate={closeMobileMenu}>
           <Image
             src={media.logoOnBlack.src!}
-            alt={media.logoOnBlack.alt}
+            alt=""
             width={160}
             height={160}
             className="h-10 w-10 rounded-lg object-contain"

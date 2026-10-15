@@ -88,7 +88,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+[0-9\s().-]{6,23}$/;
 
 const fieldClass =
-  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-[border-color,box-shadow] duration-200 ease-out focus:border-orange/60 focus:outline-none focus:shadow-[0_0_0_4px_rgba(255,153,28,0.15)] aria-[invalid=true]:border-red-400/60";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/55 transition-[border-color,box-shadow] duration-200 ease-out focus:border-orange/60 focus:outline-none focus:shadow-[0_0_0_4px_rgba(255,153,28,0.15)] aria-[invalid=true]:border-red-400/60";
 const labelClass = "block text-sm font-semibold text-white/80";
 const helperClass = "mt-1.5 text-sm text-white/50";
 
@@ -569,7 +569,7 @@ function Select({
           onChange={(e) => onChange(e.target.value)}
           aria-invalid={Boolean(error)}
           aria-describedby={errorId}
-          className={cx(fieldClass, "appearance-none pr-10", value === "" && "text-white/35")}
+          className={cx(fieldClass, "appearance-none pr-10", value === "" && "text-white/60")}
         >
           <option value="" disabled>
             {placeholder}

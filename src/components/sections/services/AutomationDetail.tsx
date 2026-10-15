@@ -30,7 +30,7 @@ export function AutomationDetail({
   return (
     <section className="bg-navy-deep py-16 sm:py-24">
       <Container className="max-w-4xl">
-        <Reveal>
+        <Reveal eager>
           <Link
             href={`/services/${service.slug}#projects`}
             className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-white/60 outline-none transition-colors duration-150 hover:text-orange focus-visible:text-orange"
@@ -50,7 +50,7 @@ export function AutomationDetail({
         </Reveal>
 
         {gallery.length > 0 && (
-          <Reveal delay={0.08}>
+          <Reveal eager delay={0.08}>
             <ul className="mt-10 grid items-start gap-x-6 gap-y-8 sm:grid-cols-2">
               {gallery.map((img, i) => (
                 <li key={img.src}>

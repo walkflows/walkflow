@@ -1,6 +1,4 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
+import type { CSSProperties } from "react";
 import { hero } from "@/content/home";
 import { consultationCta } from "@/content/navigation";
 import { site } from "@/content/site";
@@ -9,12 +7,11 @@ import { Container } from "@/components/ui/Container";
 import { IconArrowRight } from "@/components/ui/icons";
 import { IndustryCarousel } from "./IndustryCarousel";
 
-const sequence = [0, 0.08, 0.16, 0.24];
+/** Inline variables for the `.enter` CSS entrance (see globals.css): delay, rise distance and duration. */
+const enter = (delay: number, y: number, duration = 0.5) =>
+  ({ "--enter-delay": `${delay}s`, "--enter-y": `${y}px`, "--enter-duration": `${duration}s` }) as CSSProperties;
 
 export function Hero() {
-  const reduceMotion = useReducedMotion();
-  const d = (i: number) => (reduceMotion ? 0 : sequence[i]);
-
   return (
     <section className="relative isolate overflow-hidden bg-navy-deep pb-16 pt-16 sm:pb-20 sm:pt-20">
       {/* Oversized, near-invisible wordmark — the reference's "oversized background
@@ -39,41 +36,33 @@ export function Hero() {
       />
 
       <Container className="relative flex flex-col items-center text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.5, delay: d(0) }}
-          className="max-w-xl text-xs font-semibold uppercase tracking-[0.12em] text-white sm:text-sm"
+        <p
+          style={enter(0, 10)}
+          className="enter max-w-xl text-xs font-semibold uppercase tracking-[0.12em] text-white sm:text-sm"
         >
           Your <span className="text-orange">#1</span> Choice for Web Design &amp; AI Automation
-        </motion.p>
+        </p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(1) }}
-          className="mt-6 max-w-4xl text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.15] text-white"
+        <h1
+          style={enter(0.08, 18, 0.6)}
+          className="enter mt-6 max-w-4xl text-[clamp(2.25rem,6vw,4.5rem)] leading-[1.15] text-white"
         >
           Make it{" "}
           <span className="inline-block -rotate-2 rounded-md bg-orange px-3 py-0.5 text-navy-deep">easier</span>
           <br />
           for customers to choose <span className="text-orange">you.</span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(2) }}
-          className="mt-5 max-w-xl text-lg leading-relaxed text-white/65"
+        <p
+          style={enter(0.16, 14, 0.6)}
+          className="enter mt-5 max-w-xl text-lg leading-relaxed text-white/65"
         >
           {hero.body}
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.6, delay: d(3) }}
-          className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center"
+        <div
+          style={enter(0.24, 14, 0.6)}
+          className="enter mt-7 flex flex-col gap-3 sm:flex-row sm:items-center"
         >
           <Button href={consultationCta.href}>
             {consultationCta.label}
@@ -83,14 +72,12 @@ export function Hero() {
             {hero.secondaryCta.label}
             <IconArrowRight />
           </Button>
-        </motion.div>
+        </div>
       </Container>
 
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: reduceMotion ? 0 : 0.7, delay: d(3) + (reduceMotion ? 0 : 0.15) }}
-        className="relative mt-12 sm:mt-14"
+      <div
+        style={enter(0.39, 24, 0.7)}
+        className="enter relative mt-12 sm:mt-14"
       >
         <Container>
           <p className="text-center font-heading text-sm font-medium uppercase tracking-[0.12em] text-orange-light">
@@ -100,7 +87,7 @@ export function Hero() {
         <div className="mt-6">
           <IndustryCarousel />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

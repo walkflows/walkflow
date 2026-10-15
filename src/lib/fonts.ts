@@ -63,4 +63,6 @@ export const caveat = localFont({
   weight: "400 700",
   variable: "--font-caveat",
   display: "swap",
+  // Only the footer tagline uses it: do not fetch it ahead of the heading and body fonts on slow connections.
+  preload: false,
 });

@@ -104,6 +104,47 @@
 }
 
 @layer utilities {
+  /*
+   * First-screen entrance: the same fade + rise the hero used to get from Motion, but as plain CSS so the content is
+   * painted by the browser straight away instead of staying invisible (opacity 0 in the HTML) until JavaScript has
+   * downloaded, hydrated and started the animation. That wait was what held back the largest paint on slow phones.
+   * Delay, distance and duration come from --enter-delay / --enter-y / --enter-duration. The global
+   * prefers-reduced-motion rule below shortens it to nothing.
+   */
+  @keyframes enter-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, var(--enter-y, 16px), 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* "backwards" holds the hidden start state during the delay; afterwards the element simply returns to its normal style (the last keyframe equals it), so no leftover transform or compositing layer remains. */
+  .enter {
+    animation: enter-up var(--enter-duration, 0.5s) ease-out var(--enter-delay, 0s) backwards;
+  }
+
+  /*
+   * Rise only, no opacity change. Used for first-screen blocks that can be the page's largest paint (headline, first image):
+   * Chrome does not reliably count an element as the largest paint while it fades in from opacity 0 on the compositor, so
+   * those blocks must be fully visible from the first frame and only move.
+   */
+  @keyframes enter-rise {
+    from {
+      transform: translate3d(0, var(--enter-y, 16px), 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .enter-rise {
+    animation: enter-rise var(--enter-duration, 0.5s) ease-out var(--enter-delay, 0s) backwards;
+  }
+
   @keyframes float-a {
     0%,
     100% {
