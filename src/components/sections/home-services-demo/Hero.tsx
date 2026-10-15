@@ -11,7 +11,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(231,110,12,0.16),transparent)]"
       />
       <Container className="relative max-w-3xl text-center">
-        <Reveal>
+        <Reveal eager>
           <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
             {homeServicesDemoHero.eyebrow}
           </span>

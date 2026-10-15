@@ -32,7 +32,7 @@ export function Reveal({
 
   if (eager) {
     return (
-      <div className={cx("enter-rise", className)} style={{ "--enter-delay": `${delay}s`, "--enter-y": `${y}px` } as CSSProperties}>
+      <div className={cx("enter-rise", className)} style={{ "--enter-delay": `${delay}s`, "--enter-y": `${y}px`, ...(scale === undefined ? {} : { "--enter-scale": scale }) } as CSSProperties}>
         {children}
       </div>
     );
