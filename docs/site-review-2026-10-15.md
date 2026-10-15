@@ -6,7 +6,7 @@ throttling; it is not real-visitor data. Items that could not be checked are lis
 ## Fixed in this review
 | Issue | Evidence | Fix |
 |---|---|---|
-| Vercel standby copy (`walkflow-phi.vercel.app`) was a public, indexable duplicate of the whole site | returned 200, `robots.txt` allowed everything, no `noindex`; its pages declare the walkflow.tech canonical | `next.config.ts` sends `X-Robots-Tag: noindex, nofollow` for any `*.vercel.app` host only (walkflow.tech is unaffected, even if DNS is ever pointed back at Vercel) |
+| Vercel standby copy (`walkflow-phi.vercel.app`) was a public, indexable duplicate of the whole site (Search Console canonical warning: **mitigation deployed; awaiting confirmation**) | returned 200, `robots.txt` allowed everything, no `noindex`; its pages declare the walkflow.tech canonical | `next.config.ts` sends `X-Robots-Tag: noindex, nofollow` for any `*.vercel.app` host only (walkflow.tech is unaffected, even if DNS is ever pointed back at Vercel) |
 | GitHub "Uptime check" failed every run | the only failing step required `www.walkflow.tech/contact` to return 200, but www correctly answers 308 -> apex | check now expects `308 https://walkflow.tech/contact`; the site itself was up the whole time |
 | Images/videos revalidated on every visit | `Cache-Control: public, max-age=0` on `/images`, `/videos`, `/brand`... (160 MB of media) | one-day cache + one-week background refresh for those folders; fingerprinted `/_next/static` files were already immutable |
 
@@ -14,7 +14,7 @@ throttling; it is not real-visitor data. Items that could not be checked are lis
 - 33 sitemap pages: HTTP 200, unique title and description, exactly one H1, `lang="en"`, self-referencing canonical, no `noindex`, no missing image alt, no empty links; 69 internal links all resolve; unknown URLs return a real 404.
 - `www` -> apex, `http` -> `https`, trailing slash -> clean URL: all permanent redirects. HTTPS/HSTS, CSP, frame, referrer and permissions headers present.
 - Compression on (home page 212 KB -> about 23 KB over the wire). JS/CSS/fonts are immutable-cached. Videos support range requests and do not download until played.
-- Lab, mobile viewport, no throttling: home FCP/LCP about 1.1 s, project page LCP about 1.4 s, CLS 0 on all tested pages, no video bytes on load.
+- Unthrottled lab run from one PC (mobile-sized window, no CPU or network limits): FCP/LCP about 1.1-1.4 s, CLS 0. **This does not show how the site performs on a typical phone or for real visitors**; see the throttled results below.
 - Enquiry API rejects: wrong method (405), empty/invalid JSON (400), unexpected fields (400), invalid email (400), filled honeypot (400), body over 8 KB (413). Rate limit 5 per 10 minutes per client. Only invalid payloads were sent; nothing reached n8n.
 - Form: every field has a label, correct `autocomplete`, required fields marked; `?service=` preselects the service. Skip link, keyboard-operable dropdowns (Enter opens, Escape closes, focus returns), mobile menu with `aria-expanded` and scroll lock.
 - `n8n.walkflow.tech/healthz` answers 200 (reachable from the tailnet). Secrets scan (gitleaks, all 99 commits): no leaks. `npm audit`: 0 issues in shipped dependencies (5 "high" are in lint tooling only).
@@ -22,6 +22,20 @@ throttling; it is not real-visitor data. Items that could not be checked are lis
 ## Needs action / not verified
 - **Unverified claims on the home page**: "7 Years", "200+ Successful Projects", "100+ Happy Clients", "150+ Client Reviews", "Your #1 Choice". Owner decision (see SESSION-NOTES).
 - **No analytics**: nothing measures traffic sources, consultation clicks or form success (CSP allows no third-party scripts; PostHog variables exist but no code uses them).
-- **Search Console "Duplicate, Google chose different canonical"**: affected URLs were not available. The standby copy above is the leading, evidence-backed suspect; the live canonicals themselves are correct. Re-check after the fix is crawled.
-- **Not verified (no access)**: Search Console / Bing Webmaster data, real-visitor Core Web Vitals (PageSpeed quota exhausted), Lighthouse scores, server updates/reboot flag/logs/backups (no SSH), production n8n workflow status, Google Sheets / Calendar / Telegram / email flows, an end-to-end enquiry test (needs a test inbox and your approval).
+- **Search Console "Duplicate, Google chose different canonical"**: status **mitigation deployed; awaiting confirmation** (not "fixed"). The affected URLs and Google-selected canonicals have not been seen. The standby copy above is the leading suspect, not a proven cause; the live canonicals themselves are correct. To confirm: export the affected URLs from Search Console and inspect a few with URL Inspection to read "Google-selected canonical".
+- **Not verified (no access)**: Search Console / Bing Webmaster data, real-visitor (field) Core Web Vitals (PageSpeed quota exhausted; throttled lab results are below), server updates/reboot flag/logs/backups (no SSH), production n8n workflow status, Google Sheets / Calendar / Telegram / email flows, an end-to-end enquiry test (needs a test inbox and your approval).
 - Minor: heading level skips on `/contact` and `/industries`; chat assistant says "high-value service businesses" while the site says "small and growing businesses"; patch updates available (Next 16.4.1, React 19.3.1).
+
+## Follow-up, same day: throttled mobile test (Lighthouse 12, Slow 4G, 4x CPU slowdown, simulated; lab data, not real visitors)
+| Page | Perf | Accessibility | FCP | LCP | TBT | Speed Index | CLS |
+|---|---|---|---|---|---|---|---|
+| Home | **59** | 99 | 2.0 s | 2.3 s | **2,290 ms** | **11.6 s** | 0 |
+| /services/web-design | 89 | 95 | 1.4 s | 1.9 s | 410 ms | 3.1 s | 0 |
+| Project page (LEADFLOW) | 72 | 99 | 1.5 s | **4.0 s** | 530 ms | 3.7 s | 0 |
+| /contact | 78 | 94 | 1.3 s | **3.3 s** | 550 ms | 3.2 s | 0 |
+Best practices 100 and SEO 100 on all four. Home is the weak page: main-thread work is mostly "Other" (5.3 s), Style & Layout (2.4 s) and script (1.5 s) under 4x CPU slowdown, with 20 long tasks; page weight (about 950 KB) is not the cause. The exact trigger (animation, hydration of a 212 KB document, or layout recalculation) is not yet proven; it needs a profiled investigation. Real-visitor (field) data is still not verified.
+
+Accessibility defects found by Lighthouse (proposed, not yet changed): logo `alt="WALKFLOW"` repeats the adjacent wordmark text (all pages); dim step numerals on service pages (contrast 1.76:1, `ServiceProcess.tsx`); grey select text on `/contact` (3.2:1); skipped heading level on `/contact`.
+
+## Production n8n
+Production is the **self-hosted n8n on the VPS** (`n8n.walkflow.tech`, tailnet only; health 200; Caddy block and recovery backups described in `vps-recovery.md`). The real webhook host and secret live only in `/opt/walkflow-web/production/web.env`, never in Git. The n8n account reachable from the review tooling is the **retired Cloud copy** (`walkflow.app.n8n.cloud`, five inactive workflows) and was not changed.
