@@ -36,6 +36,7 @@ export function ServiceProjectCard({
   showSummary = true,
   fillHeight = false,
   showBadge = true,
+  showTags = true,
 }: {
   project: ProjectItem;
   serviceSlug: ServiceSlug;
@@ -45,6 +46,8 @@ export function ServiceProjectCard({
   fillHeight?: boolean;
   /** The "Concept Project" / "Demo Project" corner label on the image. Hidden on the automation showcase by request. */
   showBadge?: boolean;
+  /** The tag chips under the description. Hidden on the automation showcase so its cards match the Web Design cards. */
+  showTags?: boolean;
 }) {
   return (
     <Link
@@ -90,12 +93,12 @@ export function ServiceProjectCard({
       </div>
 
       {showSummary ? (
-        <div className={cx("flex flex-1 flex-col", fillHeight ? "p-4 lg:p-6" : "p-6")}>
+        <div className="flex flex-1 flex-col p-6">
           <p className="text-xs font-bold uppercase tracking-wide text-orange">{project.industry}</p>
           <h3 className="mt-2 text-lg text-white">{project.title}</h3>
           {project.description && <p className="mt-2.5 leading-relaxed text-white/60">{project.description}</p>}
 
-          {project.tags.length > 0 && (
+          {showTags && project.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {project.tags.map((tag) => (
                 <span key={tag} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/60">
