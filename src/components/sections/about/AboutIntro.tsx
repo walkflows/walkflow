@@ -27,7 +27,7 @@ export function AboutIntro() {
       />
 
       <Container className="relative grid gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-        <Reveal>
+        <Reveal eager>
           <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
             {aboutIntro.eyebrow}
           </span>

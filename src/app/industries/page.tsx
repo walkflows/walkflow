@@ -32,20 +32,20 @@ export default function IndustriesPage() {
         />
 
         <Container className="relative flex flex-col items-center text-center">
-          <Reveal>
+          <Reveal eager>
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {industriesDirectory.eyebrow}
             </span>
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal eager delay={0.08}>
             <h1 className="mt-6 max-w-3xl text-balance text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.1] text-white">
               {industriesDirectory.heading}
             </h1>
           </Reveal>
-          <Reveal delay={0.16}>
+          <Reveal eager delay={0.16}>
             <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/60">{industriesDirectory.body}</p>
           </Reveal>
-          <Reveal delay={0.24}>
+          <Reveal eager delay={0.24}>
             <div className="mt-8">
               <Button href={industriesDirectory.cta.href}>
                 {industriesDirectory.cta.label}

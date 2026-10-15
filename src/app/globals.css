@@ -134,10 +134,10 @@
    */
   @keyframes enter-rise {
     from {
-      transform: translate3d(0, var(--enter-y, 16px), 0);
+      transform: translate3d(0, var(--enter-y, 16px), 0) scale(var(--enter-scale, 1));
     }
     to {
-      transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0) scale(1);
     }
   }
 

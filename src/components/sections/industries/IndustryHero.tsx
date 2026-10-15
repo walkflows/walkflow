@@ -28,7 +28,7 @@ export function IndustryHero({
   return (
     <section className="overflow-hidden bg-navy-deep py-20 sm:py-28">
       <Container className="relative grid items-center gap-14 lg:grid-cols-[1fr_1fr] lg:gap-10">
-        <Reveal>
+        <Reveal eager>
           <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
             {eyebrow}
           </span>
@@ -45,7 +45,7 @@ export function IndustryHero({
           </div>
         </Reveal>
 
-        <Reveal delay={0.12} scale={0.96}>
+        <Reveal eager delay={0.12} scale={0.96}>
           <div className="relative mx-auto w-full max-w-lg">
             <div aria-hidden className="pointer-events-none absolute -inset-8 -z-10 rounded-[3rem] bg-orange/15 blur-[90px]" />
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2.5rem] border border-white/10">
