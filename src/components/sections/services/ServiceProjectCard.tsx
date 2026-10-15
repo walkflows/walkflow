@@ -35,6 +35,7 @@ export function ServiceProjectCard({
   tileAspect = "4/3",
   showSummary = true,
   fillHeight = false,
+  showBadge = true,
 }: {
   project: ProjectItem;
   serviceSlug: ServiceSlug;
@@ -42,6 +43,8 @@ export function ServiceProjectCard({
   showSummary?: boolean;
   /** Stretch to the grid row so neighbouring cards end level (used by the six-card automation grid only). */
   fillHeight?: boolean;
+  /** The "Concept Project" / "Demo Project" corner label on the image. Hidden on the automation showcase by request. */
+  showBadge?: boolean;
 }) {
   return (
     <Link
@@ -71,9 +74,11 @@ export function ServiceProjectCard({
           </div>
         )}
 
-        <span className="absolute left-3 top-3 rounded-full bg-navy-deep/85 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-orange backdrop-blur">
-          {project.classification ?? "Concept Project"}
-        </span>
+        {showBadge && (
+          <span className="absolute left-3 top-3 rounded-full bg-navy-deep/85 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-orange backdrop-blur">
+            {project.classification ?? "Concept Project"}
+          </span>
+        )}
 
         {/* Dark overlay + label: always visible on touch devices (no `hover` media feature), hover/focus-revealed on devices that support hovering. */}
         <div
