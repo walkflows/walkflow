@@ -70,39 +70,25 @@ Not fixed / not proven:
 - **First-screen heroes**: About intro, the industries overview and industry hero, and the four demo heroes now have their headline and intro visible in the server HTML (previously `opacity:0` until JavaScript hydrated). Verified live on 10 representative pages. `Reveal eager` supports the optional scale used by the industry hero.
 - **Remaining limitations**: other pages below the first screen keep the scroll-triggered reveal (intended); home blocking time and real-visitor Core Web Vitals still need a quiet-machine Lighthouse run or field data; analytics is not installed. Target markets (US, UK, Canada, Australia, Europe; Nigeria lower priority) are targets, not verified visitor locations.
 
-## Controlled enquiry test, 15 October 2026 (owner-approved: one enquiry plus one identical resubmission, to an owner-controlled inbox)
-Test record: submission reference `web-d3cd5682-109f-44a4-bc53-dce8e7624781`, enquiry reference `ENQ-20261015-3C6XJS`, name "TEST DO NOT ACTION". No real customer was contacted. The test inbox address is deliberately not recorded here.
+## Controlled enquiry test, 15 October 2026: closed out (functional pass; side checks listed as unverified)
+Owner-approved: one enquiry through the live form plus one identical resubmission, to an owner-controlled inbox (address deliberately not recorded here); no real customer was contacted; the working setup was not changed. Test record: submission reference `web-d3cd5682-109f-44a4-bc53-dce8e7624781`, enquiry reference `ENQ-20261015-3C6XJS`, name "TEST DO NOT ACTION".
 
-| Check | Status | Evidence |
-|---|---|---|
-| Live form submission is accepted and saved | **Verified by tester** | 22:32:17 UTC, HTTP 200 `{"ok":true,"duplicate":false}`; form showed its success message (the server only answers this after n8n confirms the save) |
-| Identical resubmission is recognised as a duplicate | **Verified at the API** (sheet side not yet confirmed) | 22:32:42 UTC, HTTP 200 `{"ok":true,"duplicate":true}` |
-| One acknowledgement email arrived in the test inbox, from `hello@walkflow.tech` | **User-confirmed** | owner report |
-| Reply from the enquirer's address sets "Customer replied" | **User-confirmed** | owner report: Customer replied = YES |
-| Follow-ups stop after a reply | **User-confirmed** | owner report: related Scheduled Emails entries show Cancelled; "Follow-up paused" stayed NO (the reply rule, not the pause flag, stopped them) |
-| Exactly one Enquiries row for the reference (no duplicate row from the resubmission) | **Unverified** | not yet reported |
-| Which Scheduled Emails entries exist, their types and counts, and that none is doubled | **Unverified** | only "related entries show Cancelled" reported |
-| Email headers: From display name WALKFLOW and Reply-To `hello@walkflow.tech`; arrival time | **Unverified** | only the sender address was reported |
-| No second or duplicate email; no stray alert (Telegram or other) | **Unverified** | not yet reported |
-| Problems & Alerts tab shows nothing new | **Unverified** | not yet reported |
-| Production SMTP node settings (Hostinger SMTP, port 465, From, Reply-To) | **Unverified (previously confirmed, not re-inspected)** | no access to the production n8n; public DNS (SPF, DKIM, MX) is consistent with Hostinger mail |
+**Passed (V = verified by the tester at the website; U = user-confirmed, reported by the owner, not independently verified)**
+| Check | Result |
+|---|---|
+| Live form accepts and saves an enquiry | V: 22:32:17 UTC, HTTP 200 `{"ok":true,"duplicate":false}`, success message shown (the server answers this only after n8n confirms the save) |
+| Duplicate prevention | V at the API: identical resubmission at 22:32:42 UTC returned `{"ok":true,"duplicate":true}`. U in the sheet: exactly one Enquiries row for the reference, five Scheduled Emails entries, none doubled |
+| Confirmation email | U: exactly one arrived. Headers (U): From `WALKFLOW <hello@walkflow.tech>`, Reply-To `hello@walkflow.tech`, sent 22:32:24 UTC, received 22:32:31 UTC, SPF/DKIM/DMARC all PASS |
+| Internal alert | U: arrived in `hello@walkflow.tech`, exactly one copy |
+| Reply stops follow-ups | U: after the owner replied, Customer replied = YES and the three Enquiry Follow-up entries show Cancelled ("Follow-up paused" stayed NO: the reply rule stopped them) |
+| Cleanup (no deletions) | U: Follow-up paused set to YES, note "TEST completed - do not action" added, no other enquiry changed |
 
-Cleanup (owner, in the sheet; no deletions): on the test row only, set Follow-up paused = YES and add a note that it is an approved test; confirm every Scheduled Emails entry for the reference is Cancelled or Sent (none left Queued / Scheduled / Sending / Needs Checking), changing any that remain to Cancelled with a note; mark any related Problems & Alerts entries resolved; leave Customer replied, the history and all other rows unchanged. Re-check after one sender cycle (about 10 minutes) that nothing further is sent.
+**How email is sent (from the owner's workflow export plus the headers; the export alone does not prove which version is published)**: the "Send Email" node is an HTTP Request to Gmail's `/gmail/v1/users/me/messages/send` using a `gmailOAuth2` connection; "Build Message (Send Email)" sets From and Reply-To to `hello@walkflow.tech`. The delivery chain shows `gmailapi.google.com` then authenticated sending through `smtp.hostinger.com`, which points to Gmail API sending as `hello@walkflow.tech`, relayed through Hostinger SMTP. This supersedes the earlier recollection of n8n connecting to Hostinger SMTP directly. Unchanged and working.
 
-### Controlled enquiry test: owner-confirmed sheet results and cleanup (`ENQ-20261015-3C6XJS`)
-All items below are **user-confirmed** (reported by the owner; not independently verified).
-- **Enquiries tab:** search returned 1 of 1, so the identical resubmission did not create a second row. Customer replied = YES. Follow-up paused = YES (set during cleanup). Note added: "TEST completed - do not action". Nothing was deleted and no other enquiry was changed.
-- **Scheduled Emails:** five entries for the reference, none doubled: Enquiry Confirmation = SENT; Internal Alert - New Enquiry = SENT; Enquiry Follow-up x3 = Cancelled (stopped by the reply).
-- **Test inbox:** exactly one email, the enquiry confirmation, from `hello@walkflow.tech`.
-
-Internal alert delivery: **user-confirmed** - the "New Enquiry" alert arrived in `hello@walkflow.tech`, exactly one copy.
-
-Email authentication on the confirmation email (Gmail "Show original"): **user-confirmed** SPF PASS, DKIM PASS, DMARC PASS (DMARC policy itself is still `p=none`).
-
-Confirmation email headers (Gmail "Show original"): **user-confirmed** - From `WALKFLOW <hello@walkflow.tech>`; Reply-To `hello@walkflow.tech`; Date 15 Oct 2026 22:32:24 UTC; received by Gmail 22:32:31 UTC (7 seconds); SPF, DKIM and DMARC all PASS. The delivery chain includes `gmailapi.google.com` followed by authenticated sending through `smtp.hostinger.com`.
-Interpretation, **not assumed to be the production node's configuration**: a Gmail API step followed by Hostinger SMTP is what a Gmail account sending "as" `hello@walkflow.tech` through its "Send mail as" Hostinger SMTP setting would produce, and it differs from n8n connecting to `smtp.hostinger.com` directly. If that is how production works, it adds dependencies worth checking (Gmail OAuth token validity, Gmail daily sending limits, and how replies reach the inbox the workflow watches). Confirm in the production n8n which credential type the email step uses.
-
-Workflow export (owner-reported, **user-confirmed**; the export alone does not prove which version is published in production): the "Send Email" node is an HTTP Request to Gmail's `/gmail/v1/users/me/messages/send` endpoint using a `gmailOAuth2` connection, and "Build Message (Send Email)" sets From to `WALKFLOW <hello@walkflow.tech>` and Reply-To to `hello@walkflow.tech`. Together with the received headers (Gmail API submission, then authenticated delivery through `smtp.hostinger.com`), the evidence points to **Gmail API sending as `hello@walkflow.tech`, relayed through Hostinger SMTP**. This supersedes the earlier recollection of n8n connecting to `smtp.hostinger.com:465` directly. Nothing was changed; delivery and authentication work today.
-Things that follow from a Gmail-API sender and are worth checking (not yet checked): that `hello@walkflow.tech` is set up under the Gmail account's "Send mail as" using `smtp.hostinger.com`; the Google OAuth app's publishing status (an app left in "Testing" can have its sign-in expire after about a week); Gmail's daily sending limit; and who can revoke the connection.
-
-Still **unverified**: the Gmail "Send mail as" setup; the OAuth app's publishing status; which workflow version is published in production; Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
+**Still unverified (not blocking the test)**
+- Problems & Alerts tab and any stray alert (for example Telegram) from the test.
+- A re-check, after one sender cycle, that nothing further was sent after the follow-ups were cancelled.
+- Which workflow version is published in production.
+- The Gmail account's "Send mail as" entry for `hello@walkflow.tech` (via `smtp.hostinger.com`).
+- The Google OAuth app's publishing status. If the app is left in "Testing", its sign-in can expire after about a week and emails would stop until reconnected; also Gmail's daily sending limit applies. Check: Google Cloud Console > APIs & Services > OAuth consent screen > Publishing status.
+- DMARC policy is still `p=none` (monitoring only).
