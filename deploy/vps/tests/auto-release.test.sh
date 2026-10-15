@@ -3,8 +3,9 @@
 # Needs: bash, git, python3, curl.   Run:  bash deploy/vps/tests/auto-release.test.sh
 set -uo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
+PORT=$((20000 + RANDOM % 20000))   # fresh port each run: a stale server from an earlier run must never answer
 T=$(mktemp -d); trap 'kill $SRV 2>/dev/null; rm -rf "$T"' EXIT
-export WF_BASE="$T/base" WF_LOG="$T/deploy.log" WF_API="http://127.0.0.1:8765/repos/x" WF_RELEASE="$T/release-stub.sh"
+export WF_BASE="$T/base" WF_LOG="$T/deploy.log" WF_API="http://127.0.0.1:$PORT/repos/x" WF_RELEASE="$T/release-stub.sh"
 mkdir -p "$WF_BASE" "$T/api/repos/x/commits" "$T/bin"
 # Some dev machines (e.g. Windows) only have a "python3" stub: prefer a working interpreter.
 PY=$(for c in python3 python; do "$c" -c "import sys" 2>/dev/null && { echo "$c"; break; }; done)
@@ -30,7 +31,8 @@ case "\$(cat "$T/release-mode")" in
 esac
 EOF
 chmod +x "$T/release-stub.sh"; touch "$T/release-calls"
-( cd "$T/api" && python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1 ) & SRV=$!; sleep 1
+python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$T/api" >/dev/null 2>&1 & SRV=$!
+for _ in 1 2 3 4 5 6 7 8 9 10; do curl -s -o /dev/null -m 2 "http://127.0.0.1:$PORT/" && break; sleep 0.5; done
 setstatus() { echo "{\"statuses\":[{\"context\":\"Vercel\",\"state\":\"$2\"}]}" > "$T/api/repos/x/commits/$1.status"; mkdir -p "$T/api/repos/x/commits/$1"; cp "$T/api/repos/x/commits/$1.status" "$T/api/repos/x/commits/$1/status"; }
 calls() { wc -l < "$T/release-calls" | tr -d ' '; }
 live() { cut -d' ' -f1 "$WF_BASE/auto-release/deployed-commit.txt"; }
@@ -62,4 +64,5 @@ E=$(git rev-parse HEAD); setstatus "$E" success; run
 expect "history rewritten (not a descendant): refused" "$D" "$(live)"
 grep -q "not a descendant" "$WF_LOG" && echo "ok   refusal logged" || { echo "FAIL refusal not logged"; fails=1; }
 
+[ -n "${DEBUG:-}" ] && cat "$WF_LOG" >&2
 [ "$fails" = 0 ] && echo "ALL PASSED" || { echo "SOME FAILED"; exit 1; }

@@ -24,6 +24,22 @@ get walkflow-autorelease.service > /etc/systemd/system/walkflow-autorelease.serv
 get walkflow-autorelease.timer   > /etc/systemd/system/walkflow-autorelease.timer
 get walkflow-deploy.logrotate    > /etc/logrotate.d/walkflow-deploy
 bash -n "$BASE/release.sh" && bash -n "$BASE/auto-release.sh"
+systemctl daemon-reload
+
+echo ">> self-test: running a Docker build inside the same sandbox the timer uses (nothing is released or changed)"
+# These properties mirror the [Service] hardening in walkflow-autorelease.service. A tiny "FROM scratch" build needs a writable
+# Docker config directory, which is exactly what failed before ("mkdir /root/.docker: read-only file system").
+SANDBOX=(-p ProtectHome=yes -p PrivateTmp=yes -p NoNewPrivileges=yes -p ProtectKernelModules=yes -p ProtectControlGroups=yes
+         -p StateDirectory=walkflow-autorelease -p StateDirectoryMode=0700
+         -p Environment=HOME=/var/lib/walkflow-autorelease -p Environment=DOCKER_CONFIG=/var/lib/walkflow-autorelease/docker)
+TEST_CMD='docker compose version >/dev/null && printf "FROM scratch\nLABEL walkflow-selftest=1\n" | docker build -q -t walkflow-selftest:1 - >/dev/null && docker image rm walkflow-selftest:1 >/dev/null && echo SELFTEST_OK'
+SELFTEST=$(systemd-run --wait --pipe --quiet --collect "${SANDBOX[@]}" /bin/sh -c "$TEST_CMD" 2>&1 || true)
+if ! printf '%s' "$SELFTEST" | grep -q SELFTEST_OK; then
+  echo "SELF-TEST FAILED. The timer was NOT enabled and nothing was released. Output:"
+  printf '%s\n' "$SELFTEST"
+  exit 1
+fi
+echo "   self-test passed"
 
 echo ">> recording the commit that is live right now"
 mkdir -p "$STATE"
@@ -34,8 +50,14 @@ if [ ! -s "$STATE/deployed-commit.txt" ]; then
 fi
 touch /var/log/walkflow-deploy.log && chmod 640 /var/log/walkflow-deploy.log
 
-systemctl daemon-reload
+# A release that failed only because of this sandbox problem must be allowed to run again; the self-test above has just
+# proven the problem is fixed. (A commit that fails later for a real reason is still never retried automatically.)
+if [ -s "$STATE/failed-commit" ]; then
+  echo ">> clearing the failed-commit marker ($(cut -c1-7 "$STATE/failed-commit")) so that commit is retried"
+  rm -f "$STATE/failed-commit" "$STATE/last-note"
+fi
 systemctl enable --now walkflow-autorelease.timer
+systemctl restart walkflow-autorelease.timer
 echo
 echo "DONE. Live commit recorded as: $(cut -d' ' -f1 "$STATE/deployed-commit.txt")"
 echo "Next automatic check:"; systemctl list-timers walkflow-autorelease.timer --no-pager | head -3

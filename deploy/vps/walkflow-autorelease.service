@@ -17,3 +17,10 @@ PrivateTmp=yes
 ProtectHome=yes
 ProtectKernelModules=yes
 ProtectControlGroups=yes
+# ProtectHome hides /root, and Docker (client, buildx, compose) needs a writable config directory ("mkdir /root/.docker:
+# read-only file system" broke the first release). Give it a private one that systemd creates for this service only,
+# instead of loosening ProtectHome. If you change these lines, keep the self-test in install-auto-release.sh in step.
+StateDirectory=walkflow-autorelease
+StateDirectoryMode=0700
+Environment=HOME=/var/lib/walkflow-autorelease
+Environment=DOCKER_CONFIG=/var/lib/walkflow-autorelease/docker
