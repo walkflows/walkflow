@@ -8,10 +8,13 @@ import { IconArrowRight, IconChevronLeft } from "@/components/ui/icons";
 
 /**
  * Detail page for a Business Automation & CRM showcase project. Fixed content order:
- * title + introduction, main image, The Problem, The Solution, video (only when a real
- * `videoSrc` exists), then the consultation button. The video is never rendered without a
- * source, never autoplays, and does not preload (`preload="none"`) so the page stays light.
- * Rendered by ProjectDetail whenever a project carries `automation` content.
+ * title + introduction, project images, The Problem, The Solution, video (only when a real
+ * `videoSrc` exists), then the consultation button. Everything shares one left content edge.
+ *
+ * The card thumbnail (`project.image`) is used on the showcase card only; this page shows the
+ * project's own `automation.gallery` images instead. Each keeps its real proportions (width/height
+ * come from the file) and opens full size in a new tab, because screenshots are small at grid width.
+ * The video is never rendered without a source, never autoplays and does not preload.
  */
 export function AutomationDetail({
   project,
@@ -22,6 +25,7 @@ export function AutomationDetail({
 }) {
   const { automation } = project;
   if (!automation) return null;
+  const gallery = automation.gallery ?? [];
 
   return (
     <section className="bg-navy-deep py-16 sm:py-24">
@@ -45,22 +49,38 @@ export function AutomationDetail({
           {project.intro && <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/75">{project.intro}</p>}
         </Reveal>
 
-        <Reveal delay={0.08}>
-          <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-white/10 bg-navy sm:rounded-[2rem]">
-            {project.image && (
-              <Image
-                src={project.image.src}
-                alt={project.image.alt}
-                fill
-                sizes="(min-width: 1024px) 896px, 92vw"
-                className="object-contain"
-                priority
-              />
-            )}
-          </div>
-        </Reveal>
+        {gallery.length > 0 && (
+          <Reveal delay={0.08}>
+            <ul className="mt-10 grid items-start gap-x-6 gap-y-8 sm:grid-cols-2">
+              {gallery.map((img, i) => (
+                <li key={img.src}>
+                  <figure>
+                    <a
+                      href={img.src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block overflow-hidden rounded-xl border border-white/10 bg-navy outline-none transition-colors duration-150 hover:border-orange/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+                    >
+                      <Image
+                        src={img.src}
+                        alt={img.alt}
+                        width={img.width}
+                        height={img.height}
+                        sizes="(min-width: 1280px) 540px, (min-width: 640px) 46vw, 92vw"
+                        priority={i < 2}
+                        className="h-auto w-full"
+                      />
+                      <span className="sr-only"> (opens the full-size image in a new tab)</span>
+                    </a>
+                    <figcaption className="mt-2.5 text-sm leading-relaxed text-white/60">{img.caption}</figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        )}
 
-        <div className="mx-auto mt-14 max-w-3xl sm:mt-20">
+        <div className="mt-14 max-w-3xl sm:mt-20">
           <Reveal>
             <h2 className="text-[clamp(1.5rem,3vw,2rem)] leading-tight text-white">The Problem</h2>
             <p className="mt-4 leading-relaxed text-white/70">{automation.problem}</p>
@@ -83,32 +103,32 @@ export function AutomationDetail({
               ))}
             </ol>
           </Reveal>
-
-          {project.videoSrc && (
-            <Reveal delay={0.05}>
-              <div id="walkthrough" className="mt-12 scroll-mt-24 sm:mt-16">
-                <h2 className="text-[clamp(1.5rem,3vw,2rem)] leading-tight text-white">
-                  {automation.videoHeading ?? "Watch the walkthrough"}
-                </h2>
-                <div className="relative mt-5 aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-navy">
-                  <video
-                    controls
-                    playsInline
-                    preload="none"
-                    poster={project.videoPoster?.src}
-                    aria-label={`${project.title} walkthrough video`}
-                    className="h-full w-full object-contain"
-                  >
-                    <source src={project.videoSrc} type="video/mp4" />
-                  </video>
-                </div>
-              </div>
-            </Reveal>
-          )}
         </div>
 
+        {project.videoSrc && (
+          <Reveal delay={0.05}>
+            <div id="walkthrough" className="mt-12 scroll-mt-24 sm:mt-16">
+              <h2 className="text-[clamp(1.5rem,3vw,2rem)] leading-tight text-white">
+                {automation.videoHeading ?? "Watch the walkthrough"}
+              </h2>
+              <div className="relative mt-5 aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-navy">
+                <video
+                  controls
+                  playsInline
+                  preload="none"
+                  poster={project.videoPoster?.src}
+                  aria-label={`${project.title} walkthrough video`}
+                  className="h-full w-full object-contain"
+                >
+                  <source src={project.videoSrc} type="video/mp4" />
+                </video>
+              </div>
+            </div>
+          </Reveal>
+        )}
+
         <Reveal delay={0.05}>
-          <div className="mt-14 flex flex-col items-center border-t border-white/10 pt-12 text-center sm:mt-20 sm:pt-16">
+          <div className="mt-14 border-t border-white/10 pt-12 sm:mt-20 sm:pt-16">
             <h2 className="max-w-xl text-balance text-[clamp(1.5rem,3.2vw,2.25rem)] leading-tight text-white">
               Want something like this for your business?
             </h2>

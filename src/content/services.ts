@@ -82,6 +82,12 @@ export type ProjectItem = {
     solution: string;
     /** Short "how it works" steps, shown inside The Solution. */
     steps: string[];
+    /**
+     * Images shown on the project page in place of the card thumbnail (the thumbnail stays on the showcase card only).
+     * `width`/`height` are the real pixel size, so each image keeps its own proportions and reserves its space. Any private
+     * data in these screenshots was redacted before publishing; the caption says so where it applies.
+     */
+    gallery?: { src: string; alt: string; caption: string; width: number; height: number }[];
     /** Heading above the video block; the block is omitted when the project has no `videoSrc`. */
     videoHeading?: string;
   };
@@ -215,6 +221,15 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
               "A follow-up task is created, due within 24 hours.",
               "Each step is recorded in a database, and a separate error workflow alerts an administrator if something fails.",
             ],
+            gallery: [
+              { src: "/images/projects/automation/leadflow/01-form.webp", alt: "The LEADFLOW website enquiry form asking for name, email, what the buyer is looking for, preferred neighbourhood, budget and a message", caption: "The website enquiry form where a buyer describes what they are looking for.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/leadflow/02-buyer-email.webp", alt: "Email sent to the buyer listing a matched property, with buttons to say whether they are still interested (personal details hidden)", caption: "The email the buyer receives with matching properties. Personal details are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/leadflow/03-booking-page.webp", alt: "A property page showing a matched home with a Request a viewing option and a date and time form", caption: "From the email, the buyer can request a viewing and choose a date and time.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/leadflow/04-agent-email.webp", alt: "Internal email to the assigned agent summarising the enquiry, the matched property and a follow-up due within 24 hours (personal details hidden)", caption: "The internal email to the assigned agent. Personal details are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/leadflow/05-workflow.webp", alt: "The LEADFLOW workflow in n8n, from property enquiry to viewing", caption: "The LEADFLOW workflow in n8n.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/leadflow/06-database.webp", alt: "A database table recording each LEADFLOW step, such as client notified, agent assigned and follow-up created", caption: "Each step is recorded in a database table.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/leadflow/07-error-handler.webp", alt: "A small n8n error-handling workflow that formats a problem and emails an administrator", caption: "A separate error workflow alerts an administrator if something fails.", width: 1600, height: 760 },
+            ],
             videoHeading: "Watch the walkthrough",
           },
         },
@@ -242,6 +257,15 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
               "The request is saved in Airtable, alongside tables for inspections, quotes and activity, so progress is easy to track.",
               "A separate error workflow records any problem and sends an alert.",
             ],
+            gallery: [
+              { src: "/images/projects/automation/servicedesk/01-form.webp", alt: "The roofing enquiry form with contact method, property type, service needed, location, urgency, a description and a roof photo upload (personal details hidden)", caption: "The roofing request form, with optional photo upload. Personal details are hidden.", width: 1600, height: 1654 },
+              { src: "/images/projects/automation/servicedesk/02-confirmation.webp", alt: "Website confirmation message saying the enquiry has been received, with a reference number and an uploaded photo", caption: "The customer sees a confirmation with a reference number.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/servicedesk/03-customer-email.webp", alt: "Acknowledgement email telling the customer the enquiry was received and that a team member will email about the next step (personal details hidden)", caption: "The acknowledgement email to the customer. Personal details are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/servicedesk/04-team-alert.webp", alt: "A Telegram alert for the team showing the new roofing enquiry, urgency, preferred contact, owner and next step (personal details hidden)", caption: "The instant Telegram alert for the team. Personal details are hidden.", width: 1095, height: 890 },
+              { src: "/images/projects/automation/servicedesk/05-tracking.webp", alt: "An Airtable base with tables for leads, inspections, quotes and activity, showing the saved enquiries (personal details hidden)", caption: "Requests are saved in Airtable, with tables for inspections, quotes and activity. Personal details are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/servicedesk/06-workflow.webp", alt: "The SERVICEDESK lead-manager workflow in n8n, with sections for the website enquiry, roof photo upload, customer quote link and staff buttons", caption: "The lead-manager workflow in n8n.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/servicedesk/07-error-handler.webp", alt: "A SERVICEDESK error-handler workflow that records a problem and sends a Telegram alert", caption: "A separate error workflow records problems and sends an alert.", width: 1600, height: 760 },
+            ],
             videoHeading: "Watch the walkthrough",
           },
         },
@@ -267,6 +291,13 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
               "Discovery calls are booked into Google Calendar with a Google Meet link, and each booking is recorded with a reference and a status.",
               "Scheduled follow-up emails are sent from the same workflow.",
               "A separate recovery workflow records problems and alerts the team.",
+            ],
+            gallery: [
+              { src: "/images/projects/automation/bizflow/01-workflow.webp", alt: "The BIZFLOW enquiry, booking and follow-up manager workflow in n8n", caption: "The enquiry, booking and follow-up workflow in n8n.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/bizflow/02-enquiries.webp", alt: "A Google Sheet logging each website enquiry with date, service and industry (names, emails and companies hidden)", caption: "Every enquiry is logged in a Google Sheet. Names, emails and companies are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/bizflow/03-calendar.webp", alt: "A Google Calendar discovery call with a Google Meet link and reminders (guest details hidden)", caption: "Discovery calls are booked into Google Calendar with a Meet link. Guest details are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/bizflow/04-bookings.webp", alt: "A Google Sheet of bookings with booking reference, enquiry reference, date, time, time zone and a Confirmed status (names, emails and links hidden)", caption: "Each booking is recorded with a reference and a status. Names, emails and links are hidden.", width: 1600, height: 760 },
+              { src: "/images/projects/automation/bizflow/05-recovery.webp", alt: "The BIZFLOW error alerts and recovery workflow in n8n", caption: "A separate recovery workflow records problems and alerts the team.", width: 1600, height: 760 },
             ],
             videoHeading: "Watch the walkthrough",
           },
@@ -294,6 +325,13 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
               "It saves the lead's name, phone number, email and the property they asked about to a leads sheet.",
               "It checks availability in Google Calendar, books the viewing and sends a confirmation email.",
             ],
+            gallery: [
+              { src: "/images/projects/automation/estatehelp/01-assistant.webp", alt: "The ESTATEHELP AI assistant workflow in n8n, starting from a Telegram message and connecting to property listing, knowledge base, calendar and email tools", caption: "The AI assistant workflow in n8n.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/estatehelp/02-knowledge-base.webp", alt: "An n8n workflow that loads property documents from Google Drive into a vector store for the assistant to search", caption: "Property documents are loaded into a searchable knowledge base.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/estatehelp/03-listings.webp", alt: "A Google Sheet listing properties with title, location, price, bedrooms, status and features (agent details and links hidden)", caption: "The assistant answers from your own property list. Agent details and links are hidden.", width: 1600, height: 436 },
+              { src: "/images/projects/automation/estatehelp/04-calendar.webp", alt: "A Google Calendar event for a property viewing booked by the assistant (contact details hidden)", caption: "Viewings are booked into Google Calendar. Contact details are hidden.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/estatehelp/05-confirmation-email.webp", alt: "A viewing confirmation email with the property, date, time and location (personal details hidden)", caption: "The lead receives a viewing confirmation email. Personal details are hidden.", width: 1600, height: 788 },
+            ],
             videoHeading: "Watch the walkthrough",
           },
         },
@@ -318,6 +356,12 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
               "A voice agent built in ElevenLabs answers the call using a receptionist script.",
               "It checks free time slots through a connected workflow that reads the calendar.",
               "It books the appointment in the calendar, sends a confirmation email and logs the booking in a sheet.",
+            ],
+            gallery: [
+              { src: "/images/projects/automation/voice-agent/01-agent-setup.webp", alt: "The ElevenLabs agent setup for a plumbing receptionist, showing the system prompt, first message, voice and language", caption: "The receptionist agent set up in ElevenLabs.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/voice-agent/02-tools.webp", alt: "The ElevenLabs tools for the agent, check availability and book appointment, with their settings (connection addresses hidden)", caption: "The agent uses two tools: check availability and book appointment. Connection addresses are hidden.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/voice-agent/03-availability-workflow.webp", alt: "An n8n workflow that receives a webhook, uses an AI agent to read the calendar and responds with available times", caption: "The availability workflow reads the calendar.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/voice-agent/04-booking-workflow.webp", alt: "An n8n workflow that receives a webhook and uses an AI agent to create the calendar booking, send an email and log it in a sheet", caption: "The booking workflow creates the event, emails a confirmation and logs it.", width: 1600, height: 788 },
             ],
             videoHeading: "Watch the walkthrough",
           },
@@ -344,6 +388,12 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
               "AI sorts the email into a department: Sales, Logistics, Billing, Customer Support or Office/Admin.",
               "The matching team is notified in its own Slack channel, and an email is sent to that department.",
               "The sheet is updated so you can see which department received the message and that it was completed.",
+            ],
+            gallery: [
+              { src: "/images/projects/automation/mailroute/01-diagram.webp", alt: "A diagram of the MAILROUTE flow from Gmail trigger through AI classification to department routing, Slack notifications and sheet updates", caption: "How MAILROUTE routes each email.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/mailroute/02-workflow.webp", alt: "The MAILROUTE workflow in n8n with a Gmail trigger, AI agent, department switch and notifications for each team", caption: "The MAILROUTE workflow in n8n.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/mailroute/03-log.webp", alt: "A Google Sheet logging each email with subject, body, completion status, timestamp and department (sender details hidden)", caption: "Every email is logged with its department. Sender details are hidden.", width: 1600, height: 788 },
+              { src: "/images/projects/automation/mailroute/04-slack.webp", alt: "A Slack channel for the logistics team showing a notification about a new email (names and addresses hidden)", caption: "The matching team is notified in its own Slack channel. Names and addresses are hidden.", width: 1600, height: 788 },
             ],
           },
         },
