@@ -90,7 +90,7 @@ export function ServiceProjectCard({
       </div>
 
       {showSummary ? (
-        <div className="flex flex-1 flex-col p-6">
+        <div className={cx("flex flex-1 flex-col", fillHeight ? "p-4 lg:p-6" : "p-6")}>
           <p className="text-xs font-bold uppercase tracking-wide text-orange">{project.industry}</p>
           <h3 className="mt-2 text-lg text-white">{project.title}</h3>
           {project.description && <p className="mt-2.5 leading-relaxed text-white/60">{project.description}</p>}
