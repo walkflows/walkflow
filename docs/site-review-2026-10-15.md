@@ -95,4 +95,6 @@ All items below are **user-confirmed** (reported by the owner; not independently
 - **Scheduled Emails:** five entries for the reference, none doubled: Enquiry Confirmation = SENT; Internal Alert - New Enquiry = SENT; Enquiry Follow-up x3 = Cancelled (stopped by the reply).
 - **Test inbox:** exactly one email, the enquiry confirmation, from `hello@walkflow.tech`.
 
-Still **unverified**: delivery of the internal alert (the sheet says SENT; delivery not separately confirmed); email headers (From display name, Reply-To, arrival time); Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
+Internal alert delivery: **user-confirmed** - the "New Enquiry" alert arrived in `hello@walkflow.tech`, exactly one copy.
+
+Still **unverified**: email headers (From display name, Reply-To, arrival time); Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
