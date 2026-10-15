@@ -69,3 +69,22 @@ Not fixed / not proven:
 - **Not measured**: Lighthouse before/after for this change. The test PC stayed at about 100% CPU from other applications, so no Lighthouse batch was run; timing-based scores would not have been trustworthy. Real-visitor (field) data is still not verified.
 - **First-screen heroes**: About intro, the industries overview and industry hero, and the four demo heroes now have their headline and intro visible in the server HTML (previously `opacity:0` until JavaScript hydrated). Verified live on 10 representative pages. `Reveal eager` supports the optional scale used by the industry hero.
 - **Remaining limitations**: other pages below the first screen keep the scroll-triggered reveal (intended); home blocking time and real-visitor Core Web Vitals still need a quiet-machine Lighthouse run or field data; analytics is not installed. Target markets (US, UK, Canada, Australia, Europe; Nigeria lower priority) are targets, not verified visitor locations.
+
+## Controlled enquiry test, 15 October 2026 (owner-approved: one enquiry plus one identical resubmission, to an owner-controlled inbox)
+Test record: submission reference `web-d3cd5682-109f-44a4-bc53-dce8e7624781`, enquiry reference `ENQ-20261015-3C6XJS`, name "TEST DO NOT ACTION". No real customer was contacted. The test inbox address is deliberately not recorded here.
+
+| Check | Status | Evidence |
+|---|---|---|
+| Live form submission is accepted and saved | **Verified by tester** | 22:32:17 UTC, HTTP 200 `{"ok":true,"duplicate":false}`; form showed its success message (the server only answers this after n8n confirms the save) |
+| Identical resubmission is recognised as a duplicate | **Verified at the API** (sheet side not yet confirmed) | 22:32:42 UTC, HTTP 200 `{"ok":true,"duplicate":true}` |
+| One acknowledgement email arrived in the test inbox, from `hello@walkflow.tech` | **User-confirmed** | owner report |
+| Reply from the enquirer's address sets "Customer replied" | **User-confirmed** | owner report: Customer replied = YES |
+| Follow-ups stop after a reply | **User-confirmed** | owner report: related Scheduled Emails entries show Cancelled; "Follow-up paused" stayed NO (the reply rule, not the pause flag, stopped them) |
+| Exactly one Enquiries row for the reference (no duplicate row from the resubmission) | **Unverified** | not yet reported |
+| Which Scheduled Emails entries exist, their types and counts, and that none is doubled | **Unverified** | only "related entries show Cancelled" reported |
+| Email headers: From display name WALKFLOW and Reply-To `hello@walkflow.tech`; arrival time | **Unverified** | only the sender address was reported |
+| No second or duplicate email; no stray alert (Telegram or other) | **Unverified** | not yet reported |
+| Problems & Alerts tab shows nothing new | **Unverified** | not yet reported |
+| Production SMTP node settings (Hostinger SMTP, port 465, From, Reply-To) | **Unverified (previously confirmed, not re-inspected)** | no access to the production n8n; public DNS (SPF, DKIM, MX) is consistent with Hostinger mail |
+
+Cleanup (owner, in the sheet; no deletions): on the test row only, set Follow-up paused = YES and add a note that it is an approved test; confirm every Scheduled Emails entry for the reference is Cancelled or Sent (none left Queued / Scheduled / Sending / Needs Checking), changing any that remain to Cancelled with a note; mark any related Problems & Alerts entries resolved; leave Customer replied, the history and all other rows unchanged. Re-check after one sender cycle (about 10 minutes) that nothing further is sent.
