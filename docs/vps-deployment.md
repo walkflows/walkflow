@@ -79,6 +79,12 @@ smoke test, automatic rollback). Until the install has been run, deployment stay
 - **What it will not do:** release a commit whose "Vercel" check is not `success`; release anything that is not a descendant of the live commit (rewritten
   history is refused); retry a commit that already failed (a newer commit is picked up normally); run two releases at once (`release.sh` holds
   `/var/lock/walkflow-release.lock`, so a manual `release.sh` and the timer can never overlap).
+- **Why the service has its own state folder:** the timer's hardening hides `/root` (`ProtectHome=yes`), and Docker needs a writable config folder
+  (the first release failed with `mkdir /root/.docker: read-only file system`). The unit therefore gets a private folder, `/var/lib/walkflow-autorelease`
+  (`StateDirectory=`), with `HOME` and `DOCKER_CONFIG` pointing into it. No protection was loosened. `install-auto-release.sh` proves this before it
+  enables the timer by running a tiny Docker build and `docker compose version` in the same sandbox (`SELFTEST_OK`); if that fails, it stops and enables nothing.
+- **A failed release is not retried by itself.** `auto-release.sh` records the commit in `/opt/walkflow-web/auto-release/failed-commit` and waits for a newer
+  commit. After you have fixed the cause, re-running the install command (below) clears that marker once the self-test passes, so the same commit is tried again.
 - **Which commit is live:** `cat /opt/walkflow-web/auto-release/deployed-commit.txt` (full commit, time, `auto`/`install`); history and every decision:
   `tail -n 50 /var/log/walkflow-deploy.log`; the image tag `walkflow-web:<short-sha>` is in `/opt/walkflow-web/production/current.image`.
 - **Pause it:** `systemctl stop walkflow-autorelease.timer` (resume: `systemctl start ...`). Manual `release.sh` still works either way.
