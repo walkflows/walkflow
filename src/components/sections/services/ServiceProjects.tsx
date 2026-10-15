@@ -23,7 +23,7 @@ export function ServiceProjects({
   /** Session 24, extended Session 26 — see ServiceProjectCard.tsx. Omitted by every page except Email Marketing and App Development, which render exactly as before. */
   tileAspect?: "4/3" | "square" | "16/9";
   showSummary?: boolean;
-  /** Desktop columns (tablet stays at two, mobile at one). Six automations sit best as 3 x 2; every other page keeps the default of 2. */
+  /** Columns from tablet width up: 3 (two rows of three for six cards), 2 on small tablets, 1 on mobile. With the default of 2 it stays at two columns from 640px. Six automations sit best as 3 x 2; every other page keeps the default of 2. */
   columns?: 2 | 3;
   /** Pass false to hide the corner label on every card (automation showcase). */
   showBadge?: boolean;
@@ -41,7 +41,7 @@ export function ServiceProjects({
           </div>
         </Reveal>
 
-        <div className={`mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6${columns === 3 ? " lg:grid-cols-3" : ""}`}>
+        <div className={columns === 3 ? "mt-12 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:gap-6" : "mt-12 grid gap-4 sm:grid-cols-2 sm:gap-6"}>
           {items.map((project, i) => (
             <Reveal key={project.slug} delay={i * 0.08} y={24} className={columns === 3 ? "h-full" : undefined}>
               <ServiceProjectCard project={project} serviceSlug={serviceSlug} tileAspect={tileAspect} showSummary={showSummary} fillHeight={columns === 3} showBadge={showBadge} />
