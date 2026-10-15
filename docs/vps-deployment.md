@@ -68,8 +68,28 @@ at 1 MB. (Caddy 2.6 reports a body over its own cap as 502, which is why the app
 | `release.sh` ends with `RESULT: FAIL` | The server rolled back by itself | No (the previous version is still live) |
 Only the last PASS step changes what visitors see. Until you run it, `master` on GitHub can be ahead of the live site (this is normal).
 
+## Automatic releases (added 15 October 2026)
+**After the one-time install below, merging to `master` publishes by itself.** Flow: approved change merged into `master` -> GitHub's required "Vercel"
+check is green for that exact commit -> within ~2 minutes the VPS builds and releases it with the same `release.sh` (capped build, health wait, live
+smoke test, automatic rollback). Until the install has been run, deployment stays manual as described below.
+- **How it works (pull, not push):** `walkflow-autorelease.timer` runs `/opt/walkflow-web/auto-release.sh` on the server every 2 minutes. The server asks
+  GitHub's public API; **GitHub holds no key, token or login for the server and nothing new is opened to the internet.** SSH/Tailscale rules are unchanged.
+- **Why there is no separate deploy user:** nobody logs in for this job. It runs from systemd (root, because `release.sh` reads the root-only `web.env` and
+  uses Docker; a Docker-group deploy user would be root-equivalent anyway) with `NoNewPrivileges`, `ProtectHome` and `PrivateTmp`. No secret is in Git or logs.
+- **What it will not do:** release a commit whose "Vercel" check is not `success`; release anything that is not a descendant of the live commit (rewritten
+  history is refused); retry a commit that already failed (a newer commit is picked up normally); run two releases at once (`release.sh` holds
+  `/var/lock/walkflow-release.lock`, so a manual `release.sh` and the timer can never overlap).
+- **Which commit is live:** `cat /opt/walkflow-web/auto-release/deployed-commit.txt` (full commit, time, `auto`/`install`); history and every decision:
+  `tail -n 50 /var/log/walkflow-deploy.log`; the image tag `walkflow-web:<short-sha>` is in `/opt/walkflow-web/production/current.image`.
+- **Pause it:** `systemctl stop walkflow-autorelease.timer` (resume: `systemctl start ...`). Manual `release.sh` still works either way.
+- **One-time install** (Hostinger browser terminal, once, after the pull request adding these files is merged):
+  `git -C /opt/walkflow-web/src fetch -q origin && bash <(git -C /opt/walkflow-web/src show origin/master:deploy/vps/install-auto-release.sh)`
+- **Tests:** `bash deploy/vps/tests/auto-release.test.sh` (decision logic with a stub release and a fake GitHub API).
+- **Limits:** GitHub's unauthenticated API allows 60 requests/hour per server address; the job calls it only when `master` has a new commit.
+  A merge with a red or missing check is never published; fix the check or merge a new commit.
+
 ## Publishing website changes (how it works now)
-**Deployment is MANUAL. Nothing publishes automatically when you merge.**
+**Manual release (still available; also the fallback). Without the automatic-release install above, nothing publishes when you merge.**
 1. **Edit** with Claude Code on your PC. Ask for a branch (never edit `master` directly), for example "make the change on a new branch and open a pull request".
 2. **Review and merge on GitHub:** open the pull request, read what changed, and merge it into `master`. Branch protection requires the "Vercel" check
    (and blocks force-pushes and deleting `master`). Merging only updates the code in GitHub; the live site does not change yet.
