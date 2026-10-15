@@ -46,7 +46,23 @@ const nextConfig: NextConfig = {
   // the Vercel build is unchanged.
   ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Images, videos and brand files in /public keep their names between releases, so they cannot be cached "forever" like
+      // the fingerprinted /_next/static files. One day (plus a week of background refresh) stops every repeat visit re-checking
+      // 160 MB of media, while a replaced file still reaches visitors within a day. Rename a file to publish it instantly.
+      {
+        source: "/(about|brand|clinics-demo|consulting-demo|demo-visuals|home-services-demo|images|industries|real-estate-demo|team|tools|videos)/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+      // The Vercel standby/preview copies (*.vercel.app) must never compete with walkflow.tech in search results.
+      // Keyed on the request host, so walkflow.tech stays indexable even if DNS is ever pointed back at Vercel.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: ".*\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
   },
 };
 

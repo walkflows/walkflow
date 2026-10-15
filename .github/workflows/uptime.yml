@@ -47,7 +47,13 @@ jobs:
           fi
           awk -v s="$secs" 'BEGIN{exit !(s+0 > 8)}' && note "home page slow: ${secs}s"
 
-          for u in https://www.walkflow.tech/contact https://walkflow.tech/sitemap.xml https://walkflow.tech/robots.txt; do
+          # www is meant to answer with a permanent redirect to the apex (walkflow.tech is the preferred address), so a 308 to
+          # https://walkflow.tech/contact is the healthy answer there; anything else is a problem.
+          c=$(curl -sS --retry 2 --retry-delay 5 --retry-all-errors -m 20 -o /dev/null -w '%{http_code} %{redirect_url}' https://www.walkflow.tech/contact || echo "000 ")
+          echo "https://www.walkflow.tech/contact -> $c"
+          [ "$c" = "308 https://walkflow.tech/contact" ] || note "https://www.walkflow.tech/contact answered '$c' (expected a 308 redirect to https://walkflow.tech/contact)"
+
+          for u in https://walkflow.tech/contact https://walkflow.tech/sitemap.xml https://walkflow.tech/robots.txt; do
             c=$(curl -sS --retry 2 --retry-delay 5 --retry-all-errors -m 20 -o /dev/null -w '%{http_code}' "$u" || echo 000)
             echo "$u -> $c"; [ "$c" = 200 ] || note "$u returned $c"
           done
