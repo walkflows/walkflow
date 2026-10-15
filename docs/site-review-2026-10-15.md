@@ -97,4 +97,6 @@ All items below are **user-confirmed** (reported by the owner; not independently
 
 Internal alert delivery: **user-confirmed** - the "New Enquiry" alert arrived in `hello@walkflow.tech`, exactly one copy.
 
+Email authentication on the confirmation email (Gmail "Show original"): **user-confirmed** SPF PASS, DKIM PASS, DMARC PASS (DMARC policy itself is still `p=none`).
+
 Still **unverified**: email headers (From display name, Reply-To, arrival time); Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
