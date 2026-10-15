@@ -88,3 +88,11 @@ Test record: submission reference `web-d3cd5682-109f-44a4-bc53-dce8e7624781`, en
 | Production SMTP node settings (Hostinger SMTP, port 465, From, Reply-To) | **Unverified (previously confirmed, not re-inspected)** | no access to the production n8n; public DNS (SPF, DKIM, MX) is consistent with Hostinger mail |
 
 Cleanup (owner, in the sheet; no deletions): on the test row only, set Follow-up paused = YES and add a note that it is an approved test; confirm every Scheduled Emails entry for the reference is Cancelled or Sent (none left Queued / Scheduled / Sending / Needs Checking), changing any that remain to Cancelled with a note; mark any related Problems & Alerts entries resolved; leave Customer replied, the history and all other rows unchanged. Re-check after one sender cycle (about 10 minutes) that nothing further is sent.
+
+### Controlled enquiry test: owner-confirmed sheet results and cleanup (`ENQ-20261015-3C6XJS`)
+All items below are **user-confirmed** (reported by the owner; not independently verified).
+- **Enquiries tab:** search returned 1 of 1, so the identical resubmission did not create a second row. Customer replied = YES. Follow-up paused = YES (set during cleanup). Note added: "TEST completed - do not action". Nothing was deleted and no other enquiry was changed.
+- **Scheduled Emails:** five entries for the reference, none doubled: Enquiry Confirmation = SENT; Internal Alert - New Enquiry = SENT; Enquiry Follow-up x3 = Cancelled (stopped by the reply).
+- **Test inbox:** exactly one email, the enquiry confirmation, from `hello@walkflow.tech`.
+
+Still **unverified**: delivery of the internal alert (the sheet says SENT; delivery not separately confirmed); email headers (From display name, Reply-To, arrival time); Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
