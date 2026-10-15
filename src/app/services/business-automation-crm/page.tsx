@@ -22,15 +22,15 @@ export const metadata: Metadata = {
  * Showcase, What We Can Automate, Why WALKFLOW, How We Work, Platforms &
  * Tools, FAQs, Final CTA. The old separate Benefits section is gone
  * (merged into Why WALKFLOW) and Reviews is gone (always empty, not part
- * of the required order). Showcase still uses the four existing concept
- * projects (LeadFlow, ServiceDesk, ClinicConnect, ConsultTrack) — no real
- * automation demo videos exist yet to replace them with.
+ * of the required order). The showcase lists the six WALKFLOW automation
+ * demos (LEADFLOW, SERVICEDESK, BIZFLOW, ESTATEHELP, VOICE AGENT, MAILROUTE),
+ * each with its own page built from the supplied thumbnails and videos.
  */
 export default function BusinessAutomationCrmPage() {
   return (
     <>
       <ServiceHero {...content.hero} />
-      <ServiceProjects {...content.projects} serviceSlug={content.slug} />
+      <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="16/9" columns={3} />
       <ServiceWhatWeDo {...content.whatWeDo} />
       <ServiceWhyWalkflow {...content.whyWalkflow} />
       <ServiceProcess {...content.process} />

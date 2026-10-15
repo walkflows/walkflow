@@ -42,7 +42,7 @@ export function Footer() {
               alt={media.logoOnBlack.alt}
               width={160}
               height={160}
-              className="h-11 w-11 object-contain"
+              className="h-11 w-11 rounded-lg object-contain"
             />
             <span className="font-heading text-lg font-bold">
               <span className="text-orange">WALK</span>

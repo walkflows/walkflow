@@ -34,16 +34,22 @@ export function ServiceProjectCard({
   serviceSlug,
   tileAspect = "4/3",
   showSummary = true,
+  fillHeight = false,
 }: {
   project: ProjectItem;
   serviceSlug: ServiceSlug;
   tileAspect?: "4/3" | "square" | "16/9";
   showSummary?: boolean;
+  /** Stretch to the grid row so neighbouring cards end level (used by the six-card automation grid only). */
+  fillHeight?: boolean;
 }) {
   return (
     <Link
       href={`/services/${serviceSlug}/projects/${project.slug}`}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] outline-none transition-all duration-[420ms] ease-out hover:-translate-y-1.5 hover:border-orange/30 hover:bg-white/[0.05] focus-visible:-translate-y-1.5 focus-visible:border-orange/30 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+      className={cx(
+        fillHeight && "h-full",
+        "group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] outline-none transition-all duration-[420ms] ease-out hover:-translate-y-1.5 hover:border-orange/30 hover:bg-white/[0.05] focus-visible:-translate-y-1.5 focus-visible:border-orange/30 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange",
+      )}
     >
       <div
         className={cx(

@@ -36,7 +36,10 @@ export const media: Record<string, MediaAsset> = {
     recommended: "PNG, transparent or navy background, min 480px wide",
     usedIn: "Currently unused — the footer switched to logoOnBlack (Session 9) to match the header exactly, per explicit instruction. Kept registered here in case a navy-background surface needs this treatment again.",
   },
-  /** Session 8: header-only icon, replacing the navy-backed version that
+  /** 2026 logo: orange tile with the black 3D W (brand_assets/walkflow-logo/walkflow-logo-2026-tile-black-on-orange.png),
+   * cropped square to public/brand/logo-mark.png by scripts/brand/make-icons.mjs. Used in the header and footer next to the
+   * live-text WALKFLOW wordmark. The earlier history below (Sessions 8-9) is kept for context only.
+   * Session 8: header-only icon, replacing the navy-backed version that
    * clashed with the near-black palette introduced in Session 7.
    * Superseded once already within Session 8 — first swapped to a
    * black-background copy of the existing icon (logo-white-on-black.png,
@@ -50,10 +53,10 @@ export const media: Record<string, MediaAsset> = {
    * needs to go away for good. */
   logoOnBlack: {
     id: "logoOnBlack",
-    src: "/brand/logo-icon-orange.png",
+    src: "/brand/logo-mark.png",
     alt: "WALKFLOW",
     status: "live",
-    recommended: "PNG, transparent background, icon only (no wordmark baked in), min 480px wide",
+    recommended: "Square PNG, icon only (no wordmark baked in), 256px or larger",
     usedIn: "Header (dark)",
   },
   heroVisual: {
