@@ -10,6 +10,10 @@ BASE=/opt/walkflow-web
 CA=/var/lib/caddy/.local/share/caddy/pki/authorities/local/root.crt
 case "$ENVNAME" in production|staging) ;; *) echo "environment must be staging or production"; exit 2 ;; esac
 
+# Only one release at a time, whether started by hand or by auto-release.sh. The lock is held on fd 9 until this script exits.
+exec 9>/var/lock/walkflow-release.lock
+flock -n 9 || { echo "RESULT: BUSY - another release is already running; nothing was changed"; exit 75; }
+
 n8n_code() { curl -s -o /dev/null -m 10 -w '%{http_code}' http://127.0.0.1:5678/healthz || echo 000; }
 [ "$(n8n_code)" = 200 ] || echo "WARNING: n8n health check is not 200 before the release (not caused by this script)."
 

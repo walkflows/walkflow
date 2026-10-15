@@ -1,0 +1,19 @@
+[Unit]
+Description=WALKFLOW automatic production release (pull from GitHub master, build, smoke-test, roll back on failure)
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/walkflow-web/auto-release.sh
+# A release (build ~1.5 min + deploy + smoke test) must finish well inside this.
+TimeoutStartSec=25min
+Nice=10
+# No login account exists for this job: it runs from systemd as root because release.sh must read the root-only web.env
+# files and use Docker. It listens on no port and holds no remote credential. Hardening below limits what it can touch.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes

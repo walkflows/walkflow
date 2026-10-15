@@ -1,0 +1,7 @@
+/var/log/walkflow-deploy.log {
+    weekly
+    rotate 12
+    compress
+    missingok
+    notifempty
+}

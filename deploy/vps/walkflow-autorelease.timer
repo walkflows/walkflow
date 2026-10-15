@@ -1,0 +1,11 @@
+[Unit]
+Description=Check GitHub master for a new approved commit every 2 minutes
+
+[Timer]
+OnBootSec=3min
+# Counted from when the previous run FINISHED, so a long release can never be overlapped by the next tick.
+OnUnitInactiveSec=2min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target
