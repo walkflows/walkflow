@@ -14,7 +14,7 @@ const socialIcons: Record<string, typeof IconLinkedin> = { linkedin: IconLinkedi
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
     <div>
-      <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">{title}</h3>
+      <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">{title}</h2>
       <ul className="mt-4 flex flex-col gap-3">
         {links.map((link) => (
           <li key={link.href}>
@@ -39,7 +39,7 @@ export function Footer() {
           <HomeLogoLink className="flex items-center gap-2" ariaLabel={`${site.name} home`}>
             <Image
               src={media.logoOnBlack.src!}
-              alt={media.logoOnBlack.alt}
+              alt=""
               width={160}
               height={160}
               className="h-11 w-11 rounded-lg object-contain"
@@ -57,7 +57,7 @@ export function Footer() {
         <FooterColumn title="Services" links={footerNav.services} />
 
         <div>
-          <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">Connect with Us</h3>
+          <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-orange">Connect with Us</h2>
           <ul className="mt-4 flex flex-col gap-3">
             <li className="flex items-start gap-2.5 text-sm text-white/85">
               <IconMail className="mt-0.5 h-4 w-4 flex-none text-orange" />
@@ -74,7 +74,7 @@ export function Footer() {
           </ul>
 
           {/* Session 8 Oct 2026: "Follow us" recoloured to match the other footer headings' brand orange (was text-white/60). */}
-          <h3 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-orange">Follow us</h3>
+          <h2 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-orange">Follow us</h2>
           <div className="mt-4 flex items-center gap-3">
             {site.social.map((profile) => {
               const Icon = socialIcons[profile.id];

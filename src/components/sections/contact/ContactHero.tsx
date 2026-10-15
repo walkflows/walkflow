@@ -137,16 +137,16 @@ export function ContactHero() {
       />
 
       <Container className="relative">
-        <Reveal>
+        <Reveal eager>
           <h1 className="text-balance text-center text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] text-white">{contactHero.heading}</h1>
         </Reveal>
 
-        <Reveal delay={0.1}>
+        <Reveal eager delay={0.1}>
           <div className="mx-auto mt-10 max-w-4xl rounded-[2rem] border border-white/10 bg-white/[0.02] p-3 sm:p-4">
             {cards.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-3">
                 {cards.map((card, i) => (
-                  <Reveal key={card.id} delay={0.15 + i * 0.08} y={16} className={card.wide ? "sm:col-span-2" : undefined}>
+                  <Reveal eager key={card.id} delay={0.15 + i * 0.08} y={16} className={card.wide ? "sm:col-span-2" : undefined}>
                     {card.content}
                   </Reveal>
                 ))}

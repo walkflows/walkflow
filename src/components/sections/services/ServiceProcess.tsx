@@ -23,7 +23,7 @@ function ProcessStep({ step, index, total }: { step: TitleBody; index: number; t
         <span
           className={cx(
             "font-heading text-3xl font-medium leading-none transition-colors duration-300 sm:text-4xl lg:text-5xl",
-            active ? "text-orange" : "text-white/20",
+            active ? "text-orange" : "text-white/40",
           )}
         >
           {String(index + 1).padStart(2, "0")}

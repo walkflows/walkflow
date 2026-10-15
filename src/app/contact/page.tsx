@@ -17,7 +17,7 @@ export default function ContactPage() {
       <ContactHero />
       <section className="bg-navy-deep pb-20 sm:pb-28">
         <Container className="max-w-2xl">
-          <Reveal>
+          <Reveal eager>
             <span className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange">
               {contactPage.eyebrow}
             </span>

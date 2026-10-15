@@ -37,7 +37,7 @@ export function ProjectDetail({ project, service }: { project: ProjectItem; serv
   return (
     <section className="bg-navy-deep py-20 sm:py-28">
       <Container className="max-w-3xl">
-        <Reveal>
+        <Reveal eager>
           <Link
             href={`/services/${service.slug}#projects`}
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/60 outline-none transition-colors duration-150 hover:text-orange focus-visible:text-orange"
