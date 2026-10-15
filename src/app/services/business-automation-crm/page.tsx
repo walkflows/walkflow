@@ -30,7 +30,7 @@ export default function BusinessAutomationCrmPage() {
   return (
     <>
       <ServiceHero {...content.hero} />
-      <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="16/9" columns={3} showBadge={false} />
+      <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="16/9" showcase />
       <ServiceWhatWeDo {...content.whatWeDo} />
       <ServiceWhyWalkflow {...content.whyWalkflow} />
       <ServiceProcess {...content.process} />
