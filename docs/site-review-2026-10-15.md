@@ -99,4 +99,7 @@ Internal alert delivery: **user-confirmed** - the "New Enquiry" alert arrived in
 
 Email authentication on the confirmation email (Gmail "Show original"): **user-confirmed** SPF PASS, DKIM PASS, DMARC PASS (DMARC policy itself is still `p=none`).
 
-Still **unverified**: email headers (From display name, Reply-To, arrival time); Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
+Confirmation email headers (Gmail "Show original"): **user-confirmed** - From `WALKFLOW <hello@walkflow.tech>`; Reply-To `hello@walkflow.tech`; Date 15 Oct 2026 22:32:24 UTC; received by Gmail 22:32:31 UTC (7 seconds); SPF, DKIM and DMARC all PASS. The delivery chain includes `gmailapi.google.com` followed by authenticated sending through `smtp.hostinger.com`.
+Interpretation, **not assumed to be the production node's configuration**: a Gmail API step followed by Hostinger SMTP is what a Gmail account sending "as" `hello@walkflow.tech` through its "Send mail as" Hostinger SMTP setting would produce, and it differs from n8n connecting to `smtp.hostinger.com` directly. If that is how production works, it adds dependencies worth checking (Gmail OAuth token validity, Gmail daily sending limits, and how replies reach the inbox the workflow watches). Confirm in the production n8n which credential type the email step uses.
+
+Still **unverified**: which credential type the production email step uses (Gmail vs SMTP); Problems & Alerts tab and any stray alert; the production SMTP node settings; and a re-check after one sender cycle that nothing further is sent.
