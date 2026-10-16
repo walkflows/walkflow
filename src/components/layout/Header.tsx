@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { mainNav, consultationCta } from "@/content/navigation";
 import { media } from "@/content/media";
@@ -11,6 +12,7 @@ import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
 import { IconArrowRight } from "@/components/ui/icons";
 import { cx } from "@/lib/utils";
+import { lockPageScroll, unlockPageScroll } from "@/lib/scroll-lock";
 import { HomeLogoLink } from "./HomeLogoLink";
 
 /**
@@ -234,14 +236,14 @@ export function Header() {
     // Release the scroll lock synchronously, rather than waiting for the
     // effect below to catch up — this is what a navigating link needs
     // ("release its scroll lock before completing navigation").
-    document.body.style.overflow = "";
+    unlockPageScroll();
   }, []);
 
+  // While the menu is open the page behind it stays completely still.
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (mobileOpen) lockPageScroll();
+    else unlockPageScroll();
+    return () => unlockPageScroll();
   }, [mobileOpen]);
 
   useEffect(() => {
@@ -335,11 +337,19 @@ export function Header() {
         </div>
       </HeaderBand>
 
+      {/* Shaded area behind the open mobile menu: tapping it closes the menu (portalled to <body> because the
+          header's backdrop blur would otherwise trap a fixed element inside the header bar). */}
+      {mobileOpen &&
+        createPortal(
+          <div aria-hidden="true" onClick={closeMobileMenu} className="fixed inset-0 z-40 touch-none bg-black/60 xl:hidden" />,
+          document.body,
+        )}
+
       <AnimatePresence initial={false}>
         {mobileOpen && (
           <motion.div
             id="mobile-menu"
-            className="max-h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden border-t border-white/10 bg-navy-deep xl:hidden"
+            className="absolute inset-x-0 top-full max-h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden border-t border-white/10 bg-navy-deep xl:hidden"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
