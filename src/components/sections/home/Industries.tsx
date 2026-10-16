@@ -47,7 +47,7 @@ export function Industries() {
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
                   />
                 </div>
-                <div className="relative z-10 -mt-8 mx-4 flex flex-1 flex-col rounded-2xl border border-white/10 bg-navy p-6 shadow-[var(--shadow-card)] transition-colors duration-300 group-hover:border-orange/25">
+                <div className="relative z-10 -mt-8 mx-4 flex flex-1 flex-col rounded-2xl border border-white/10 bg-navy p-4 shadow-[var(--shadow-card)] transition-colors duration-300 group-hover:border-orange/25 min-[380px]:p-6">
                   <h3 className="text-xl text-white">{card.title}</h3>
                   <p className="mt-2.5 text-sm leading-relaxed text-white/60">{card.body}</p>
                   <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/45">
@@ -62,12 +62,12 @@ export function Industries() {
                       </span>
                     ))}
                   </p>
-                  <div className="mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-4 pt-5">
-                    <ExploreLink href={card.href}>
+                  <div className="mt-auto flex flex-nowrap items-center justify-between gap-x-3 gap-y-4 pt-5 sm:flex-wrap sm:gap-x-6">
+                    <ExploreLink href={card.href} className="gap-2 min-[380px]:gap-3 [&>span:last-child]:hidden min-[380px]:[&>span:last-child]:flex">
                       Explore Solution
                       <span className="sr-only"> for {card.title}</span>
                     </ExploreLink>
-                    <Button href={card.demoHref} size="sm" className="flex-none">
+                    <Button href={card.demoHref} size="sm" className="flex-none px-3 min-[380px]:px-4">
                       View Demo
                       <span className="sr-only"> for {card.title}</span>
                       <IconArrowUpRight />
