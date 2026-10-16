@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { chatCopy, chatLinks } from "@/content/chat-assistant";
 import { IconChat, IconClose } from "@/components/ui/icons";
 import type { ChatApiResponse, ChatLink, ChatReply } from "@/lib/chat/types";
+import { lockPageScroll, unlockPageScroll } from "@/lib/scroll-lock";
 
 type Message = {
   id: number;
@@ -23,11 +24,13 @@ export function WebsiteChatWidget() {
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
   const nextId = useRef(1);
+  const leavingPage = useRef(false);
   const inFlight = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const titleId = useId();
   const descriptionId = useId();
   const inputId = useId();
@@ -41,6 +44,40 @@ export function WebsiteChatWidget() {
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [messages, pending]);
+
+  // Phones (below Tailwind's sm breakpoint): the chat is a full-screen overlay. Freeze the page behind it
+  // and keep the panel exactly on the visible area, so the on-screen keyboard never hides the input or the
+  // close button. Released (and the scroll position restored) as soon as the chat closes.
+  useEffect(() => {
+    if (!open) return;
+    const phone = window.matchMedia("(max-width: 639px)");
+    const viewport = window.visualViewport;
+    function fitToVisibleArea() {
+      const panel = panelRef.current;
+      if (!panel || !viewport) return;
+      panel.style.setProperty("--chat-top", `${viewport.offsetTop}px`);
+      panel.style.setProperty("--chat-height", `${viewport.height}px`);
+    }
+    function apply() {
+      if (phone.matches) {
+        lockPageScroll();
+        fitToVisibleArea();
+      } else {
+        unlockPageScroll();
+      }
+    }
+    apply();
+    phone.addEventListener("change", apply);
+    viewport?.addEventListener("resize", fitToVisibleArea);
+    viewport?.addEventListener("scroll", fitToVisibleArea);
+    return () => {
+      phone.removeEventListener("change", apply);
+      viewport?.removeEventListener("resize", fitToVisibleArea);
+      viewport?.removeEventListener("scroll", fitToVisibleArea);
+      unlockPageScroll(!leavingPage.current);
+      leavingPage.current = false;
+    };
+  }, [open]);
 
   // Close on an outside click/tap — anywhere that isn't the launcher or the
   // open panel. `pointerdown` (not `click`) so the closing happens before
@@ -62,6 +99,12 @@ export function WebsiteChatWidget() {
   function close() {
     setOpen(false);
     launcherRef.current?.focus();
+  }
+
+  // A chat link was followed: close the overlay and let the new page start at the top.
+  function closeForNavigation() {
+    leavingPage.current = true;
+    setOpen(false);
   }
 
   function append(message: Omit<Message, "id">) {
@@ -102,9 +145,13 @@ export function WebsiteChatWidget() {
   }
 
   return (
-    <div ref={containerRef} className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+    <div
+      ref={containerRef}
+      className={`fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6${open ? " max-sm:z-[70]" : ""}`}
+    >
       {open && (
         <motion.section
+          ref={panelRef}
           id={panelId}
           role="dialog"
           aria-labelledby={titleId}
@@ -115,7 +162,7 @@ export function WebsiteChatWidget() {
           onKeyDown={(event) => {
             if (event.key === "Escape") close();
           }}
-          className="flex max-h-[min(34rem,calc(100dvh-10rem))] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-orange/30 bg-navy shadow-[0_20px_45px_-24px_rgba(0,0,0,0.6),0_0_22px_-14px_rgba(255,153,28,0.22)]"
+          className="flex max-h-[min(34rem,calc(100dvh-10rem))] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-orange/30 bg-navy max-sm:fixed max-sm:left-0 max-sm:top-[var(--chat-top,0px)] max-sm:h-[var(--chat-height,100dvh)] max-sm:max-h-none max-sm:w-full max-sm:rounded-none max-sm:border-0 shadow-[0_20px_45px_-24px_rgba(0,0,0,0.6),0_0_22px_-14px_rgba(255,153,28,0.22)]"
         >
           <header className="flex items-start justify-between gap-3 border-b border-white/10 bg-navy-deep px-5 py-4">
             <div className="min-w-0">
@@ -140,10 +187,10 @@ export function WebsiteChatWidget() {
             ref={logRef}
             role="log"
             aria-live="polite"
-            className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-5 py-4"
+            className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-5 py-4"
           >
             {messages.map((message) => (
-              <MessageBubble key={message.id} message={message} disabled={pending} onSuggest={send} />
+              <MessageBubble key={message.id} message={message} disabled={pending} onSuggest={send} onNavigate={closeForNavigation} />
             ))}
             {pending && (
               <p role="status" className="text-xs text-white/50">
@@ -152,7 +199,7 @@ export function WebsiteChatWidget() {
             )}
           </div>
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-white/10 p-3">
+          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-white/10 p-3 max-sm:pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <label htmlFor={inputId} className="sr-only">
               {chatCopy.inputLabel}
             </label>
@@ -165,7 +212,7 @@ export function WebsiteChatWidget() {
               maxLength={500}
               autoComplete="off"
               placeholder={chatCopy.inputPlaceholder}
-              className="min-w-0 flex-1 rounded-full border border-white/15 bg-navy-deep px-4 py-2.5 text-sm text-white placeholder:text-white/45 focus-visible:outline-2 focus-visible:outline-orange"
+              className="min-w-0 flex-1 rounded-full border border-white/15 bg-navy-deep px-4 py-2.5 text-base text-white placeholder:text-white/45 sm:text-sm focus-visible:outline-2 focus-visible:outline-orange"
             />
             <button
               type="submit"
@@ -200,10 +247,12 @@ function MessageBubble({
   message,
   disabled,
   onSuggest,
+  onNavigate,
 }: {
   message: Message;
   disabled: boolean;
   onSuggest: (text: string) => void;
+  onNavigate: () => void;
 }) {
   if (message.from === "user") {
     return (
@@ -224,6 +273,7 @@ function MessageBubble({
             <Link
               key={`${link.href}-${link.label}`}
               href={link.href}
+              onClick={onNavigate}
               className="inline-flex min-h-11 items-center rounded-full border border-orange/40 px-3.5 text-xs font-bold uppercase tracking-wide text-orange transition-colors hover:bg-orange hover:text-navy"
             >
               {link.label}
