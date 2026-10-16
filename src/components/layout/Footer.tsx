@@ -6,6 +6,7 @@ import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconMail, IconPhone, IconLinkedin, IconInstagram, IconTiktok, IconYoutube } from "@/components/ui/icons";
+import { CookieSettingsButton } from "@/components/analytics/CookieSettingsButton";
 import { HomeLogoLink } from "./HomeLogoLink";
 
 const socialIcons: Record<string, typeof IconLinkedin> = { linkedin: IconLinkedin, tiktok: IconTiktok, instagram: IconInstagram, youtube: IconYoutube };
@@ -119,6 +120,7 @@ export function Footer() {
                   {link.label}
                 </Link>
               ))}
+              <CookieSettingsButton />
             </div>
           )}
         </Container>
