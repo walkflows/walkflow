@@ -22,7 +22,7 @@ Next.js (App Router) + TypeScript + Tailwind CSS v4, with Motion for React for r
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and fill in values. Analytics remain unconfigured until PostHog is connected — see `CLAUDE.md`.
+Copy `.env.example` to `.env.local` and fill in values. Google Analytics 4 is built in and needs no setup: it runs only on walkflow.tech, only after a visitor accepts the cookie banner (see `src/components/analytics`, `src/lib/analytics` and the privacy policy). PostHog (mentioned in `CLAUDE.md`) is not installed.
 
 ### Contact form → n8n
 

@@ -13,6 +13,7 @@ import {
 } from "@/content/contact";
 import { ButtonEl } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { trackEvent } from "@/lib/analytics/ga";
 import { cx } from "@/lib/utils";
 import { getWhatsAppHref } from "@/lib/whatsapp";
 import {
@@ -210,6 +211,8 @@ export function ContactForm() {
         ...(values.method === "whatsapp" ? { whatsappNumber: values.whatsappNumber.trim() } : {}),
       });
       // Only reached once n8n has confirmed the enquiry is saved in the WALKFLOW BUSINESS sheet.
+      // Counted once, and only for a brand-new save: a repeat of an already-saved submission is not a new enquiry.
+      if (!result.duplicate) trackEvent("generate_lead", { form_name: "contact" });
       setDuplicate(result.duplicate);
       setStatus("success");
       setValues(initialValues);

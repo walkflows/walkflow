@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { FloatingWidgets } from "@/components/chat/FloatingWidgets";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <FloatingWidgets />
+        <AnalyticsProvider />
       </body>
     </html>
   );

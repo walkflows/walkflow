@@ -21,7 +21,7 @@ export const privacySeo = {
 export const privacyIntro = {
   eyebrow: "Privacy",
   heading: "Privacy Policy",
-  lastUpdated: "12 October 2026",
+  lastUpdated: "16 October 2026",
   summary:
     "This policy explains what information WALKFLOW collects through this website and our enquiry process, how our own automation tools use it, including Google Gmail, Sheets, Drive and Calendar, and the choices you have.",
 };
@@ -49,7 +49,17 @@ export const privacySections: PrivacySection[] = [
       "Emails you send us. When you email WALKFLOW, the message arrives in our Gmail inbox like any email.",
       "Ask WALKFLOW assistant. Questions you type are answered on our own website server using WALKFLOW’s published website content. They are not sent to any outside AI service and are not stored after your visit. The conversation exists only in your browser tab.",
       "WhatsApp and booking links. These take you to WhatsApp or Google. Their own privacy policies apply there.",
-      "Website hosting. Our website runs on a private server that WALKFLOW rents from Hostinger, the same provider that hosts our private automation server. The server and Hostinger may keep standard technical logs (such as IP address, time and the page or service requested) to run and protect the service. To stop abuse, our server also keeps temporary request counters per IP address, for a short time, so that repeated rapid submissions can be refused; these counters are not linked to your name or your enquiry. We do not use analytics, advertising or tracking cookies on this website.",
+      "Website hosting. Our website runs on a private server that WALKFLOW rents from Hostinger, the same provider that hosts our private automation server. The server and Hostinger may keep standard technical logs (such as IP address, time and the page or service requested) to run and protect the service. To stop abuse, our server also keeps temporary request counters per IP address, for a short time, so that repeated rapid submissions can be refused; these counters are not linked to your name or your enquiry. We do not use advertising or tracking cookies on this website. The only optional analytics we use is Google Analytics, and only if you accept it (see “Website analytics and cookies” below).",
+    ],
+  },
+  {
+    id: "analytics",
+    heading: "Website analytics and cookies",
+    blocks: [
+      "When you first visit walkflow.tech we ask whether we may use Google Analytics 4. Accept and Reject are equally easy to choose. Until you accept, Google’s analytics script is not loaded, no analytics cookies are set and nothing about your visit is sent to Google. Your choice is saved in your browser, and you can change it at any time with “Cookie settings” in the footer. Rejecting, or withdrawing, stops all analytics sending and removes the Google Analytics cookies from your browser.",
+      "If you accept, Google Analytics sets cookies (named _ga and _ga_ followed by our property ID) that keep a random identifier for your browser, and reports to Google: the pages you view (address without any search or tracking details apart from campaign tags such as utm_source), page titles, the page you came from, the approximate location, device, browser and language Google works out from your connection, and how long you stay. We use this to see which pages are useful and how many people reach us. Google acts as our service provider for this and may process the data outside your country, including in the United States.",
+      "We also record three actions, only if you accepted: a click on one of our consultation buttons (“Book a Consultation”, “Request a Call”, “Request a Consultation”); a click on the “Book a discovery call” link, which only means the link was clicked, not that a call was booked; and a successfully saved new enquiry. For these we send only the event name and the page it happened on. We never send your name, email address, phone number, business name, WhatsApp number or anything you type in the enquiry form or chat to Google, and the form’s contents are never part of any analytics event.",
+      "We do not use Google Analytics for advertising. Advertising storage, advertising data sharing, ad personalisation and Google signals are switched off. Analytics is active only on walkflow.tech; test and preview copies of the site do not run it. Google’s own privacy policy applies to the data it receives, and Google provides a browser add-on to opt out of Google Analytics everywhere.",
     ],
   },
   {
@@ -99,6 +109,7 @@ export const privacySections: PrivacySection[] = [
       {
         list: [
           "Hostinger: hosts this website and WALKFLOW’s private automation server.",
+          "Google Analytics: website statistics, only if you accept analytics, as described above.",
           "Google: Gmail, Google Sheets, Google Drive and Google Calendar, as described above.",
           "Supabase: private databases for business research and our demo tools.",
           "Telegram: private notifications to WALKFLOW about new activity or problems.",

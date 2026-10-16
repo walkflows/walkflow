@@ -3,25 +3,32 @@ import type { NextConfig } from "next";
 /**
  * Security headers (SECURITY-REVIEW F-04). The site loads everything from its
  * own origin (self-hosted fonts, local images/video, no third-party scripts,
- * embeds or analytics), so the policy can be tight. Two deliberate looseness:
+ * embeds), so the policy can be tight. The ONE exception is Google Analytics 4 (gtag.js), which
+ * only loads after a visitor accepts analytics on walkflow.tech (src/components/analytics):
+ * its script and data endpoints are the only extra origins allowed below. Two deliberate looseness:
  *  - script-src needs 'unsafe-inline' because Next.js emits inline bootstrap
  *    scripts; a nonce-based policy would force every page to render
  *    dynamically. Revisit if that trade-off changes.
  *  - style-src needs 'unsafe-inline' for inline style attributes (Motion, Next).
  * Development also needs 'unsafe-eval' (React dev tooling); production does not.
- * If a third-party script, embed, image host or analytics SDK is added later,
+ * If another third-party script, embed, image host or analytics SDK is added later,
  * its origin must be added here or the browser will block it.
  */
 const isDev = process.env.NODE_ENV !== "production";
 
+// Google Analytics 4: script host, plus the endpoints it reports to (regional hosts are subdomains).
+const GA_SCRIPT = "https://www.googletagmanager.com";
+const GA_CONNECT = "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com";
+const GA_IMG = "https://*.google-analytics.com https://*.googletagmanager.com";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' ${GA_SCRIPT}${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob: ${GA_IMG}`,
   "media-src 'self'",
   "font-src 'self'",
-  `connect-src 'self'${isDev ? " ws: http://localhost:* http://127.0.0.1:*" : ""}`,
+  `connect-src 'self' ${GA_CONNECT}${isDev ? " ws: http://localhost:* http://127.0.0.1:*" : ""}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
