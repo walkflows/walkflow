@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { servicePages } from "@/content/services";
+import { ServiceJsonLd } from "@/components/seo/ServiceJsonLd";
 import { ServiceHero } from "@/components/sections/services/ServiceHero";
 import { ServiceProjects } from "@/components/sections/services/ServiceProjects";
 import { ServiceWhatWeDo } from "@/components/sections/services/ServiceWhatWeDo";
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
 export default function EmailMarketingPage() {
   return (
     <>
+      <ServiceJsonLd slug="email-marketing" />
       <ServiceHero {...content.hero} />
       {/* Session 24: near-square tiles, name-only cards — see ServiceProjectCard.tsx. */}
       <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="square" showSummary={false} />

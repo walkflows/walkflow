@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { servicePages } from "@/content/services";
+import { ServiceJsonLd } from "@/components/seo/ServiceJsonLd";
 import { ServiceHero } from "@/components/sections/services/ServiceHero";
 import { ServiceProjects } from "@/components/sections/services/ServiceProjects";
 import { ServiceWhatWeDo } from "@/components/sections/services/ServiceWhatWeDo";
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
 export default function BusinessAutomationCrmPage() {
   return (
     <>
+      <ServiceJsonLd slug="business-automation-crm" />
       <ServiceHero {...content.hero} />
       <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="16/9" showcase />
       <ServiceWhatWeDo {...content.whatWeDo} />
