@@ -68,15 +68,16 @@ export const aboutHero = {
   /** Real profile URL, supplied 8 Oct 2026. */
   linkedinUrl: "https://www.linkedin.com/in/walkflow" as string | null,
   /**
-   * Session 22: swapped to the "walkflow founder" asset (a branded-tee
-   * headshot Joshua added to `about us/`) in place of the earlier casual
-   * business photo. Its native size (1122×1402) is already a 4:5 ratio,
-   * matching AboutHero.tsx's photo frame exactly, so `object-cover` needs
-   * no real cropping and the face/composition renders unchanged.
+   * 22 Oct 2026: swapped to the new founder portrait (glasses, navy blazer,
+   * white shirt) Joshua supplied as `WALKFLOW FOUNDER IMAGE.png`. It is square
+   * (750×750) and the frame in AboutHero.tsx is 4:5, so `object-cover` trims a
+   * little from each side; the face sits near the centre and stays fully in
+   * frame. The previous images (`founder-walkflow.png`, `founder-business.png`)
+   * are kept in `public/about/` but no longer used.
    */
   photo: {
-    src: "/about/founder-walkflow.png",
-    alt: "Joshua Ayomide, founder of WALKFLOW, wearing a WALKFLOW-branded t-shirt",
+    src: "/about/founder-blazer.png",
+    alt: "Joshua Ayomide, founder of WALKFLOW, wearing glasses and a navy blazer over a white shirt",
   },
 };
 
