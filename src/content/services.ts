@@ -160,7 +160,7 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     seo: {
       title: "Business Automation & CRM",
       searchTitle: "AI Automation & CRM for Small Businesses",
-      description: "Connect your forms, customer records and follow-ups to help your team respond faster and reduce missed enquiries. Practical automation for small and growing businesses.",
+      description: "Connect your forms, customer records and follow-ups to help your team respond faster and reduce missed enquiries. Automation for small and growing businesses.",
     },
     hero: {
       eyebrow: "Business Automation & CRM",
