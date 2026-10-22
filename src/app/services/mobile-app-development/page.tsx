@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { servicePages } from "@/content/services";
+import { ServiceJsonLd } from "@/components/seo/ServiceJsonLd";
 import { ServiceHero } from "@/components/sections/services/ServiceHero";
 import { ServiceProjects } from "@/components/sections/services/ServiceProjects";
 import { ServiceWhatWeDo } from "@/components/sections/services/ServiceWhatWeDo";
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
 export default function MobileAppDevelopmentPage() {
   return (
     <>
+      <ServiceJsonLd slug="mobile-app-development" />
       <ServiceHero {...content.hero} />
       {/* Session 26: wide 16:9 tiles matching the showcase images' real proportions, headline shown under each title — see ServiceProjectCard.tsx. */}
       <ServiceProjects {...content.projects} serviceSlug={content.slug} tileAspect="16/9" showSummary={false} />

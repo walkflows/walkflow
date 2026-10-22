@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { servicePages } from "@/content/services";
+import { ServiceJsonLd } from "@/components/seo/ServiceJsonLd";
 import { ServiceHero } from "@/components/sections/services/ServiceHero";
 import { WebDesignProjectGallery } from "@/components/sections/services/WebDesignProjectGallery";
 import { ServiceWhatWeDo } from "@/components/sections/services/ServiceWhatWeDo";
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
 export default function WebDesignPage() {
   return (
     <>
+      <ServiceJsonLd slug="web-design" />
       <ServiceHero {...content.hero} />
       <WebDesignProjectGallery />
       <ServiceWhatWeDo {...content.whatWeDo} />
