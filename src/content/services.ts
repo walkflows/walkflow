@@ -159,8 +159,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "business-automation-crm",
     seo: {
       title: "Business Automation & CRM",
-      searchTitle: "AI Automation & CRM for Small Businesses",
-      description: "Connect your forms, customer records and follow-ups to help your team respond faster and reduce missed enquiries. Automation for small and growing businesses.",
+      searchTitle: "AI Automation & CRM for Businesses",
+      description: "Connect your forms, customer records and follow-ups to help your team respond faster and reduce missed enquiries. Automation for businesses.",
     },
     hero: {
       eyebrow: "Business Automation & CRM",
@@ -738,8 +738,8 @@ export const servicePages: Record<ServiceSlug, ServicePageContent> = {
     slug: "web-design",
     seo: {
       title: "Web Design",
-      searchTitle: "Web Design for Small Businesses",
-      description: "Business websites built to make it easy for customers to enquire, book or buy. WALKFLOW designs and builds clear, fast websites for small and growing companies.",
+      searchTitle: "Web Design for Businesses",
+      description: "Business websites built to make it easy for customers to enquire, book or buy. WALKFLOW designs and builds clear, fast websites for businesses.",
     },
     hero: {
       eyebrow: "Web Design",
